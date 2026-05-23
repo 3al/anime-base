@@ -1,0 +1,31 @@
+{
+  "types": {
+    "aliases": "aliases",
+    "cssclasses": "multitext",
+    "tags": "tags",
+    "personal_score": "number",
+    "mal_score": "number",
+    "shikimori_score": "number",
+    "episodes": "number",
+    "year": "number",
+    "episode_duration_minutes": "number",
+    "birth_year": "number",
+    "created": "date",
+    "updated": "date",
+    "birth_date": "date",
+    "death_date": "date",
+    "mal_url": "text",
+    "anilist_url": "text",
+    "wikipedia_url": "text",
+    "personal_status": "text",
+    "name_romaji": "text",
+    "name_native": "text",
+    "name_english": "text",
+    "featured_in": "multitext",
+    "character_role": "text",
+    "gender": "text",
+    "age": "text",
+    "species": "text",
+    "affiliations": "multitext"
+  }
+}

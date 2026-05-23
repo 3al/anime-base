@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vault-semantic"
+version = "0.4.5"
+description = "Semantic search MCP server for Obsidian vaults (L2 in RAG architecture)."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = [
+    # MCP framework — STDIO server runtime.
+    "mcp>=1.27,<2",
+
+    # SQLite + vector storage. sqlite-vec provides VIRTUAL TABLE vec0;
+    # FTS5 ships with stdlib sqlite3.
+    "sqlite-vec>=0.1.9,<0.2",
+
+    # Chunking — RecursiveChunker per RAG §3.2 (600/80, hard/soft boundaries).
+    # Pinned <1.6: chonkie 1.6 added Rust-backed `tokie` extension which has no
+    # cp314 wheels and requires MSVC Build Tools to build from source. 1.5.6
+    # uses the same RecursiveChunker API (only difference: kwarg `tokenizer=`
+    # vs 1.6's `tokenizer_or_token_counter=`) and ships pure-Python wheels.
+    "chonkie>=1.5.6,<1.6",
+
+    # Russian + English lemmatization for FTS5 (lemmatize-at-index, §4.3).
+    # pymorphy3 — Russian; snowballstemmer — English fallback.
+    "pymorphy3>=2.0,<3",
+    "snowballstemmer>=3.0,<4",
+
+    # Embedding pipeline — sentence-transformers wraps bge-m3 (default) and
+    # alternative HF models per RAG §2.6. Pinning torch explicitly ensures
+    # we resolve cp314 wheels (verified 2026-05-08 — torch 2.11.0 has
+    # cp314-cp314-win_amd64.whl).
+    "sentence-transformers>=5.4,<6",
+    "torch>=2.11,<3",
+    "transformers>=5.8,<6",
+
+    # YAML frontmatter parser (used by indexer, §4.5 step "парсинг frontmatter").
+    "PyYAML>=6,<7",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "ruff>=0.4",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+vault_semantic = ["schema/migrations/*.sql"]

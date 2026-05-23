@@ -1,0 +1,77 @@
+# Canonical enum values for vault note_kinds — single source of truth.
+#
+# Consumers:
+#   - /new-anime (и любой будущий /new-<kind>) — берёт допустимые значения для подстановки во frontmatter
+#   - /audit-note — валидирует enum-поля заметки против этого файла
+#   - /add-note-kind — дописывает сюда секцию при создании нового note_kind
+#   - vault_lint (планируется) — механически проверяет, что значения enum-полей в карточках
+#     присутствуют в соответствующем списке этого файла
+#
+# Правила:
+#   - Значения — kebab-case или single-word lower-case, без пробелов.
+#   - Семантические описания (что значит каждый value) — в SYSTEM/Metadata_schema.md
+#     рядом с описанием поля. Этот файл хранит только МНОЖЕСТВА.
+#   - Менять/добавлять значения — через скиллы или вручную, но синхронно с описаниями
+#     в Metadata_schema.md и тегами в Tag_taxonomy.md (если поле порождает обязательные теги).
+
+schema_version: 1
+
+note_kinds:
+  anime:
+    format: [tv, movie, ova, ona, special, tv-short, music]
+    status: [airing, finished, upcoming, on-hiatus, cancelled]
+    season: [winter, spring, summer, fall]
+    source: [original, manga, light-novel, novel, visual-novel, game, web-novel, other]
+    personal_status: [watching, completed, on-hold, dropped, plan-to-watch, favorite]
+    # Роли в производстве (поле `staff[].role` карточки аниме) — используется тот же
+    # набор, что `person.role`. Один источник истины: `note_kinds.person.role` ниже.
+    # При расхождении трактовать `person.role` как канон.
+    staff_role: &production_role
+      - director
+      - screenwriter
+      - composer
+      - producer
+      - character-designer
+      - animation-director
+      - mangaka
+      - novelist
+      - art-director
+      - sound-director
+      - editor
+      - key-animator
+    genres:
+      - action
+      - adventure
+      - comedy
+      - drama
+      - ecchi
+      - fantasy
+      - horror
+      - mecha
+      - mystery
+      - music
+      - psychological
+      - romance
+      - sci-fi
+      - slice-of-life
+      - sports
+      - supernatural
+      - thriller
+      - historical
+      - school
+      - isekai
+
+  person:
+    status: [alive, deceased]
+    # Профессиональные роли. Тот же набор, что `anime.staff_role` (YAML anchor выше).
+    role: *production_role
+
+  character:
+    # Нарративная роль персонажа. Намеренно НЕ `role` — чтобы не конфликтовать
+    # с `anime.staff[].role` / `person.role` (там — производственные роли).
+    character_role: [protagonist, deuteragonist, antagonist, supporting, minor]
+    gender: [male, female, non-binary, other, unknown]
+    # Статус по итогам канона: `unknown` — судьба не определена в каноне
+    # (в отличие от `person.status`, где есть только alive/deceased — там это
+    # жизненный статус реального человека).
+    status: [alive, deceased, unknown]

@@ -1,0 +1,31 @@
+name: vault-index
+version: 0.2.0
+description: |
+  Структурный MCP-сервер волта: индекс frontmatter, граф ссылок, lint, query.
+  Подробности — SYSTEM/MCP_Server_Design.md.
+
+  Source в .claude/modules/vault-index/mcp/ (canonical layout). Install
+  собирает dist/ через npm install && npm run build, если dist отсутствует.
+  Legacy layout (.claude/mcp-server/) поддерживается install-handler'ом для
+  обратной совместимости и мигрируется через /migrate-vault-index.
+mandatory: false
+requires:
+  - core
+provides:
+  # Структурированное описание MCP-сервера для harness-* модулей.
+  # Шаблонные переменные {vault_root}, {module_dir}, {module_dist}, {module_bin}
+  # резолвятся harness-* при компоновке записи в config-файле.
+  # Канонический путь only — если волт в legacy layout, harness не найдёт
+  # binary и пропустит регистрацию с warning'ом, предлагающим
+  # /migrate-vault-index. См. RAG_Architecture.md §8.4.
+  mcp_server:
+    name: vault-index
+    command: node
+    args: ["{module_dist}/index.js"]
+    env:
+      VAULT_ROOT: "{vault_root}"
+  skills: []
+config_schema: {}
+ops:
+  install: ops/install.mjs
+  status: ops/status.mjs

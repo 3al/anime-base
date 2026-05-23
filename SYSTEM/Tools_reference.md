@@ -1,0 +1,210 @@
+---
+type: guide
+domain: system
+stability: evolving
+priority: high
+quality: draft
+tags:
+  - metadata
+  - agent
+created: 2026-05-23
+updated: 2026-05-23
+---
+
+# Инструменты обслуживания vault
+
+Справочник по скиллам и MCP-инструментам, доступным Claude Code для работы с базой знаний об аниме, манге и людях из индустрии.
+
+**Зачем этот файл существует.** Чтобы не уходить в `ToolSearch` или `Grep`-сафари каждый раз, когда нужен инструмент. Сюда же зафиксированы эмпирические знания о возможностях tool'ов, которых нет в их описаниях.
+
+## Скиллы (`.claude/skills/`)
+
+Скиллы вызываются через `/имя` в чате Claude Code или через естественный язык (триггерные фразы).
+
+### Создание контента
+
+| Скилл            | Аргументы                            | Описание |
+|------------------|--------------------------------------|----------|
+| `/new-anime`     | `<название тайтла>`                  | Создать карточку аниме-тайтла: web search (MAL, AniList, Shikimori) + frontmatter + cross-update в `PERSONS/*.works[]` для каждого `staff[]`. Модель: opus |
+| `/new-person`    | `<имя персоны>`                      | Создать карточку человека из аниме-индустрии (режиссёр, сценарист, композитор, продюсер, аниматор, мангака). Модель: opus |
+| `/new-character` | `<имя персонажа>`                    | Создать карточку вымышленного персонажа аниме/манги. Auto-download постера + reverse-check секции персонажей в `featured_in` карточках (in-place upgrade text → WikiLink+миниатюра). Модель: opus |
+| `/new-note`      | `<тема>`                             | Создать заметку общего назначения. Routing через `.claude/vault-manifest.yaml::folders`; делегирует на тематический `/new-<kind>` если папка имеет `create_skill`. Модель: opus |
+| `/expand-stub`   | `<файл> [комментарий]`               | Расширить заметку-заглушку до полноценной. Модель: opus |
+
+### Расширение волта
+
+| Скилл              | Аргументы                | Описание |
+|--------------------|--------------------------|----------|
+| `/add-note-kind`   | `[<slug>]`               | Зарегистрировать новый `note_kind`: патчит `SYSTEM/Metadata_schema.md`, `enums.yaml`, `Linking_guidelines.md`, `Tag_taxonomy.md`, `Vault_architecture.md`, `CLAUDE.md`, `.claude/vault-manifest.yaml`, `.obsidian/types.json` + генерирует `/new-<slug>` скилл. Модель: opus |
+
+### Изображения
+
+| Скилл           | Аргументы                                 | Описание |
+|-----------------|-------------------------------------------|----------|
+| `/add-images`   | `<note> <poster\|gallery> <file-or-folder>` | Добавить постер или элементы галереи к существующей заметке. Cross-update embeds в волте (`vault_backlinks`) при смене расширения постера. Универсальный для любого `note_kind`. Модель: opus |
+
+### Ревью и качество
+
+| Скилл            | Аргументы                  | Описание |
+|------------------|----------------------------|----------|
+| `/verify`        | `<файл> [verified\|draft]` | Проставить `co_authored`, `quality`, `updated`. По умолчанию `quality: verified`. Модель: haiku |
+| `/audit-note`    | `<файл>`                   | Полный аудит заметки: `vault_lint` (механика) + LLM-проверки (таксономия, ссылки, факт-чек через web search, шумоподавление контента). Модель: opus |
+| `/audit-review`  | `<файл>`                   | Аудит секции `## Личный отзыв`: пунктуация, опечатки, форматирование + извлечение `personal_score` / `personal_status` из прозы. Kind-agnostic. Модель: opus |
+
+### Ссылки и граф
+
+| Скилл           | Аргументы                                            | Описание |
+|-----------------|------------------------------------------------------|----------|
+| `/fix-links`    | `[broken\|duplicates\|orphans\|lint\|all] [папка]`   | Batch-починка: сломанные ссылки, дубликаты, сироты, lint. По умолчанию `all`. Модель: sonnet |
+| `/rename-note`  | `<старое имя> <новое имя/папка>`                     | Переименовать/переместить заметку, обновить все WikiLinks через `vault_backlinks`, добавить старое имя в `aliases`. Использует `git mv`. Модель: sonnet |
+
+### Семантический поиск (L3 router)
+
+| Скилл         | Аргументы                | Описание |
+|---------------|--------------------------|----------|
+| `/vault-rag`  | `<вопрос на естественном языке>` | LLM-роутер поверх vault-index (L1, структурный) и vault-semantic (L2, гибридный bge-m3 + BM25). Сам решает каким уровнем отвечать. Модель: opus |
+
+### Инфраструктура
+
+| Скилл                    | Аргументы | Описание |
+|--------------------------|-----------|----------|
+| `/init-vault`            | —         | Установка/обновление модулей из `.claude/vault-manifest.yaml`. Регистрирует MCP-серверы в `~/.claude.json`, патчит `CLAUDE.md` управляемым блоком, ставит/обновляет тема-нейтральные скиллы (`.managed` маркер). |
+| `/migrate-vault-index`   | —         | Одноразовая миграция vault-index MCP-сервера с legacy-layout на canonical. Использовать только если `/init-vault status` явно требует. |
+
+---
+
+## MCP-сервер `vault-index` (L1, структурный)
+
+Персистентный индекс волта: frontmatter, граф ссылок, lint, агрегаты. Все запросы <100ms. Подробнее: `SYSTEM/MCP_Server_Design.md` (если есть в волте — иначе исходники в `.claude/modules/vault-index/`).
+
+### Механические проверки
+
+| Tool                          | Параметры                | Что проверяет |
+|-------------------------------|--------------------------|---------------|
+| `vault_lint`                  | `{ target?, showAll? }`  | Frontmatter, теги, WikiLinks. Обязательные поля (ERROR), рекомендуемые (WARN), невалидные enum-значения, каноничность тегов, обязательные теги по `note_kind`, лимит ссылок (15) |
+| `vault_broken_links`          | `{ folder? }`            | WikiLinks на несуществующие заметки |
+| `vault_duplicate_links`       | `{ folder? }`            | Повторные WikiLinks на один target в одном файле |
+| `vault_orphans`               | `{ folder? }`            | Заметки без входящих WikiLinks |
+
+### Запросы к индексу
+
+| Tool                          | Параметры                                                                 | Что делает |
+|-------------------------------|---------------------------------------------------------------------------|------------|
+| `vault_query`                 | `{ type?, domain?, tags?, tagsAny?, quality?, stability?, noteKind?, folder?, hasField?, limit? }` | Фильтр заметок по frontmatter-полям |
+| `vault_backlinks`             | `{ note }`                                                                | Обратные ссылки: кто ссылается на заметку. **См. ниже эмпирику про image embeds.** |
+| `vault_note_profile`          | `{ note }`                                                                | Полный профиль: frontmatter + outgoing links + backlinks + lint issues |
+| `vault_stats`                 | `{}`                                                                      | Агрегаты по волту: counts по type/domain/quality/тегам |
+| `vault_reindex`               | `{ full? }`                                                               | Принудительная переиндексация. Обычно автоматическая через mtime-snapshot |
+
+### Эмпирические знания о tool'ах
+
+**`vault_backlinks` индексирует image embeds.** Принимает имя файла-картинки (`.jpg`, `.png` и т.п.) и возвращает все заметки с `![[filename.ext]]` в теле. `displayText` в ответе содержит ширину из `|<W>` синтаксиса embed'а — её можно сохранить при Edit без отдельного парсинга.
+
+Пример: `vault_backlinks(note="Tanjiro_cover.jpg")` → `[{sourcePath: "ANIME/Demon_Slayer.md", line: 42, displayText: "60"}, ...]`.
+
+Это **не следует** из описания tool'а («Find all notes that link to a given note») — знание получено эмпирически. Используется в `/add-images` шаг 4.5 для cross-update embeds при смене расширения постера.
+
+### Tools, унаследованные из общего vault-index и НЕ применяемые в Anime_Base
+
+Эти tool'ы зашиты в vault-index, потому что код шарится с волтами других тематик (mushroom-card и т.п.). В Anime_Base их **не используем** — оставлены как dead code, чтобы случайный вызов не путал:
+
+| Tool                          | Откуда                                |
+|-------------------------------|---------------------------------------|
+| `vault_lookalike_peers`       | Mushroom-card — двойники грибов       |
+| `vault_image_status`          | Mushroom-card — типизированные ракурсы (top/side/habitat) |
+| `vault_add_image`             | Mushroom-card — добавление по imageType |
+
+В Anime_Base для постеров используется `/add-images` скилл (frontmatter `images.cover`, не `images.<тип>`).
+
+---
+
+## MCP-сервер `vault-semantic` (L2, гибридный поиск)
+
+Семантический поиск: bge-m3 dense + BM25 с pymorphy3/snowball лемматизацией, гибрид RRF через SQLite/sqlite-vec. Архитектура: `.claude/modules/vault-semantic/docs/RAG_Architecture.md`.
+
+| Tool                       | Параметры                                            | Что делает |
+|----------------------------|------------------------------------------------------|------------|
+| `vault_semantic_search`    | `{ query, limit?, scope? }`                          | Гибридный поиск по смыслу + лексике. Возвращает chunks с score'ом |
+| `vault_semantic_reindex`   | `{ scope? }`                                         | Принудительная переиндексация. Обычно НЕ нужна (incremental refresh через mtime-snapshot). Использовать только при смене chunker'а / схемы / модели |
+| `vault_semantic_stats`     | `{}`                                                 | Состояние индекса: число чанков, последний refresh |
+| `vault_semantic_warmup`    | `{}`                                                 | Прогрев модели и кеша (первый запрос после старта server'а медленный) |
+
+---
+
+## Когда какой инструмент выбирать
+
+Часто несколько инструментов могут решить задачу — но один из них выгоднее по точности, скорости и шуму. Эта таблица — антишпаргалка против ложных привычек.
+
+| Задача | Правильный выбор | Не путать с |
+|---|---|---|
+| Найти embeds картинки по filename | `vault_backlinks(note="<filename.ext>")` | Не Grep по `\!\[\[<name>` — медленнее и не даёт ширину |
+| Найти WikiLinks на заметку | `vault_backlinks(note="<basename>")` | — |
+| Найти заметки по полю frontmatter (`featured_in`, `staff[].person`) | `vault_query` (если поле в схеме) или `vault_backlinks` если поле — foreign-key WikiLink | Не Grep, не semantic |
+| Найти заметки про определённую тему (без точного слова) | `vault_semantic_search` | Не Grep — пропустит парафраз/синонимы |
+| Найти точное слово/имя в теле волта | `Grep` | Не `vault_semantic_search` — лишний шум на лексическом матче |
+| Узнать структурное состояние заметки (frontmatter + links + lint) | `vault_note_profile` | Не три отдельных запроса |
+| Проверить заметку перед коммитом | `vault_lint(target=...)` | Не `vault_stats` |
+| Проверить весь волт после batch-правок | `vault_lint` + `vault_broken_links` + `vault_duplicate_links` | Не Grep — медленно и неполно |
+| Запрос «как у меня устроена эта тема?» | `/vault-rag <вопрос>` (он сам разрулит L1/L2) | Не дёргать MCP-tools по одному |
+
+---
+
+## Связь скиллов и MCP-tools
+
+MCP-tools выполняют **механические** проверки и индексные запросы. Скиллы используют их как первый шаг, затем добавляют **семантический** анализ через LLM (по чеклисту из [[Audit_checklist]]).
+
+```
+/fix-links all   →  vault_broken_links
+                    vault_duplicate_links
+                    vault_orphans
+                    vault_lint
+                    + LLM: предлагает исправления
+
+/audit-note X    →  vault_lint(target=X)
+                    vault_broken_links
+                    vault_duplicate_links
+                    + LLM: таксономия, качество ссылок, web search факт-чек
+
+/rename-note     →  vault_backlinks(old_name)
+                    vault_broken_links (post-validation)
+
+/add-images      →  vault_backlinks(old_filename)  ← только при смене расширения постера
+                    vault_lint(target=note)
+                    + LLM: ничего, чистая механика
+
+/new-character   →  Glob (existence check)
+                    WebFetch (MAL/AniList — постер + данные)
+                    Read featured_in карточек
+                    vault_lint(target=созданная карточка)
+
+/vault-rag       →  vault_query (L1, если запрос фактологический)
+                    vault_semantic_search (L2, если запрос семантический)
+                    + LLM: синтез ответа из найденных чанков
+```
+
+---
+
+## Governance-документы
+
+Скиллы и MCP-tools опираются на правила из `SYSTEM/`:
+
+| Документ                   | Что регулирует |
+|----------------------------|----------------|
+| [[Metadata_schema]]        | Обязательные и опциональные поля frontmatter по `note_kind` |
+| [[enums]] (`enums.yaml`)   | Машинно-читаемые множества значений enum-полей. Единственный источник истины. |
+| [[Tag_taxonomy]]           | Каноничный набор тегов, категории, обязательные теги по `note_kind` |
+| [[Linking_guidelines]]     | Правила WikiLinks, обязательные ссылки по `note_kind`, конвенция «WikiLinks на персонажей — только в одной секции тайтла» |
+| [[Naming_conventions]]     | Формат имён файлов (`PascalCase_With_Underscores`, только латиница) |
+| [[Vault_architecture]]     | Структура папок и связь с `note_kind` |
+| [[Audit_checklist]]        | Единый чеклист для всех аудит-скиллов |
+
+При обновлении правил аудита — менять **только `Audit_checklist`**, скиллы подхватят автоматически.
+
+---
+
+## Как обновлять этот файл
+
+- При появлении нового скилла или MCP-tool'а — добавить строку в соответствующую таблицу.
+- При эмпирическом открытии возможности tool'а, которой нет в его описании — записать в секцию «Эмпирические знания» соответствующего MCP-сервера.
+- При закреплении конвенции выбора инструмента (например, «для X всегда vault_backlinks, не Grep») — добавить строку в «Когда какой инструмент выбирать».
+- Не дублировать содержимое `Audit_checklist`, `Metadata_schema` и других governance-документов. Этот файл — про **инструменты**, а не про правила волта.

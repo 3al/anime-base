@@ -1,0 +1,8 @@
+**MCP-сервер `vault-semantic` + skill `/vault-rag`** (модуль `vault-semantic` v0.3.1):
+- Семантический поиск по волту (L2 — bge-m3 dense + BM25 c pymorphy3/snowball лемматизацией, гибрид RRF через SQLite/sqlite-vec). Архитектура: `docs/RAG_Architecture.md`.
+- 4 MCP tools: `vault_semantic_search`, `vault_semantic_reindex`, `vault_semantic_stats`, `vault_semantic_warmup`.
+- v0.3.1: добавлен skill `/vault-rag` (L3-роутер). Pure LLM-driven, устанавливается в `.claude/skills/vault-rag/` с `.managed` marker. Использует vault-index (L1) + vault-semantic (L2) с heuristic-based routing'ом. См. `SKILL.md` скилла для контракта.
+- v0.3.0 (Phase 4.7): транспорт через тонкий Node stdio-shim (`shim/index.mjs`). Shim спавнит Python в `streamable-http` (stateless) на свободном порту, проксирует stdin JSON-RPC ↔ HTTP POST `/mcp`. Обходит Windows MSVCRT-буферизацию Python stdio через Bun/CC.
+- v0.2.0 (Phase 4.6): `search`/`stats` сами подхватывают изменения волта через `incremental_refresh()` — module-level mtime-snapshot + 2s debounce. Ручной `vault_semantic_reindex` нужен только для `scope='full'` (смена chunker / схемы / модели).
+- `install_scope: shared`. Heavy-артефакты (venv ~1 GB, bge-m3 ~2 GB, source-копия + shim) — в `$VAULT_TOOLS_HOME/vault-semantic/` (по умолчанию `%LOCALAPPDATA%\vault-tools\` / `${XDG_DATA_HOME:-~/.local/share}/vault-tools/`), один на машину. В волте — только `data/vault.sqlite` + marker `.installed{linked_to}` + `.claude/skills/vault-rag/`. Подробно: `docs/Shared_Install_Architecture.md`.
+- Регистрация в `~/.claude.json` / `opencode.json` — через harness-* модули.

@@ -1,0 +1,172 @@
+name: vault-semantic
+version: 0.4.5
+description: |
+  Семантический MCP-сервер волта (L2 в архитектуре RAG) + L3 skill
+  `/vault-rag` (router). Hybrid search поверх embedding-модели + BM25
+  через SQLite + sqlite-vec, с RRF-fusion. См. docs/RAG_Architecture.md.
+
+  v0.4.5 (deploy shim/ to shared root): фикс регрессии Phase 4.7.
+  `module.yaml::provides.mcp_server.args` ссылается на
+  `{shared_module_dir}/shim/index.mjs`, но `core/lib/shared_install.mjs::
+  provisionSharedRoot` копировал только `mcp/` (single-tree contract).
+  shim/ — sibling папка, никем не деплоился; до сегодня работал у
+  оригинального автора только потому что shim/index.mjs был руками
+  скопирован при создании Phase 4.7 (17 мая) и не менялся. Третья
+  установка во внешнем волте (2026-05-21) поймала binary_missing от
+  harness D8 — vault-semantic не зарегистрировался. Fix: `runSharedInstall`
+  после `shared_source_verified` копирует `bootstrap_module_dir/shim/` →
+  `shared_module_dir/shim/` через cpSync(force) — идемпотентно, на каждом
+  install подхватывает свежий shim. Закрывает и сегодняшний bug, и silent
+  staleness loophole для существующих установок. Action: `shim_deployed`.
+
+  v0.4.4 (shared-aware recommendation): `needs_torch_decision` payload
+  расширен полями `shared_torch_variant`, `recommended_variant`,
+  `recommendation_reason`. Handler теперь сам считает, какую опцию
+  пометить Recommended, учитывая state shared venv'а: если shared уже
+  зафиксирован — рекомендация ровно эта, чтобы избежать
+  `needs_shared_torch_swap_consent` dance и не дёргать reindex других
+  волтов. Без shared marker — CUDA для волтов >25 заметок, иначе CPU.
+  Закрывает UX-баг найденный в реальном прогоне Recipes_Base 2026-05-20:
+  при выборе на маленьком волте Recommended стоял на CPU без учёта того,
+  что shared уже на CUDA для двух других волтов. SKILL.md Шаг 6.1.1
+  обновлён — скилл больше не считает Recommended сам, использует
+  `decision.recommended_variant`.
+
+  v0.4.3 (Этап E плана v0.4.0 + __version__ cleanup): (1) `/vault-rag`
+  skill — персонализированный ETA первичного reindex. Health-check Этап
+  0.1 теперь берёт `totalNotes` из `vault_stats` (L1), читает
+  `torch_variant` из per-vault `.installed` marker, показывает
+  реалистичную оценку (CPU/CUDA вилка из таблицы замеров) перед запросом
+  согласия на reindex. Доводит до конца план v0.4.0 perf. (2) Python
+  `__version__` теперь читается из `pyproject.toml` через
+  `importlib.metadata.version("vault-semantic")` — единый source для
+  `stats.version` / `warmup.version` / `pip show`. Раньше
+  `vault_semantic/__init__.py::__version__` был хардкод "0.3.0" с Phase
+  4.5 и протух за все последующие bump'ы. pyproject.toml бампается
+  синхронно с `module.yaml` (две точки правды, но обе явные).
+
+  v0.4.2 (D22 instrumentation): `ensureVenvAndInstall` теперь логирует
+  все ветки и `python -m venv` invocations в `<shared>/.venv-audit.log`
+  через `core/lib/venv_audit.mjs`. Цель — поймать mystery createur
+  пустого .venv (наблюдавшийся 2026-05-20). Events: `_entry` (с venv_exists
+  до), `python_dash_m_venv_invoke` + `_done` (с exit code), `venv_verified`,
+  `venv_rm_unhealthy`. Audit-tolerance: write errors swallowed; stderr
+  echo с префиксом `[venv-audit]` для inline visibility. Требует core
+  ≥ 0.7.3.
+
+  v0.4.1: shared variant conflict guard. Shared venv — один на машину
+  для всех волтов; swap torch в нём затрагивает всех. install.mjs читает
+  `.installed{torch_variant}` shared marker и, если уже зафиксирован
+  variant ≠ requested, emit'ит `status: needs_shared_torch_swap_consent`
+  (вместо silent swap). Skill спрашивает юзера — swap затронет все
+  волты, либо переключить manifest этого волта на текущий shared
+  variant. Bypass через input `_allow_torch_swap: true` после согласия.
+  Payload содержит `current_shared_variant`, `requested_variant`,
+  `other_registered_projects` (walk ~/.claude.json), `swap_cost_min`.
+  Closes гочку «два волта с разным выбором гоняют torch туда-сюда».
+
+  v0.4.0 (этапы B+C+D плана v0.4.0 perf): GPU-aware torch install.
+  install.mjs пробит nvidia-smi → при device=auto и обнаружении NVIDIA
+  GPU emit `status: needs_torch_decision` (вместо silent install) — skill
+  показывает юзеру trade-off (disk +2.4 GB vs ~5x reindex speedup на
+  RTX-class GPU, замерено 30 мин → 5 мин 41 сек на 77 notes/1354
+  chunks) и пишет выбор в манифест `config.vault-semantic.device:
+  cpu|cuda`. При device=cuda устанавливает torch с
+  `--extra-index-url https://download.pytorch.org/whl/cu126` (cu126 —
+  единственная стабильная линия с cp314-wheels на момент v0.4.0).
+  Marker `.installed` теперь содержит `torch_variant: cpu|cuda_cu126` —
+  install детектит drift (manifest device != installed variant) и
+  свопает torch на ходу. README обновлён с реалистичной disk-таблицей
+  (этап D). Этап A (manual CUDA torch swap на dev-машине) проверил
+  гипотезу.
+
+  v0.3.2: UX-fix формулировки `next_step` в `ops/install.mjs` (shared
+  branch). Старый текст «выполните vault_semantic_reindex через MCP-tool»
+  путал юзера — MCP tools в Claude Code вызываются через NL-запрос
+  агенту, не через прямой UI. Новый текст: «попросите Claude
+  проиндексировать волт (например: "проиндексируй волт")». Этап F плана
+  v0.4.0 (см. Vault_Bootstrap_Roadmap.md).
+
+  v0.3.1: добавлен skill `/vault-rag` — L3-роутер над vault-index (L1) и
+  vault-semantic (L2). Pure LLM-driven (только SKILL.md), устанавливается
+  в `.claude/skills/vault-rag/` с .managed marker. Hard dep на vault-semantic
+  встроена структурно (skill и MCP — один модуль).
+
+  v0.3.0 (Phase 4.7): HTTP transport через тонкий Node stdio-shim.
+  Обход Windows MSVCRT-буферизации Python stdio (вешает FastMCP-stdio
+  через Bun/CC pipes). Shim в shim/index.mjs: при старте поднимает
+  Python с MCP_HTTP_PORT=<free>, проксирует stdin JSON-RPC ↔ HTTP POST
+  на /mcp. FastMCP запускается в stateless_http+json_response режиме.
+  На Linux/Mac stdio по-прежнему работает прямо (env-fallback).
+
+  v0.2.0 (Phase 4.6): lazy refresh-on-query. vault_semantic_search и
+  vault_semantic_stats перед обработкой вызывают incremental_refresh()
+  — module-level mtime-snapshot + 2s debounce, по аналогии с vault-index
+  ensureFresh(). Snapshot match → SQLite не трогаем; mtime изменилась →
+  reindex(scope='changed'). Стоимость на типичные 0-2 изменения между
+  запросами — 0-300ms amortized.
+
+  v0.1.0: leaf-impl закрыт. 7 Python-модулей (lemmatizer, chunking,
+  embedding, models, indexer, search, server), 4 MCP tools
+  (vault_semantic_search/reindex/stats/warmup). Реальный pipeline на
+  bge-m3 (1024-dim, L2-normalized) + chonkie RecursiveChunker + FTS5
+  с lemmatize-at-index (pymorphy3 RU / snowball EN) + sqlite-vec vec0.
+  Валидирован E2E на synth-волте (4 заметки → 10 чанков, dense
+  semantic recall + lemmatized bm25 green).
+
+  Layout: install_scope=shared. Heavy-артефакты (venv ~3GB, bge-m3 ~2GB,
+  source-копия) живут в $VAULT_TOOLS_HOME/vault-semantic/ — один на
+  машину. Per-vault — только vault.sqlite + .installed marker.
+  Подробно: docs/Shared_Install_Architecture.md.
+mandatory: false
+install_scope: shared
+requires:
+  - core
+  - vault-index
+provides:
+  # Generic MCP-server contract для harness-* (RAG §8.4 + Shared_Install §5).
+  # Шаблоны {vault_root}, {module_bin}, {shared_module_dir} резолвятся harness'ом:
+  #   {module_bin}        → $VAULT_TOOLS_HOME/vault-semantic/.venv/Scripts (или bin)
+  #   {shared_module_dir} → $VAULT_TOOLS_HOME/vault-semantic/
+  #   {vault_root}        → абс. путь конкретного волта (различается между регистрациями)
+  #
+  # Phase 4.7: command — Node-shim, не Python напрямую. Shim
+  # (shim/index.mjs) спавнит Python в HTTP transport на свободном порту
+  # и проксирует stdio JSON-RPC ↔ HTTP. Обходит Windows MSVCRT-буферизацию
+  # Python stdio через Bun (CC runtime). На Linux/Mac stdio работал бы
+  # прямо, но единый путь упрощает регистрацию и тестирование.
+  mcp_server:
+    name: vault-semantic
+    command: "node"
+    args: ["{shared_module_dir}/shim/index.mjs"]
+    env:
+      VAULT_SEMANTIC_PYTHON: "{module_bin}/python"
+      VAULT_ROOT: "{vault_root}"
+      HF_HOME: "{shared_module_dir}/data/hf-cache"
+      PYTHONIOENCODING: "utf-8"
+  skills:
+    - vault-rag
+config_schema:
+  embedding_model:
+    type: string
+    description: HuggingFace model ID для embeddings (default — bge-m3, см. RAG §2).
+    default: BAAI/bge-m3
+  device:
+    type: string
+    enum: [auto, cpu, cuda]
+    description: |
+      Целевое устройство для embedding-сабграфа torch. v0.4.0+:
+        - `auto` (default): install.mjs пробит nvidia-smi; если NVIDIA GPU
+          найдена и в `.installed` ещё нет `torch_variant` — install
+          возвращает `status: needs_torch_decision` (skill спрашивает
+          юзера, пишет `cpu`/`cuda` в манифест). Если GPU не найдена —
+          silent CPU.
+        - `cpu`: дефолтный PyPI torch (~200 MB wheel, ~1.2 GB venv).
+        - `cuda`: torch с `--extra-index-url https://download.pytorch.org/whl/cu126`
+          (~2.6 GB wheel, ~3.5 GB venv, ~5x reindex speedup на RTX-class GPU).
+      Drift между manifest и `.installed{torch_variant}` → install свопает
+      torch на ходу (~7 мин download для cuda variant).
+    default: auto
+ops:
+  install: ops/install.mjs
+  status: ops/status.mjs

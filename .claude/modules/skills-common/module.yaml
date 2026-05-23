@@ -1,0 +1,51 @@
+name: skills-common
+version: 0.3.1
+description: |
+  Тема-нейтральные скиллы, общие для любого волта: fix-links, audit-note,
+  new-note, rename-note, verify, expand-stub, add-note-kind. Устанавливаются в
+  .claude/skills/ под `.managed` маркерами — фреймворк может синхронизировать
+  обновления, не затирая пользовательские правки.
+
+  v0.3.1 (add-note-kind iteration 2 — gaps from observation live run):
+  - frontmatter-patterns.md: новый паттерн list[dict] (структурированные
+    записи, foreign key + per-record метаданные).
+  - SKILL.md фаза 2.3: новый шаг — проверка конфликтов имён полей с
+    существующими kind (семантический конфликт ловится до фазы 4).
+  - SKILL.md КРИТИЧНО: дисциплина минимального патча + явная связь
+    create_skill manifest entry ↔ имя сгенерированной директории.
+  - new-kind-skill.template.md: placeholder {{filename_pattern}}
+    (PascalCase больше не зашит), placeholder {{cross_updates_section}}
+    для шага 7.5 «обновить связанные карточки».
+  - system-touchpoints.md: раздел 3.3 — когда добавлять новую категорию
+    тегов вместо строки в существующей (формат-шаблонные теги типа YYYY-MM).
+
+  v0.3.0:
+  - add-note-kind: интерактивный 5-фазный скилл, добавляющий новый
+    `note_kind` в волт. Патчит SYSTEM/* (Metadata_schema, Linking_guidelines,
+    Tag_taxonomy, Vault_architecture) + CLAUDE.md, регистрирует папку в
+    vault-manifest, генерирует пользовательский /new-<kind> скилл из шаблона.
+    Web-research в фазе предложения полей. Творческий, не механический.
+
+  v0.2.0:
+  - new-note (D13): убрано auto co_authored из автогенерируемого frontmatter.
+    Поле проставляется только через /verify когда юзер явно подтверждает.
+  - new-note + expand-stub (D15): императивный язык для Tag_taxonomy
+    auto-update — конкретные Read/Edit шаги, NO «рекомендуется пользователю».
+    Принцип «governance docs = автоуправляемый журнал».
+mandatory: true
+requires:
+  - core
+provides:
+  mcp_server: null
+  skills:
+    - fix-links
+    - audit-note
+    - new-note
+    - rename-note
+    - verify
+    - expand-stub
+    - add-note-kind
+config_schema: {}
+ops:
+  install: ops/install.mjs
+  status: ops/status.mjs

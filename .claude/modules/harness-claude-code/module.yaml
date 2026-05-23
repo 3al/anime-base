@@ -1,0 +1,36 @@
+name: harness-claude-code
+version: 0.3.0
+description: |
+  Регистрирует MCP-серверы из всех модулей манифеста в ~/.claude.json
+  (Claude Code harness) под project-scoped ключом
+  projects[<vault_root>].mcpServers. Делает резервные копии перед патчем
+  с ротацией (последние 5).
+
+  v0.3.0 (Phase 6.1, fix D8): mcp_registry.buildRegistry теперь маркирует
+  каждый entry полем `installed: bool` через проверку per-vault `.installed`
+  marker модуля. ops/install.mjs пропускает регистрацию для !installed
+  (модуль failed или skipped install handler'ом) с понятным warning'ом
+  module_not_installed. Без этого fix'а MCP-сервер прописывался в
+  ~/.claude.json даже когда install модуля провалился — CC отображал
+  ✘ failed при подключении, что вводило в заблуждение.
+  detectMissingBinary теперь покрывает .js/.mjs/.cjs (раньше только .js).
+
+  v0.2.0: generic-итерация по `provides.mcp_server` каждого модуля манифеста
+  с резолвом template-vars ({vault_root}, {module_dir}, {module_dist},
+  {module_bin}). Reconcile-семантика — add/update only, удаление модуля из
+  манифеста не вычищает регистрацию автоматически (manual cleanup).
+  Контракт template-vars — RAG_Architecture.md §8.4.
+mandatory: false
+requires:
+  - core
+provides:
+  mcp_server: null
+  skills: []
+config_schema:
+  config_path:
+    type: string
+    description: Override path to Claude Code config (default ~/.claude.json).
+    default: null
+ops:
+  install: ops/install.mjs
+  status: ops/status.mjs

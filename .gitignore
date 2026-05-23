@@ -1,0 +1,21 @@
+# BEGIN: managed by /init-vault
+# Bootstrap framework state markers
+.claude/modules/*/.installed
+.claude/.bootstrap-source.json
+
+# MCP server build artifacts (canonical Phase 4.5 layout)
+.claude/modules/*/mcp/node_modules
+.claude/modules/*/mcp/dist
+.claude/modules/*/mcp/index.json
+
+# Per-vault venv (для модулей с install_scope=per-vault)
+.claude/modules/*/mcp/.venv
+
+# CC permission cache — не версионируется
+.claude/settings.local.json
+
+# Legacy layout (pre-Phase-4.5 — на случай существующих волтов)
+.claude/mcp-server[s]/*/node_modules
+.claude/mcp-server[s]/*/dist
+.claude/mcp-server/index.json
+# END: managed by /init-vault

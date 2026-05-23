@@ -1,0 +1,136 @@
+name: core
+version: 0.7.4
+description: |
+  Core module — обязательная база для любого волта в bootstrap-фреймворке.
+  Управляет: outer managed-блоками в CLAUDE.md и .gitignore, governance-шаблонами
+  в SYSTEM/ (skip-if-exists), маркером .installed. Sub-block helpers через lib/managed_block.mjs.
+
+  D23 (v0.7.4) — preserve venv on version_bump:
+  - До D23 `provisionSharedRoot::version_bump` дропал venv через
+    `atomicSwap([venvDir, dstMcp], ...)` — каждый minor version bump
+    стоил 2.6+ GB torch redownload (~7 мин на CUDA wheel). Архитектурно
+    это была overcaution: pip install -e идемпотентно обновляет
+    editable link + incremental dep upgrades, существующий torch +
+    sentence-transformers + bge-m3 cache остаются. Если venv реально
+    сломан (incompatible Python upgrade), `ensureVenvAndInstall::venvHealthy`
+    в install handler ловит и recreate'ит — лучшая сигналка чем
+    pre-emptive drop.
+  - После D23: `refresh_source` и `version_bump` объединены — оба только
+    `atomicSwap([dstMcp], ...)`. venv preserved. `venv_dropped` всегда false.
+  - Дополнительный бенефит: устраняет race window где MCP harness
+    (Claude Code) мог recreate'ить empty .venv между rename .venv →
+    .venv.bak и cleanup .venv.bak (наблюдалось в D22 audit reproduction).
+  - Smoke updated: 1 test asserted `venv_dropped === true` → flipped to
+    `false`; 1 test asserted venv file gone → flipped to «preserved».
+    78/78 PASS.
+
+  Phase 6.1 D22 instrumentation (v0.7.3):
+  - `lib/venv_audit.mjs` — append-only audit log для всех venv/directory
+    операций на shared install root. Цель: ловить mystery callers
+    (например, наблюдавшийся 2026-05-20 случай «пустой .venv появился
+    после atomicSwap rename без явного venv_create в action log»).
+    `logVenvOp(auditFile, event, details)` пишет newline-JSON record с
+    ts/pid/ppid/cwd/argv/env/details/stack в `<shared_module_dir>/.venv-audit.log`
+    + echoes на stderr c префиксом `[venv-audit]`. Failure-tolerant
+    (audit write errors не ломают install).
+  - `shared_install.mjs::atomicSwap` теперь принимает `auditFile` параметр
+    и логирует все rename/rollback/cleanup события с from/to/error
+    деталями. Catch-and-log на cleanup failure (раньше silent swallow).
+  - `provisionSharedRoot` логирует `provision_shared_root_start` /
+    `provision_shared_root_done` события с action, paths, venv_exists_after.
+  - `vault-semantic/ops/install.mjs::ensureVenvAndInstall` логирует
+    `ensureVenvAndInstall_entry`, `python_dash_m_venv_invoke`,
+    `python_dash_m_venv_done`, `venv_rm_unhealthy`, `venv_verified`
+    события — captures которая ветка branched и какой launcher.
+  - Audit file gitignored (per-machine state, не часть bundle).
+
+  Phase 6.1 D21 fix (v0.7.2):
+  - shared_install.mjs::provisionSharedRoot — соtkнут D7 conservative
+    cross-vault block. До D21 любой live MCP consumer из ДРУГОГО волта
+    (зарегистрированного в ~/.claude.json) блокировал destructive ops
+    (refresh_source / version_bump), даже если этот волт сейчас
+    не запущен — registration трактовался как evidence «возможно
+    активного консьюмера». Это требовало ручной очистки регистраций
+    из ~/.claude.json (ломая MCP в соседних волтах) или kill живых
+    процессов перед каждым upgrade. Сломанный UX.
+  - Дизайн D21: D11 atomicSwap (rename-aside перед destructive write)
+    уже гарантирует безопасность независимо от того, какая CC сессия
+    держит живые FD. Process FDs пинят renamed-aside inode (старое
+    дерево в *.bak-<ts>); свежий путь получает новые байты. Cross-vault
+    сессии продолжают работать на ОЛДовом коде в памяти до своего
+    рестарта, потом подцепляют новый. Никакого corruption, никакого
+    breakage — D7 pre-emptive block был избыточен.
+  - provisionSharedRoot теперь: (1) собирает consumers_snapshot перед
+    destructive ops (информационно, не для блокировки); (2) выполняет
+    atomicSwap; (3) если atomicSwap rename внезапно падает на Windows
+    file lock — возвращает `action: 'aborted_atomic_swap_locked'` с
+    payload для actionable error (это новый «real block» статус —
+    редкий edge case, fail-loud). На success включает `cross_vault_consumers`,
+    `self_session_consumers`, `stale_consumers` в return value для
+    surface'инга warning'ов в SKILL.md.
+  - `_probe` + `extra_configs` forwarding в provisionSharedRoot для
+    тестируемости (injection без OS scan).
+  - CLI exit code 3: теперь для `aborted_atomic_swap_locked` (legacy
+    `aborted_active_consumers` — мертвый код, не emit'ится).
+  - 20 новых смоук-тестов покрывают D21 пути: cross-vault active +
+    version_bump → no-abort + cross_vault_consumers surfaced;
+    refresh_source → no-abort; first_install → no snapshot collected;
+    mixed self + cross-vault → both surfaced; empty consumers →
+    no snapshot fields. Total 78/78 PASS (58 baseline + 20 D21).
+
+  Phase 6.1 D20 fix (v0.7.1):
+  - shared_install.mjs::findActiveConsumers — новая опция `self_vault_root`
+    (CLI flag `--self-vault-root`). Consumers с `project == self_vault_root`
+    помечаются `is_self: true` и попадают в новое поле `self_session`
+    вместо `active`. Решает catch-22: in-session shared upgrade для своего
+    же волта раньше всегда блокировался MCP-процессами этой же CC сессии.
+    Heuristic live-attribution: если все registered — self, live PIDs
+    приписываются self_session; если есть non-self entries — конс по-прежнему.
+    atomicSwap (D11) + rename-aside гарантируют, что текущий shim переживёт
+    swap (старый inode держится). Case-insensitive path-compare на
+    Windows/macOS. /init-vault SKILL.md обновлён — всегда передаёт
+    `--self-vault-root <vault_root>`. 14 новых регрессий в smoke-suite (58/58).
+
+  Phase 6.1 D19 fix (v0.7.0):
+  - lib/bootstrap_source.mjs — D19 marker writer + drift check.
+    setup.mjs пишет <vault>/.claude/.bootstrap-source.json с путём к
+    bootstrap repo, HEAD commit и version'ами всех модулей. /init-vault
+    в новом Шаге 1.5 вызывает CLI этого модуля — при drift между local
+    marker и actual bootstrap state run прерывается с actionable error
+    «re-run setup.mjs». Решает класс ошибок «забыл setup.mjs после
+    framework update». Marker добавлен в gitignore.fragment.
+
+  Phase 6.1 D18 fix (v0.6.1):
+  - shared_install.mjs::findActiveConsumers — теперь использует process probe
+    (PowerShell Win32_Process на Windows, ps на Linux/Mac) поверх static
+    scan ~/.claude.json. Возвращает {active, stale, probed} вместо плоского
+    массива. Stale registrations (есть запись, нет live процесса) больше
+    НЕ блокируют destructive ops — лишь упоминаются для диагностики.
+    Self-probe exclusion: фильтруем powershell/ps процесс самого probe'а
+    чтобы не попадать в self-positive.
+
+  Phase 6.1 Wave B (v0.6.0):
+  - templates/gitignore.fragment (D10): paths canonical Phase 4.5
+    (.claude/modules/*/mcp/{node_modules,dist,.venv}) + settings.local.json,
+    legacy paths оставлены как fallback.
+  - templates/SYSTEM/Audit_checklist.md (D15): Шаг 3.2 п.5 «ПРОБЕЛЫ» —
+    императивный язык auto-update Tag_taxonomy с конкретными Read/Edit
+    шагами. Явный принцип «governance docs = автоуправляемый журнал».
+  - templates/SYSTEM/Tag_taxonomy.md (D15): без placeholder rows
+    (`| | |`), явный disclaimer что строки добавляются скиллами.
+
+  Phase 6.1 Wave A (v0.5.0):
+  - shared_install.mjs::provisionSharedRoot делает pre-flight на active
+    MCP consumers перед destructive ops (rollback action →
+    aborted_active_consumers, non-zero exit).
+  - version_bump/refresh_source заворачиваются в atomicSwap —
+    defence-in-depth для transient IO failures.
+mandatory: true
+requires: []
+provides:
+  mcp_server: null
+  skills: []
+config_schema: {}
+ops:
+  install: ops/install.mjs
+  status: ops/status.mjs

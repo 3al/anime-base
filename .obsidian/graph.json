@@ -1,0 +1,44 @@
+{
+  "collapse-filter": true,
+  "search": "",
+  "showTags": false,
+  "showAttachments": false,
+  "hideUnresolved": false,
+  "showOrphans": true,
+  "collapse-color-groups": false,
+  "colorGroups": [
+    {
+      "query": "[\"note_kind\":\"anime\"",
+      "color": {
+        "a": 1,
+        "rgb": 1734414
+      }
+    },
+    {
+      "query": "[\"note_kind\":\"person\"",
+      "color": {
+        "a": 1,
+        "rgb": 43248
+      }
+    },
+    {
+      "query": "[\"note_kind\":\"character\"",
+      "color": {
+        "a": 1,
+        "rgb": 16288269
+      }
+    }
+  ],
+  "collapse-display": true,
+  "showArrow": false,
+  "textFadeMultiplier": 0,
+  "nodeSizeMultiplier": 1,
+  "lineSizeMultiplier": 1,
+  "collapse-forces": true,
+  "centerStrength": 0.518713248970312,
+  "repelStrength": 10,
+  "linkStrength": 1,
+  "linkDistance": 250,
+  "scale": 1.4019828977761002,
+  "close": true
+}
