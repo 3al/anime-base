@@ -1,7 +1,7 @@
 // Shared path resolvers used across the bootstrap framework.
 //
 // Canonical source for $VAULT_TOOLS_HOME resolution. Imported by:
-//   - harness-claude-code/lib/template_vars.mjs (MCP env vars)
+//   - core/lib/template_vars.mjs (MCP env vars)
 //   - core/lib/shared_install.mjs (provisioning)
 //
 // No harness-specific assumptions — pure platform logic.

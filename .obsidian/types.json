@@ -26,6 +26,17 @@
     "gender": "text",
     "age": "text",
     "species": "text",
-    "affiliations": "multitext"
+    "affiliations": "multitext",
+    "name_primary": "text",
+    "founded_year": "number",
+    "country": "text",
+    "headquarters": "text",
+    "founders": "multitext",
+    "parent_company": "text",
+    "successor": "text",
+    "website": "text",
+    "times_watched": "number",
+    "watched_with": "multitext",
+    "last_episode_watched": "number"
   }
 }

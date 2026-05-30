@@ -1,0 +1,30 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "vault-index": {
+      "type": "local",
+      "command": [
+        "node",
+        "D:/Anime_Base/.claude/modules/vault-index/mcp/dist/index.js"
+      ],
+      "enabled": true,
+      "environment": {
+        "VAULT_ROOT": "D:/Anime_Base"
+      }
+    },
+    "vault-semantic": {
+      "type": "local",
+      "command": [
+        "node",
+        "C:/Users/Alexey/AppData/Local/vault-tools/vault-semantic/shim/index.mjs"
+      ],
+      "enabled": true,
+      "environment": {
+        "VAULT_SEMANTIC_PYTHON": "C:/Users/Alexey/AppData/Local/vault-tools/vault-semantic/.venv/Scripts/python",
+        "VAULT_ROOT": "D:/Anime_Base",
+        "HF_HOME": "C:/Users/Alexey/AppData/Local/vault-tools/vault-semantic/data/hf-cache",
+        "PYTHONIOENCODING": "utf-8"
+      }
+    }
+  }
+}

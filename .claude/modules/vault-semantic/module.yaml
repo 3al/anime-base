@@ -1,9 +1,45 @@
 name: vault-semantic
-version: 0.4.5
+version: 0.4.7
 description: |
   Семантический MCP-сервер волта (L2 в архитектуре RAG) + L3 skill
   `/vault-rag` (router). Hybrid search поверх embedding-модели + BM25
   через SQLite + sqlite-vec, с RRF-fusion. См. docs/RAG_Architecture.md.
+
+  v0.4.7 (Этап 1A opencode-support — vault-rag SKILL.md rewrite):
+  переписаны 10 procedural MCP-вызовов формата `mcp__<server>__<tool>`
+  в harness-agnostic форму `<server> MCP, tool <tool>(args)`. Это
+  правило R1 из docs/Vault_Bootstrap_Architecture.md § Body content.
+  CC-only префикс `mcp__` в Opencode не валиден (там tool name =
+  `<server>_<tool>`); natural language reference позволяет модели в
+  обоих харнесах самостоятельно префиксировать имя. Non-functional
+  refactor, version bumped для триггера re-sync managed копии в
+  `<vault>/.claude/skills/vault-rag/` (install handler сравнивает
+  `.managed{version}` с module version и skip'ает up-to-date).
+  Follow-up patch (2026-05-27): `mcp/pyproject.toml` bumped 0.4.6→0.4.7
+  отдельным коммитом — первый v0.4.7 commit забыл синхронизировать
+  pyproject (нарушение конвенции из v0.4.6 changelog). Без этого
+  `importlib.metadata.version("vault-semantic")` (источник правды для
+  smoke test и `stats.version`) рапортовал старую 0.4.6 при актуальной
+  module.yaml 0.4.7.
+
+  v0.4.6 (status.mjs scope auto-resolve): фикс false-negative класса.
+  Раньше `ops/status.mjs` определял `install_scope` исключительно из
+  input'а (default `per-vault`); вызывающий обязан был помнить, что для
+  shared-модулей нужно передать `install_scope: "shared"` + явный
+  `shared_module_dir`. Забыл — handler уходил в per-vault ветку, проверял
+  несуществующий `module_dir/mcp/.venv` и честно рапортовал
+  `module_status: partial` / `venv_exists: false`. Реальный shared venv в
+  `$VAULT_TOOLS_HOME/vault-semantic/` при этом работал, MCP-сервер был
+  connected. Случилось в Anime_Base 2026-05-24 (ложная тревога в
+  init-vault report). Архитектурно `install_scope` — свойство модуля
+  (декларировано в `module.yaml`), не runtime-выбор. Fix: handler читает
+  `install_scope` из своего же `module.yaml` (via `readModuleInstallScope`),
+  input остаётся как override для тестов. Для shared scope: если
+  `shared_module_dir` не в input — derive из `core/lib/paths.mjs::
+  resolveSharedToolsHome()` + `MODULE_NAME` (тот же путь, что использует
+  `setup.mjs` и `core/lib/shared_install.mjs`). Smoke: вызов без
+  `install_scope` против Mushroom_Base даёт `installed` + корректный
+  `shared_root` вместо false-negative `partial`.
 
   v0.4.5 (deploy shim/ to shared root): фикс регрессии Phase 4.7.
   `module.yaml::provides.mcp_server.args` ссылается на

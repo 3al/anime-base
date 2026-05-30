@@ -7,14 +7,8 @@
 import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { hasOuterBlock } from '../lib/managed_block.mjs';
+import { readStdin } from '../lib/read_input.mjs';
 
-function readStdin() {
-  try {
-    return readFileSync(0, 'utf-8');
-  } catch {
-    return '';
-  }
-}
 
 function emit(result) {
   process.stdout.write(JSON.stringify(result, null, 2));

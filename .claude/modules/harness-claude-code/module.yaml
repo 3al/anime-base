@@ -1,10 +1,17 @@
 name: harness-claude-code
-version: 0.3.0
+version: 0.4.0
 description: |
   Регистрирует MCP-серверы из всех модулей манифеста в ~/.claude.json
   (Claude Code harness) под project-scoped ключом
   projects[<vault_root>].mcpServers. Делает резервные копии перед патчем
   с ротацией (последние 5).
+
+  v0.4.0 (Этап 1B opencode-support — shared harness libs):
+  - lib/config_patch.mjs, lib/mcp_registry.mjs, lib/template_vars.mjs
+    переехали в core/lib/. ops/install.mjs и ops/status.mjs обновили
+    import-paths на '../../core/lib/...'. Поведение идентично v0.3.0
+    (refactor only) — теперь harness-opencode v0.1.0 переиспользует
+    те же helpers. См. core v0.7.5 changelog.
 
   v0.3.0 (Phase 6.1, fix D8): mcp_registry.buildRegistry теперь маркирует
   каждый entry полем `installed: bool` через проверку per-vault `.installed`

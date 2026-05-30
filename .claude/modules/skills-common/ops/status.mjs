@@ -6,18 +6,12 @@
 
 import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
+import { readStdin } from '../../core/lib/read_input.mjs';
 
 const MODULE_NAME = 'skills-common';
 const MARKER_NAME = '.managed';
 const SUB_BLOCK_TARGET = 'CLAUDE.md';
 
-function readStdin() {
-  try {
-    return readFileSync(0, 'utf-8');
-  } catch {
-    return '';
-  }
-}
 
 function emit(result) {
   process.stdout.write(JSON.stringify(result, null, 2));

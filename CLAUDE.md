@@ -24,7 +24,7 @@
 -->
 <!-- BEGIN: module:skills-common -->
 **Тема-нейтральные скиллы** (модуль `skills-common`):
-- Установлено в `.claude/skills/`: `fix-links`, `audit-note`, `new-note`, `rename-note`, `verify`, `expand-stub`, `add-note-kind`.
+- Установлено в `.claude/skills/`: `fix-links`, `audit-note`, `new-note`, `rename-note`, `verify`, `expand-stub`, `add-note-kind`, `harness-agnostic-audit`.
 - Каждый скилл управляется фреймворком через `.managed` маркер. Пользовательские правки в SKILL.md = переход в статус `unmanaged` (повторный `/init-vault` не перезаписывает).
 - `/add-note-kind` создаёт пользовательский `/new-<kind>` скилл без `.managed` маркера — он живёт независимо от фреймворка, переустановки `skills-common` его не трогают.
 
@@ -35,9 +35,9 @@ Skill `/new-note` использует секцию `folders` в `.claude/vault-
 **Не создавайте заметки руками вне зарегистрированных папок** — сначала зарегистрируйте новую папку через `/new-note` или ручной правкой манифеста.
 <!-- END: module:skills-common -->
 <!-- BEGIN: module:vault-index -->
-**MCP-сервер `vault-index`** (модуль `vault-index` v0.1.0):
+**MCP-сервер `vault-index`** (модуль `vault-index` v0.3.0):
 - Структурный индекс волта — frontmatter, граф ссылок, lint, query.
-- 11 MCP tools: `vault_lint`, `vault_broken_links`, `vault_orphans`, `vault_duplicate_links`, `vault_query`, `vault_backlinks`, `vault_note_profile`, `vault_stats`, `vault_reindex`, `vault_lookalike_peers`.
+- 13 MCP tools: `vault_lint`, `vault_broken_links`, `vault_orphans`, `vault_duplicate_links`, `vault_query`, `vault_backlinks`, `vault_note_profile`, `vault_stats`, `vault_reindex`, `vault_image_status`, `vault_add_image`, `vault_lookalike_peers`, `vault_text_mentions`.
 - Source: `.claude/modules/vault-index/mcp/` (canonical layout). Полная архитектура: `SYSTEM/MCP_Server_Design.md`.
 - Регистрация в `~/.claude.json` / `opencode.json` — через harness-* модули (см. `.claude/vault-manifest.yaml`).
 <!-- END: module:vault-index -->
@@ -59,6 +59,15 @@ Skill `/new-note` использует секцию `folders` в `.claude/vault-
 - Reconcile-семантика — add/update only. Удаление модуля из манифеста НЕ вычищает регистрацию из `~/.claude.json` автоматически — нужно вручную.
 - Управляется через `/init-vault`. Ручные правки соответствующих ключей будут перезаписаны при следующем install.
 <!-- END: module:harness-claude-code -->
+<!-- BEGIN: module:harness-opencode -->
+**Harness: Opencode** (модуль `harness-opencode` v0.1.0):
+- Регистрирует MCP-серверы из всех модулей манифеста, у которых `module.yaml` объявляет `provides.mcp_server`. Шаблонные переменные (`{vault_root}`, `{module_dir}`, `{module_dist}`, `{module_bin}`) резолвятся при патче. Тот же контракт, что у harness-claude-code, — общий `core/lib/mcp_registry.mjs`.
+- Записи живут под top-level: `mcp["<имя_сервера>"]` в `<vault>/opencode.json`. Opencode-specific формат entry: `command: ["node", "<path>"]` (массив, не строка), `environment` вместо `env`, `type: "local"` для stdio, `enabled: true`.
+- Backup при изменении конфига — `<vault>/opencode.json.bak.<ISO-timestamp>` (последние 5, ротация автоматическая).
+- Bulk wrapper generation: при install сканирует `<vault>/.claude/skills/*/SKILL.md`, для каждого пишет `.opencode/commands/<name>.md` через `core/lib/opencode_wrappers.mjs::buildWrapperContent`. Wrapper — тонкий императивный trigger (`Invoke ... NOW`, `IMMEDIATELY`), без него slash-вызов в Opencode даёт passive load. Idempotent: обновляет только при diff (description-drift после skill rewrite).
+- Reconcile-семантика — add/update only. Удаление модуля из манифеста НЕ вычищает регистрацию из `opencode.json` автоматически — нужно вручную. То же для wrapper'ов удалённых скиллов.
+- Управляется через `/init-vault`. Ручные правки соответствующих ключей будут перезаписаны при следующем install.
+<!-- END: module:harness-opencode -->
 <!-- END: managed by /init-vault -->
 
 ## Инструменты — обязательное чтение
@@ -78,3 +87,35 @@ Skill `/new-note` использует секцию `folders` в `.claude/vault-
 | `ANIME/` | Карточки аниме-тайтлов: сериалы, фильмы, OVA |
 | `PERSONS/` | Карточки людей из аниме-индустрии: режиссёры, сценаристы, композиторы и т.д. |
 | `CHARACTERS/` | Карточки вымышленных персонажей аниме и манги |
+| `STUDIOS/` | Карточки анимационных студий-производителей |
+
+<!-- harness-agnostic-conventions:start -->
+## Skills authoring conventions
+
+Скиллы и инструкции в этом волте — **harness-agnostic**. При создании или редактировании любого `.claude/skills/*/SKILL.md`, файлов в `SYSTEM/` и самого `CLAUDE.md` соблюдай конвенции из `docs/Vault_Bootstrap_Architecture.md § Конвенция формата skills → Body content` (документ в bootstrap-репо). Цель — код одинаково работает в Claude Code, Opencode и любых будущих совместимых harness'ах без переписывания.
+
+Правило не зависит от того, в каком harness ты сейчас работаешь: при работе из CC модель пишет код, который сразу заработает в Opencode, и наоборот.
+
+Кратко (правила R1–R8):
+
+| Pattern (harness-specific) | Harness-agnostic форма |
+|---|---|
+| `` `mcp__<server>__<tool>(args)` `` | `` <server> MCP, tool `<tool>(args)` `` |
+| «через AskUserQuestion» | «структурированным multi-choice вопросом» |
+| `WebFetch` / `WebSearch` (procedural) | «web fetch» / «web search» (lowercase) |
+| `TaskCreate` / `TaskUpdate` (procedural) | «через TODO-список» / «обновить TODO-список» |
+| `subagent_type=Explore` | «sub-agent типа Explore» |
+| `$1` / `$2` / `$3` в body | «первый аргумент» / «второй аргумент» (NL). `$ARGUMENTS` оставляем — universal |
+
+**Не трогать:**
+- Casual references к universal tools (`Read`, `Edit`, `Write`, `Bash`, `Glob`, `Grep`).
+- Frontmatter поля (`argument-hint`, `model:`, `disable-model-invocation:` — Opencode тихо игнорирует).
+- `$ARGUMENTS` placeholder.
+
+**Workflow:**
+- Новый тематический `/new-<kind>` скилл создаётся через `/add-note-kind` — правила применяются автоматически (КРИТИЧНО #11 в add-note-kind), включая безусловную генерацию `.opencode/commands/<name>.md` wrapper'а.
+- Ручная правка SKILL.md — следить за паттернами выше; периодически запускать `/harness-agnostic-audit` для верификации.
+- При появлении нового harness-specific tool — обновить `docs/Vault_Bootstrap_Architecture.md` (canonical) и скилл `harness-agnostic-audit` (mirror).
+
+Этот блок поддерживается скиллом `/harness-agnostic-audit` (и модулем `harness-opencode` при /init-vault). Ручные правки между маркерами будут перезаписаны на следующем запуске.
+<!-- harness-agnostic-conventions:end -->

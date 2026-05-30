@@ -1,9 +1,33 @@
 name: core
-version: 0.7.4
+version: 0.7.6
 description: |
   Core module — обязательная база для любого волта в bootstrap-фреймворке.
   Управляет: outer managed-блоками в CLAUDE.md и .gitignore, governance-шаблонами
   в SYSTEM/ (skip-if-exists), маркером .installed. Sub-block helpers через lib/managed_block.mjs.
+
+  v0.7.6 (B-005 — managed-block replace стирал sub-блоки):
+  - `lib/managed_block.mjs::ensureManagedBlock` при replace внешнего блока
+    подставлял статичный fragment (без module sub-блоков) → стирал sub-блоки
+    всех модулей. Возвращались только те, чей install отрабатывал в том же
+    проходе; up-to-date (пропущенный) модуль терял свой CLAUDE.md sub-block
+    при каждом апдейте core. Fix: при replace извлекать существующие
+    `<!-- BEGIN: module:* -->...<!-- END -->` сегменты и переинжектить в
+    новый блок. Replacement через function-replacer (без `$&`-подстановок).
+    Idempotent: identical rebuild → noop. Hash-style (.gitignore) не затронут
+    (там нет module sub-блоков). Валидировано unit-смоком.
+
+  v0.7.5 (Этап 1B opencode-support — shared harness libs):
+  - `lib/config_patch.mjs`, `lib/mcp_registry.mjs`, `lib/template_vars.mjs`
+    перенесены из `harness-claude-code/lib/` в `core/lib/`. Теперь оба
+    harness-модуля (`-claude-code` v0.4.0 и `-opencode` v0.1.0) импортируют
+    их из общего места. Поведение helpers без изменений — чистый refactor
+    путей. Внутренний import в template_vars обновлён на `./paths.mjs`.
+  - Новый `lib/opencode_wrappers.mjs` — `buildWrapperContent(name, desc)`
+    + `parseSkillFrontmatter(path)` + `scanVaultSkills(vault_root)`.
+    Используется тремя писателями slash-wrappers: `harness-opencode/install.mjs`
+    (bulk на /init-vault), `/harness-agnostic-audit` (миграция existing-волта),
+    `/add-note-kind` (immediate generation на создании скилла). Spec wrapper
+    template — docs/Vault_Bootstrap_Architecture.md § Slash UX в Opencode.
 
   D23 (v0.7.4) — preserve venv on version_bump:
   - До D23 `provisionSharedRoot::version_bump` дропал venv через

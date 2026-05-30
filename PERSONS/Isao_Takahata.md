@@ -3,7 +3,8 @@ type: reference
 domain: anime
 stability: stable
 priority: medium
-quality: draft
+quality: verified
+co_authored: claude-opus-4.7
 note_kind: person
 tags:
   - japanese-animation
@@ -11,7 +12,9 @@ aliases:
   - "Исао Такахата"
   - "Takahata Isao"
 created: 2026-05-23
-updated: 2026-05-23
+updated: 2026-05-26
+images:
+  cover: "attachments/Isao_Takahata_cover.jpg"
 name_primary: "Isao Takahata"
 name_native: "高畑勲"
 roles:
@@ -32,7 +35,11 @@ works:
     roles: [producer]
 ---
 
+
+
 # Isao Takahata (高畑勲)
+
+![[Isao_Takahata_cover.jpg|300]]
 
 **Исао Такахата** — японский режиссёр, сценарист и продюсер, сооснователь Studio Ghibli (1985), многолетний коллаборатор [[Hayao_Miyazaki|Хаяо Миядзаки]]. Если Миядзаки — это фэнтези и приключение, то Такахата — это реализм, исторический материал и формальный эксперимент. Сам почти не рисовал — был режиссёром-«мыслителем», работающим через своих аниматоров.
 
@@ -53,17 +60,21 @@ works:
 - **Историзм** — глубоко интересовался средневековой Японией, бенгальскими комиксами, французской живописью XIX века; в фильмах есть многочасовая research-работа, не видимая зрителю напрямую, но определяющая текстуру.
 - **Антимилитаризм** — общая тема с Миядзаки, но у Такахаты она прямее: «Могила светлячков» считается одной из самых сильных антивоенных работ в мировом кинематографе.
 
+## Студии
+
+- ![[Topcraft_cover.png|60]] **[[Topcraft|Topcraft]]** — продюсер «Навсикаи из Долины ветров» (1984); после ликвидации студии вместе с Миядзаки выкупил её команду и в 1985 основал Studio Ghibli.
+
 ## Ключевые работы
 
-- *Horus, Prince of the Sun* / Хорус, принц солнца (1968)
-- *Heidi, Girl of the Alps* / Хайди (TV, 1974)
-- *Anne of Green Gables* / Анна из Зелёных мезонинов (TV, 1979)
-- [[Nausicaa_of_the_Valley_of_the_Wind|Навсикая из Долины ветров]] (1984) — продюсер.
-- *Grave of the Fireflies* / Могила светлячков (1988)
-- *Only Yesterday* / Только вчера (1991)
-- *Pom Poko* / Pom Poko (1994)
-- *My Neighbors the Yamadas* / Мои соседи Ямада (1999)
-- *The Tale of the Princess Kaguya* / Сказание о принцессе Кагуя (2013) — последний фильм, номинирован на «Оскар».
+- **Horus, Prince of the Sun / Хорус, принц солнца** (1968)
+- **Heidi, Girl of the Alps / Хайди** (TV, 1974)
+- **Anne of Green Gables / Анна из Зелёных мезонинов** (TV, 1979)
+- ![[Nausicaa_of_the_Valley_of_the_Wind_cover.jpeg|80]] **[[Nausicaa_of_the_Valley_of_the_Wind|Навсикая из Долины ветров]]** (1984) — продюсер.
+- **Grave of the Fireflies / Могила светлячков** (1988)
+- **Only Yesterday / Только вчера** (1991)
+- **Pom Poko / Pom Poko** (1994)
+- **My Neighbors the Yamadas / Мои соседи Ямада** (1999)
+- **The Tale of the Princess Kaguya / Сказание о принцессе Кагуя** (2013) — последний фильм, номинирован на «Оскар».
 
 ## Ссылки
 

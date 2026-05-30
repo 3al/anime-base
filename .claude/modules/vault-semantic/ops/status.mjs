@@ -15,15 +15,29 @@
 // + Shared_Install_Architecture.md §8.
 
 import { readFileSync, writeFileSync, existsSync, rmSync, readdirSync, statSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, dirname, resolve as resolvePath } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { spawnSync } from 'node:child_process';
+import { readStdin } from '../../core/lib/read_input.mjs';
 
 const MODULE_NAME = 'vault-semantic';
 const SKILL_MARKER = '.managed';
 
-function readStdin() {
-  try { return readFileSync(0, 'utf-8'); } catch { return ''; }
+// Locate core/lib/paths.mjs relative to this module's location inside the
+// framework tree (.../modules/vault-semantic/ops/status.mjs →
+// .../modules/core/lib/paths.mjs). Module is co-located in the same bootstrap
+// tree by construction of the manifest. Dynamic import requires a file:// URL
+// on Windows for absolute paths — bare path strings are not valid specifiers.
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const pathsModulePath = resolvePath(__dirname, '..', '..', 'core', 'lib', 'paths.mjs');
+let resolveSharedToolsHome = null;
+try {
+  ({ resolveSharedToolsHome } = await import(pathToFileURL(pathsModulePath).href));
+} catch (err) {
+  // Leave null — main() emits an actionable error if shared scope is needed.
+  process.stderr.write(`[vault-semantic/status] paths.mjs import failed: ${err.message}\n`);
 }
+
 
 function emit(result) {
   process.stdout.write(JSON.stringify(result, null, 2));
@@ -34,6 +48,16 @@ function readModuleVersion(moduleDir) {
   if (!existsSync(p)) return 'unknown';
   const m = readFileSync(p, 'utf-8').match(/^version:\s*(.+)$/m);
   return m ? m[1].trim() : 'unknown';
+}
+
+// v0.4.6: read install_scope from this module's own manifest. install_scope is
+// a property of the module, not a runtime choice, so the manifest is the
+// authoritative source. Input may still override (testing/edge cases).
+function readModuleInstallScope(moduleDir) {
+  const p = join(moduleDir, 'module.yaml');
+  if (!existsSync(p)) return null;
+  const m = readFileSync(p, 'utf-8').match(/^install_scope:\s*(.+)$/m);
+  return m ? m[1].trim() : null;
 }
 
 function readMarker(dir) {
@@ -293,21 +317,35 @@ function main() {
 
   const input = JSON.parse(raw);
   const { vault_root, module_dir } = input;
-  const install_scope = input.install_scope || 'per-vault';
+
+  // v0.4.6: install_scope is read from the module's own manifest by default;
+  // input.install_scope is honored as an override (for tests). Previously the
+  // caller was required to pass install_scope=shared in input — forgetting it
+  // silently routed to the per-vault branch and reported a non-existent venv
+  // as missing (false-negative status). The manifest is now authoritative.
+  const manifest_scope = readModuleInstallScope(module_dir);
+  const install_scope = input.install_scope || manifest_scope || 'per-vault';
 
   if (install_scope === 'shared') {
-    if (!input.shared_module_dir) {
-      emit({
-        status: 'error',
-        message: 'install_scope=shared requires shared_module_dir in stdin.',
-        module_status: 'unknown',
-      });
-      process.exit(1);
+    // v0.4.6: shared_module_dir auto-derived from $VAULT_TOOLS_HOME/<name>/ if
+    // not in input. Same convention used by setup.mjs / core/lib/shared_install.mjs.
+    let shared_module_dir = input.shared_module_dir;
+    if (!shared_module_dir) {
+      if (!resolveSharedToolsHome) {
+        emit({
+          status: 'error',
+          message:
+            'install_scope=shared requires shared_module_dir, but core/lib/paths.mjs is unavailable and input did not provide one.',
+          module_status: 'unknown',
+        });
+        process.exit(1);
+      }
+      shared_module_dir = join(resolveSharedToolsHome(), MODULE_NAME).replace(/\\/g, '/');
     }
     reportShared({
       vault_root,
       module_dir,
-      shared_module_dir: input.shared_module_dir,
+      shared_module_dir,
     });
   } else {
     reportPerVault({ vault_root, module_dir });

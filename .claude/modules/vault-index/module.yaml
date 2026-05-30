@@ -1,11 +1,13 @@
 name: vault-index
-version: 0.2.0
+version: 0.3.2
 description: |
   Структурный MCP-сервер волта: индекс frontmatter, граф ссылок, lint, query.
   Подробности — SYSTEM/MCP_Server_Design.md.
 
   Source в .claude/modules/vault-index/mcp/ (canonical layout). Install
-  собирает dist/ через npm install && npm run build, если dist отсутствует.
+  собирает dist/ через npm install && npm run build, если dist отсутствует
+  ИЛИ устарел (src новее dist — B-003: иначе version-bump с правкой src
+  оставлял протухший dist, т.к. он gitignored и не пересобирался).
   Legacy layout (.claude/mcp-server/) поддерживается install-handler'ом для
   обратной совместимости и мигрируется через /migrate-vault-index.
 mandatory: false

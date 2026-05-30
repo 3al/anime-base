@@ -25,9 +25,10 @@ updated: 2026-05-23
 
 | Скилл            | Аргументы                            | Описание |
 |------------------|--------------------------------------|----------|
-| `/new-anime`     | `<название тайтла>`                  | Создать карточку аниме-тайтла: web search (MAL, AniList, Shikimori) + frontmatter + cross-update в `PERSONS/*.works[]` для каждого `staff[]`. Модель: opus |
-| `/new-person`    | `<имя персоны>`                      | Создать карточку человека из аниме-индустрии (режиссёр, сценарист, композитор, продюсер, аниматор, мангака). Модель: opus |
+| `/new-anime`     | `<название тайтла>`                  | Создать карточку аниме-тайтла: web search (MAL, AniList, Shikimori) + frontmatter + auto-download постера + cross-update в `PERSONS/*.works[]` и `STUDIOS/*` (gallery-формат). Модель: opus |
+| `/new-person`    | `<имя персоны>`                      | Создать карточку человека из аниме-индустрии (режиссёр, сценарист, композитор, продюсер, аниматор, мангака). Cross-update в `ANIME/*.staff[]` + gallery-секция `## Студия и команда`. Модель: opus |
 | `/new-character` | `<имя персонажа>`                    | Создать карточку вымышленного персонажа аниме/манги. Auto-download постера + reverse-check секции персонажей в `featured_in` карточках (in-place upgrade text → WikiLink+миниатюра). Модель: opus |
+| `/new-studio`    | `<название студии>`                  | Создать карточку анимационной студии-производителя. Auto-download логотипа (Wikimedia/MAL) + cross-update в `ANIME/*.studio` gallery-секции «## Студия и команда». Модель: opus |
 | `/new-note`      | `<тема>`                             | Создать заметку общего назначения. Routing через `.claude/vault-manifest.yaml::folders`; делегирует на тематический `/new-<kind>` если папка имеет `create_skill`. Модель: opus |
 | `/expand-stub`   | `<файл> [комментарий]`               | Расширить заметку-заглушку до полноценной. Модель: opus |
 
@@ -92,6 +93,7 @@ updated: 2026-05-23
 |-------------------------------|---------------------------------------------------------------------------|------------|
 | `vault_query`                 | `{ type?, domain?, tags?, tagsAny?, quality?, stability?, noteKind?, folder?, hasField?, limit? }` | Фильтр заметок по frontmatter-полям |
 | `vault_backlinks`             | `{ note }`                                                                | Обратные ссылки: кто ссылается на заметку. **См. ниже эмпирику про image embeds.** |
+| `vault_text_mentions`         | `{ note, noteKinds?, includeTarget? }`                                    | Plain-text упоминания имени/aliases цели в телах других заметок (исключая строки, где уже стоит WikiLink на target). Search terms берутся из frontmatter цели (`name`, `aliases[]`, `name_romaji/english/native`, `title_*`). Unicode word-boundary, пропускает frontmatter / fenced code / inline code / заголовки. Используется в reverse-check create-скиллами (`/new-character`, `/new-anime`, `/new-person`, `/new-studio`) для апгрейда text → gallery WikiLink в sibling-карточках. |
 | `vault_note_profile`          | `{ note }`                                                                | Полный профиль: frontmatter + outgoing links + backlinks + lint issues |
 | `vault_stats`                 | `{}`                                                                      | Агрегаты по волту: counts по type/domain/quality/тегам |
 | `vault_reindex`               | `{ full? }`                                                               | Принудительная переиндексация. Обычно автоматическая через mtime-snapshot |
@@ -103,6 +105,8 @@ updated: 2026-05-23
 Пример: `vault_backlinks(note="Tanjiro_cover.jpg")` → `[{sourcePath: "ANIME/Demon_Slayer.md", line: 42, displayText: "60"}, ...]`.
 
 Это **не следует** из описания tool'а («Find all notes that link to a given note») — знание получено эмпирически. Используется в `/add-images` шаг 4.5 для cross-update embeds при смене расширения постера.
+
+**Wikimedia Commons требует descriptive User-Agent.** При скачивании изображений с `upload.wikimedia.org` (логотипы студий, infobox-картинки) generic `Mozilla/5.0` даёт 429 даже с одного запроса. Wikimedia [User-Agent policy](https://meta.wikimedia.org/wiki/User-Agent_policy) требует UA вида `<BotName>/<version> (<repo or contact URL>; <email>)`. Также: thumbnail URL'ы (`/thumb/.../<N>px-...`) принимаются только для whitelisted размеров — кастомные (300px и т.п.) дают 400. Безопасно качать оригинал без `/thumb/`. Полная нота — `memory/reference_wikimedia_download_ua_and_thumb_policy.md`. Зафиксировано в `/new-studio` шаг 6.5; `/new-character` и `/new-anime` пока используют generic UA — могут уткнуться, если столкнутся с Wikimedia.
 
 ### Tools, унаследованные из общего vault-index и НЕ применяемые в Anime_Base
 
@@ -139,6 +143,7 @@ updated: 2026-05-23
 |---|---|---|
 | Найти embeds картинки по filename | `vault_backlinks(note="<filename.ext>")` | Не Grep по `\!\[\[<name>` — медленнее и не даёт ширину |
 | Найти WikiLinks на заметку | `vault_backlinks(note="<basename>")` | — |
+| Найти plain-text упоминания заметки (для апгрейда text → WikiLink после создания/переименования) | `vault_text_mentions(note="<target>", noteKinds=[...])` | Не Grep по name — он не знает aliases цели и не фильтрует уже-WikiLinked строки. Не `vault_backlinks` — он находит только существующие WikiLinks. |
 | Найти заметки по полю frontmatter (`featured_in`, `staff[].person`) | `vault_query` (если поле в схеме) или `vault_backlinks` если поле — foreign-key WikiLink | Не Grep, не semantic |
 | Найти заметки про определённую тему (без точного слова) | `vault_semantic_search` | Не Grep — пропустит парафраз/синонимы |
 | Найти точное слово/имя в теле волта | `Grep` | Не `vault_semantic_search` — лишний шум на лексическом матче |
@@ -173,8 +178,10 @@ MCP-tools выполняют **механические** проверки и и
                     + LLM: ничего, чистая механика
 
 /new-character   →  Glob (existence check)
-                    WebFetch (MAL/AniList — постер + данные)
+                    web fetch (MAL/AniList — постер + данные)
                     Read featured_in карточек
+                    vault_text_mentions(note=созданный, noteKinds=[character, person])
+                                  ← sibling reverse-check (шаг 7.5b)
                     vault_lint(target=созданная карточка)
 
 /vault-rag       →  vault_query (L1, если запрос фактологический)

@@ -62,6 +62,7 @@ tags: [keyword-1, keyword-2]
 - `anime` — карточка аниме-тайтла (`ANIME/`)
 - `person` — карточка человека из аниме-индустрии: режиссёр, сценарист, композитор, продюсер и т.д. (`PERSONS/`)
 - `character` — карточка вымышленного персонажа аниме/манги (`CHARACTERS/`)
+- `studio` — карточка анимационной студии-производителя (`STUDIOS/`)
 
 ## Дополнительные поля (рекомендуемые)
 
@@ -165,7 +166,9 @@ genres:
 
 **personal_status** — личный статус по тайтлу. Допустимые значения — `enums.yaml::note_kinds.anime.personal_status`.
 
-Семантика: `watching` (смотрю), `completed` (завершил), `on-hold` (отложил), `dropped` (бросил), `plan-to-watch` (в очереди), `favorite` (любимое — взаимоисключает `completed`: ставится вместо `completed`, когда тайтл завершён и попал в личные фавориты).
+Семантика: `watching` (смотрю), `completed` (завершил), `on-hold` (отложил), `dropped` (бросил), `plan-to-watch` (в очереди), `favorite` (любимое — взаимоисключает `completed`: ставится вместо `completed`, когда тайтл завершён и владелец волта явно отнёс его к личным избранным).
+
+**`favorite` ≠ высокая `personal_score`.** Это **независимые** оси. `personal_score` — формальная оценка качества; `favorite` — узкая curated-категория любимых работ, выбираемая субъективно. Тайтл с оценкой 10/10 может оставаться `completed`, если не вошёл в личный круг избранных. Скиллы (`/audit-review`, `/audit-note`, `/new-anime`) **не должны** предлагать автоматический перевод `completed → favorite` на основании высокого score — только при явном маркере в тексте отзыва или прямом запросе пользователя.
 
 ```yaml
 personal_status: completed
@@ -209,6 +212,39 @@ episode_duration_minutes: 24
 
 ```yaml
 personal_score: 9
+```
+
+**times_watched** — общее число просмотров (рекомендуемое). Семантика: `1` = смотрел один раз, `3` = смотрел трижды (то есть «пересматривал два раза»). Для `personal_status: plan-to-watch` / `on-hold` / `dropped` — обычно `null` (поле not applicable). Для `completed` / `favorite` / `watching` — минимум `1`.
+
+```yaml
+times_watched: 3
+```
+
+**last_episode_watched** — номер последнего просмотренного эпизода (рекомендуемое, политика «always-present»).
+
+Семантика по `personal_status`:
+- `completed` / `favorite` → равно `episodes` (последний эпизод сериала).
+- `watching` → текущий прогресс (на каком эпизоде сейчас).
+- `on-hold` → эпизод, на котором сделана пауза.
+- `dropped` → эпизод, на котором бросил.
+- `plan-to-watch` → `null` (не начинал).
+
+Для `format: movie` / `format: special` (где `episodes: 1`) — `1` для всех просмотренных статусов, `null` для `plan-to-watch`. Для длинных открытых сериалов (`episodes: 0` если кол-во не объявлено) — текущая зрительская позиция.
+
+```yaml
+last_episode_watched: 12
+```
+
+**watched_with** — список со-зрителей, с кем смотрел/пересматривал этот тайтл (рекомендуемое). Допустимые значения — `enums.yaml::note_kinds.anime.watched_with`.
+
+Семантика валют: `wife` (с женой), `mom` (с мамой), `brother` (с братом). Множественный выбор — если разные просмотры были с разными людьми, перечислить всех. Если смотрел только в одиночку — оставить `[]` или опустить.
+
+Расширение enum'а — через `/add-note-kind`-логику или ручной Edit `enums.yaml` (когда появится новый со-зритель, которого регулярно хочется фиксировать).
+
+```yaml
+watched_with:
+  - wife
+  - mom
 ```
 
 **mal_score** — средняя оценка MyAnimeList (0.00–10.00, рекомендуемое).
@@ -263,7 +299,7 @@ mal_url: "https://myanimelist.net/anime/38000"
 
 ## Поля для карточек Персон (`note_kind: person`)
 
-Карточка человека из аниме-индустрии: режиссёр, сценарист, композитор, продюсер, аниматор и т.п. **Голосовые актёры (сэйю) — в отдельный будущий kind `voice-actor`**, не в этот.
+Карточка человека из аниме-индустрии: режиссёр, сценарист, композитор, продюсер, аниматор, сэйю и т.п. Сэйю — `note_kind: person` с `roles: [voice-actor]` (см. семантику ниже); отдельного kind для них не существует.
 
 Все поля ниже **обязательны** для `note_kind: person`, если не указано иное.
 
@@ -281,7 +317,7 @@ name_primary: "Hayao Miyazaki"
 name_native: "宮崎駿"
 ```
 
-**roles** — основные профессиональные роли. Допустимые значения — `enums.yaml::note_kinds.person.role` (тот же набор, что `anime.staff_role`).
+**roles** — основные профессиональные роли. Допустимые значения — `enums.yaml::note_kinds.person.role`. Superset `anime.staff_role`: все production-роли + `voice-actor`. Voice-actor намеренно вынесен из `anime.staff[]` (каст из 10–50 сэйю раздул бы staff[]; связь сэйю↔персонаж хранится через `works[].character` и `character.voice_actors[]`).
 
 ```yaml
 roles:
@@ -289,6 +325,15 @@ roles:
   - screenwriter
   - mangaka
 ```
+
+Для сэйю:
+
+```yaml
+roles:
+  - voice-actor
+```
+
+Человек может иметь несколько ролей одновременно (актёр + режиссёр; mangaka + scenarist). Перечислять всё значимое.
 
 **country** — страна происхождения / профессиональной деятельности.
 
@@ -344,6 +389,25 @@ works:
 
 `title` — имя файла карточки в `ANIME/` (foreign key). `roles` — list[enum] из `enums.yaml::note_kinds.person.role`.
 
+**Для роли `voice-actor`** — запись расширяется обязательным ключом `character` (foreign-key в `CHARACTERS/`), потому что VA-роль определяется не только тайтлом, но и конкретным персонажем. Один сэйю может озвучивать разных персонажей в разных тайтлах, и одного персонажа в одном сезоне, но не в другом (если кастинг сменился) — поэтому каждая комбинация title+character — отдельная запись в `works[]`.
+
+```yaml
+works:
+  - title: "Maria-sama_ga_Miteru"
+    roles: [voice-actor]
+    character: "Fukuzawa_Yumi"
+  - title: "Maria-sama_ga_Miteru_Haru"
+    roles: [voice-actor]
+    character: "Fukuzawa_Yumi"
+  - title: "Other_Anime"
+    roles: [voice-actor]
+    character: "Different_Character"
+```
+
+Запись с `roles: [voice-actor]` **без** `character` — невалидна. Запись с `character` **без** `voice-actor` в `roles[]` — тоже невалидна (поле имеет смысл только для VA-роли). Смешивать VA и production-роли в одной записи нельзя: если человек был и режиссёром, и VA одного тайтла — это две отдельные записи в `works[]` (первая `roles: [director]`, без `character`; вторая `roles: [voice-actor], character: X`).
+
+Симметричная запись на стороне персонажа — `character.voice_actors[]` (см. секцию персонажей ниже). Mutual maintenance: при добавлении VA-записи в `works[]` через `/new-person` — добавляется зеркальная запись в `voice_actors[]` соответствующей карточки персонажа; при создании `/new-character` — forward-check по `PERSONS/*.md::works[]` подтягивает уже существующие VA-связи.
+
 **aliases** — альтернативные написания, фан-сокращения, псевдонимы (рекомендуемое).
 
 ```yaml
@@ -362,7 +426,7 @@ wikipedia_url: "https://en.wikipedia.org/wiki/Hayao_Miyazaki"
 
 ## Поля для карточек Персонажей (`note_kind: character`)
 
-Карточка вымышленного персонажа аниме или манги. Голосовые актёры (сэйю) — это отдельный будущий kind `voice-actor`, не сюда; здесь только сам нарративный персонаж.
+Карточка вымышленного персонажа аниме или манги. Сэйю в этом kind не описываются (для них — `note_kind: person` с `roles: [voice-actor]`); здесь только сам нарративный персонаж, связь персонаж↔сэйю — через поле `voice_actors[]` (см. ниже).
 
 Все поля ниже **обязательны** для `note_kind: character`, если не указано иное.
 
@@ -456,6 +520,20 @@ affiliations:
 personal_score: 9
 ```
 
+**voice_actors** — список сэйю, озвучивавших персонажа, привязанный к конкретным тайтлам (рекомендуемое). Список словарей `{anime, person}`, где `anime` — имя файла карточки в `ANIME/`, `person` — имя файла карточки сэйю в `PERSONS/`.
+
+Семантика: каждая запись фиксирует, какой сэйю озвучивал персонажа в каком тайтле. Один и тот же сэйю в нескольких тайтлах — несколько записей (по одной на тайтл). Если в каком-то сезоне сэйю сменился — это другая `person` в записи на этот anime. Если у персонажа нет VA (манга-only до экранизации) — `[]`.
+
+```yaml
+voice_actors:
+  - anime: "Maria-sama_ga_Miteru"
+    person: "Kana_Ueda"
+  - anime: "Maria-sama_ga_Miteru_Haru"
+    person: "Kana_Ueda"
+```
+
+Симметричное поле — `person.works[]` с `roles: [voice-actor]` и `character: <this character>`. Mutual maintenance: при создании карточки сэйю через `/new-person` cross-update заполняет это поле; при создании `/new-character` forward-check по `PERSONS/*.md::works[]` находит уже существующие VA-связи и подтягивает их сюда. Тело карточки рендерит секцию `## Сэйю` в gallery-формате (миниатюра 60 + WikiLink) на основании этого поля.
+
 **mal_url** — ссылка на профиль персонажа на MyAnimeList (рекомендуемое).
 
 ```yaml
@@ -473,4 +551,108 @@ anilist_url: "https://anilist.co/character/126180/Tanjiro-Kamado"
 ```yaml
 images:
   cover: "attachments/Kamado_Tanjiro_cover.jpg"
+```
+
+## Поля для карточек Студий (`note_kind: studio`)
+
+Карточка анимационной студии-производителя аниме (MAPPA, Madhouse, Ufotable, Studio Ghibli, Topcraft и т.п.).
+
+Все поля ниже **обязательны** для `note_kind: studio`, если не указано иное.
+
+> **Допустимые значения enum-полей** этого kind — в `SYSTEM/enums.yaml::note_kinds.studio`. Этот раздел описывает семантику; множества значений — машинно-читаемый источник отдельно.
+
+**name_primary** — основной идентификатор. Английское или ромадзи-имя. Совпадает с именем файла (с заменой пробелов на `_`).
+
+```yaml
+name_primary: "Ufotable"
+```
+
+**name_native** — имя в родной письменности страны базирования. Для японских студий — кандзи/кана; для западных — то же что primary.
+
+```yaml
+name_native: "ユーフォーテーブル有限会社"
+```
+
+**founded_year** — год основания студии (4 цифры).
+
+```yaml
+founded_year: 2000
+```
+
+**country** — страна базирования студии.
+
+```yaml
+country: "Japan"
+```
+
+**status** — статус деятельности студии. Допустимые значения — `enums.yaml::note_kinds.studio.status`.
+
+Семантика: `active` (работает), `defunct` (закрыта/упразднена), `on-hiatus` (приостановлена, статус неопределённый).
+
+Отличается от `anime.status` (статус выхода тайтла), `person.status` (жизненный статус человека), `character.status` (статус по итогам канона) — общее имя, разные домены.
+
+```yaml
+status: active
+```
+
+**created**, **updated** — даты создания и обновления (`YYYY-MM-DD`).
+
+### Рекомендуемые поля
+
+**aliases** — альтернативные написания: русская локализация, аббревиатуры, исторические имена (рекомендуемое).
+
+```yaml
+aliases:
+  - "Уфотейбл"
+  - "Ufotable Inc."
+```
+
+**headquarters** — город / район базирования (рекомендуемое).
+
+```yaml
+headquarters: "Kitashinjuku, Shinjuku, Tokyo"
+```
+
+**founders** — основатели студии (рекомендуемое). Список plain strings — если у основателя появится карточка в `PERSONS/`, имя можно превратить в WikiLink в теле, но во frontmatter оставляется как plain string (как `affiliations` у character).
+
+```yaml
+founders:
+  - "Hikaru Kondō"
+```
+
+**parent_company** — материнская компания, если студия — подразделение более крупного холдинга (например, Sunrise → Bandai Namco) (рекомендуемое).
+
+```yaml
+parent_company: "Bandai Namco Filmworks"
+```
+
+**successor** — преемник для упразднённых студий: кто фактически продолжил традицию (Topcraft → Studio Ghibli). Заполнять только при `status: defunct` (рекомендуемое).
+
+```yaml
+successor: "Studio Ghibli"
+```
+
+**website** — официальный сайт студии (рекомендуемое).
+
+```yaml
+website: "https://www.ufotable.com"
+```
+
+**wikipedia_url** — ссылка на статью в Wikipedia (рекомендуемое).
+
+```yaml
+wikipedia_url: "https://en.wikipedia.org/wiki/Ufotable"
+```
+
+**mal_url** — ссылка на страницу студии-продюсера на MyAnimeList (`https://myanimelist.net/anime/producer/<id>`) (рекомендуемое).
+
+```yaml
+mal_url: "https://myanimelist.net/anime/producer/43/ufotable"
+```
+
+**images** — словарь изображений студии. Минимум — `cover` (логотип/баннер). Та же конвенция, что у всех остальных kind: файл `<File_Name>_cover.<ext>`, совместим с `/add-images`.
+
+```yaml
+images:
+  cover: "attachments/Ufotable_cover.png"
 ```

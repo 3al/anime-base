@@ -13,6 +13,7 @@ import { registerReindexTool } from './tools/vault-reindex.js';
 import { registerImageStatusTool } from './tools/vault-image-status.js';
 import { registerAddImageTool } from './tools/vault-add-image.js';
 import { registerLookalikePeersTool } from './tools/vault-lookalike-peers.js';
+import { registerTextMentionsTool } from './tools/vault-text-mentions.js';
 
 const VAULT_ROOT = process.env.VAULT_ROOT || 'D:\\Knowledge_Base';
 
@@ -23,7 +24,7 @@ const server = new McpServer({
 
 const index = new VaultIndex(VAULT_ROOT);
 
-// Register all 12 tools
+// Register all 13 tools
 registerLintTool(server, index);
 registerBrokenLinksTool(server, index);
 registerOrphansTool(server, index);
@@ -36,6 +37,7 @@ registerReindexTool(server, index);
 registerImageStatusTool(server, index);
 registerAddImageTool(server, index);
 registerLookalikePeersTool(server, index);
+registerTextMentionsTool(server, index);
 
 async function main(): Promise<void> {
   const transport = new StdioServerTransport();

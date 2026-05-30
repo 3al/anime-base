@@ -17,6 +17,7 @@ language: ru   # change if your vault content is in a different language
 modules:
   - core
   - harness-claude-code
+  - harness-opencode
   - skills-common
   - vault-index
   - vault-semantic
@@ -48,8 +49,9 @@ folders:
     description: "Карточки манги, ранобэ, light novel"
     keywords: [manga, манга, ranobe, light novel, ранобэ]
   - path: STUDIOS/
-    description: "Студии-производители (MAPPA, Madhouse, Ufotable и т.п.)"
-    keywords: [studio, студия, animation studio]
+    description: "Карточки анимационных студий-производителей (MAPPA, Madhouse, Ufotable, Studio Ghibli и т.п.)"
+    keywords: [studio, студия, animation studio, anime production]
+    create_skill: /new-studio
   - path: CHARACTERS/
     description: "Карточки вымышленных персонажей аниме и манги"
     keywords: [character, персонаж, hero, герой, villain, antagonist]

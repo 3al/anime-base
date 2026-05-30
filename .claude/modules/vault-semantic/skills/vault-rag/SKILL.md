@@ -31,7 +31,7 @@ disable-model-invocation: true
 - **L2 = `vault-semantic` MCP.** Hybrid search (bge-m3 dense + BM25 с pymorphy3/snowball лемматизацией, RRF-fusion). Tools: `vault_semantic_search`, `vault_semantic_stats`, `vault_semantic_reindex`, `vault_semantic_warmup`.
 - **L3 = этот скилл.** Классифицирует запрос, выбирает слой(и), делает fan-out, merge'ит результаты, синтезирует ответ.
 
-**Hard dependency:** скилл не работает без vault-semantic. Если ни один `mcp__vault-semantic__*` tool недоступен — выйди с сообщением:
+**Hard dependency:** скилл не работает без vault-semantic. Если ни один MCP tool сервера `vault-semantic` недоступен — выйди с сообщением:
 
 > /vault-rag требует MCP-сервер `vault-semantic`. Добавьте модуль в `.claude/vault-manifest.yaml` и запустите /init-vault.
 
@@ -39,7 +39,7 @@ disable-model-invocation: true
 
 ## Этап 0. Health-check индекса (lazy auto-reindex)
 
-**До любого вызова L2** — `mcp__vault-semantic__vault_semantic_stats()`.
+**До любого вызова L2** — vault-semantic MCP, tool `vault_semantic_stats()`.
 
 | Сигнал | Реакция |
 |---|---|
@@ -51,7 +51,7 @@ disable-model-invocation: true
 
 Если `notes_total == 0` (или `INDEX_NOT_INITIALIZED`):
 
-1. **Размер волта** — `mcp__vault-index__vault_stats()` → берём `totalNotes`. Это источник истины для ещё-не-индексированного волта; L2-stats показывает 0, L1 знает реальное N.
+1. **Размер волта** — vault-index MCP, tool `vault_stats()` → берём `totalNotes`. Это источник истины для ещё-не-индексированного волта; L2-stats показывает 0, L1 знает реальное N.
 2. **Torch variant** — прочитать `<vault>/.claude/modules/vault-semantic/.installed` (JSON, поле `torch_variant`). Может быть `cpu`, `cuda_cu126` или отсутствовать (старая установка до v0.4.0 — трактовать как `cpu`).
 3. **ETA** — оценка по таблице (замеры на RTX 3070 Laptop / cp314+cu126, полная таблица — `modules/vault-semantic/README.md`):
 
@@ -72,7 +72,7 @@ disable-model-invocation: true
 
    На CUDA-варианте дополнительно упомянуть, что это разовая операция — после неё `search/stats` сами подхватывают изменения через `incremental_refresh()` (2s debounce).
 
-5. **При согласии** — `mcp__vault-semantic__vault_semantic_reindex(scope='full')`, дождаться, повторить health-check. При отказе — выйти с сообщением «семантический слой недоступен; уточни запрос для L1-only или вызови `vault_query` напрямую». Не пытаться частично работать без L2 — см. контракт (hard dep).
+5. **При согласии** — vault-semantic MCP, tool `vault_semantic_reindex(scope='full')`, дождаться, повторить health-check. При отказе — выйти с сообщением «семантический слой недоступен; уточни запрос для L1-only или вызови `vault_query` напрямую». Не пытаться частично работать без L2 — см. контракт (hard dep).
 
 Если оба источника недоступны (vault-index тоже не отвечает) — спросить юзера N приближённо («сколько у тебя примерно заметок — десятки, сотни, тысячи?») и взять верхнюю границу из таблицы.
 
@@ -123,10 +123,10 @@ disable-model-invocation: true
 
 | Признак | Что делать |
 |---|---|
-| «все mushroom-card с тегом X» | `mcp__vault-index__vault_query(filter={note_kind: 'mushroom-card', tags: {any: ['X']}}, limit: 50)` |
-| «что ссылается на Y» | `mcp__vault-index__vault_backlinks(path='Y')` |
-| «карточки конкретного рода / latin prefix» | `vault_query(filter={path: {prefix: 'MUSHROOM/Lepiota_'}})` либо просто Glob |
-| «двойники для X» (есть точная карточка) | `mcp__vault-index__vault_lookalike_peers(path='MUSHROOM/X.md')` |
+| «все mushroom-card с тегом X» | vault-index MCP, `vault_query(filter={note_kind: 'mushroom-card', tags: {any: ['X']}}, limit: 50)` |
+| «что ссылается на Y» | vault-index MCP, `vault_backlinks(path='Y')` |
+| «карточки конкретного рода / latin prefix» | vault-index MCP, `vault_query(filter={path: {prefix: 'MUSHROOM/Lepiota_'}})` либо просто Glob |
+| «двойники для X» (есть точная карточка) | vault-index MCP, `vault_lookalike_peers(path='MUSHROOM/X.md')` |
 
 Если результат полностью покрывает запрос — переходи к Этапу 4 (синтез). Если L1 дал список заметок, но запрос ожидает narrative-ответ из их **содержимого** — добавь L2-обогащение (см. 2.4).
 
@@ -135,7 +135,8 @@ disable-model-invocation: true
 **Признаки:** свободная формулировка, fuzzy match, отсутствие точных fingerprint'ов frontmatter.
 
 ```
-mcp__vault-semantic__vault_semantic_search(
+# vault-semantic MCP
+vault_semantic_search(
   query=<перифраза $ARGUMENTS или ключевые термины>,
   mode='hybrid',         # 95% случаев
   k=20,                  # для merge нужно широкое over-fetch
@@ -177,7 +178,7 @@ mcp__vault-semantic__vault_semantic_search(
 
 ### 2.5. Похожие заметки
 
-Если в запросе есть «похожие на X» / «соседи Y» — `mcp__vault-semantic__vault_semantic_similar(path='MUSHROOM/X.md', k=10)`.
+Если в запросе есть «похожие на X» / «соседи Y» — vault-semantic MCP, tool `vault_semantic_similar(path='MUSHROOM/X.md', k=10)`.
 
 ## Этап 3. Ранжирование и чтение
 
@@ -295,7 +296,7 @@ quality: draft
 
 ### 5.4. Reindex после Save
 
-После записи файла — `mcp__vault-semantic__vault_semantic_reindex(scope='changed')`. Без этого следующий вызов /vault-rag не найдёт только что сохранённый ответ. Lazy refresh-on-query (v0.2.0+) должен подхватить, но явный reindex быстрее и детерминированнее. Если tool недоступен или падает — warning, не фатально.
+После записи файла — vault-semantic MCP, tool `vault_semantic_reindex(scope='changed')`. Без этого следующий вызов /vault-rag не найдёт только что сохранённый ответ. Lazy refresh-on-query (v0.2.0+) должен подхватить, но явный reindex быстрее и детерминированнее. Если tool недоступен или падает — warning, не фатально.
 
 ## Этап 6. Финальный вывод пользователю
 

@@ -27,6 +27,13 @@
         "a": 1,
         "rgb": 16288269
       }
+    },
+    {
+      "query": "[\"note_kind\":\"studio\"",
+      "color": {
+        "a": 1,
+        "rgb": 16734039
+      }
     }
   ],
   "collapse-display": true,
@@ -39,6 +46,6 @@
   "repelStrength": 10,
   "linkStrength": 1,
   "linkDistance": 250,
-  "scale": 1.4019828977761002,
+  "scale": 0.9999999999999967,
   "close": true
 }

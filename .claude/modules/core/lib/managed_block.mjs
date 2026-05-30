@@ -40,10 +40,20 @@ export function ensureManagedBlock(filePath, content, style = 'html') {
   }
 
   const blockRe = new RegExp(`${escapeRegex(begin)}[\\s\\S]*?${escapeRegex(end)}`);
-  if (blockRe.test(body)) {
-    const replaced = body.replace(blockRe, newBlock);
-    if (replaced === body) return { changed: false, action: 'noop' };
-    writeFileSync(filePath, replaced);
+  const existing = body.match(blockRe);
+  if (existing) {
+    // B-005: preserve module sub-blocks living inside the old outer block.
+    // `content` (core's fragment) does NOT contain them, so a naive replace
+    // wipes the sub-blocks of modules not reinstalled in this pass. Sub-blocks
+    // always use HTML comment markers (ensureSubBlock), regardless of outer
+    // style — in a hash-style block (.gitignore) there are none, so this is a
+    // no-op there.
+    const subRe = /<!-- BEGIN: module:(\S+) -->[\s\S]*?<!-- END: module:\1 -->/g;
+    const subBlocks = existing[0].match(subRe) || [];
+    const preserved = subBlocks.length ? `\n${subBlocks.join('\n')}` : '';
+    const rebuilt = `${begin}\n${trimmed}${preserved}\n${end}`;
+    if (rebuilt === existing[0]) return { changed: false, action: 'noop' };
+    writeFileSync(filePath, body.replace(blockRe, () => rebuilt));
     return { changed: true, action: 'replaced' };
   }
 

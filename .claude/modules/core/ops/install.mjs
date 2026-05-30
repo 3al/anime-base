@@ -13,14 +13,8 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync, copyFileSync, readdirSync, statSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { ensureManagedBlock } from '../lib/managed_block.mjs';
+import { readStdin } from '../lib/read_input.mjs';
 
-function readStdin() {
-  try {
-    return readFileSync(0, 'utf-8');
-  } catch {
-    return '';
-  }
-}
 
 function emit(result) {
   process.stdout.write(JSON.stringify(result, null, 2));

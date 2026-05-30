@@ -7,7 +7,7 @@ import type { NoteRecord, IndexData } from './types.js';
 const INDEX_VERSION = 2;
 
 // Directories to skip entirely during scanning
-const SKIP_DIRS = new Set(['.claude', '.obsidian', '.git', 'node_modules']);
+const SKIP_DIRS = new Set(['.claude', '.opencode', '.obsidian', '.git', 'node_modules']);
 
 // Files to skip
 const SKIP_FILES = new Set(['CLAUDE.md', 'MEMORY.md']);

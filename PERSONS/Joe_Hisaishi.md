@@ -3,7 +3,8 @@ type: reference
 domain: anime
 stability: stable
 priority: medium
-quality: draft
+quality: verified
+co_authored: claude-opus-4.7
 note_kind: person
 tags:
   - japanese-animation
@@ -14,7 +15,9 @@ aliases:
   - "Mamoru Fujisawa"
   - "藤澤守"
 created: 2026-05-23
-updated: 2026-05-23
+updated: 2026-05-26
+images:
+  cover: "attachments/Joe_Hisaishi_cover.jpg"
 name_primary: "Joe Hisaishi"
 name_native: "久石譲"
 roles:
@@ -35,6 +38,8 @@ works:
 
 # Joe Hisaishi (久石譲)
 
+![[Joe_Hisaishi_cover.jpg|350]]
+
 **Дзё Хисаиси** (настоящее имя — Мамору Фудзисава, 藤澤守) — японский композитор, дирижёр и пианист, главный композитор Studio Ghibli со времён «Навсикаи» (1984). Его сценический псевдоним фонетически обыгрывает имя Куинси Джонса — отсюда «Joe» из «Куинси» и «Хисаиси» как японское прочтение фамилии Jones.
 
 ## Биография
@@ -52,18 +57,22 @@ works:
 - **Фортепиано как голос** — фортепианные соло часто проводят основную мелодию; концертные адаптации саундтреков обычно строятся вокруг рояля.
 - **Японская и западная гармония** — свободно переключается между традиционной японской пентатоникой и западной оркестровой палитрой.
 
+## Студии
+
+- ![[Topcraft_cover.png|60]] **[[Topcraft|Topcraft]]** — композитор «Навсикаи из Долины ветров» (1984); первая запись для аниме, открывшая многолетнее сотрудничество с Миядзаки и Такахатой.
+
 ## Ключевые работы
 
-- [[Nausicaa_of_the_Valley_of_the_Wind|Навсикая из Долины ветров]] (1984) — первое сотрудничество с Миядзаки, заложившее звуковую палитру всех последующих Ghibli-фильмов.
-- *Castle in the Sky* / Лапута (1986)
-- *My Neighbor Totoro* / Мой сосед Тоторо (1988)
-- *Kiki's Delivery Service* / Кики (1989)
-- *Princess Mononoke* / Принцесса Мононоке (1997)
-- *Spirited Away* / Унесённые призраками (2001)
-- *Howl's Moving Castle* / Ходячий замок (2004)
-- *The Wind Rises* / Ветер крепчает (2013)
-- *The Tale of the Princess Kaguya* / Сказание о принцессе Кагуя (2013, режиссёр Такахата)
-- *The Boy and the Heron* / Мальчик и птица (2023)
+- ![[Nausicaa_of_the_Valley_of_the_Wind_cover.jpeg|80]] **[[Nausicaa_of_the_Valley_of_the_Wind|Навсикая из Долины ветров]]** (1984) — первое сотрудничество с Миядзаки, заложившее звуковую палитру всех последующих Ghibli-фильмов.
+- **Castle in the Sky / Лапута** (1986)
+- **My Neighbor Totoro / Мой сосед Тоторо** (1988)
+- **Kiki's Delivery Service / Кики** (1989)
+- **Princess Mononoke / Принцесса Мононоке** (1997)
+- **Spirited Away / Унесённые призраками** (2001)
+- **Howl's Moving Castle / Ходячий замок** (2004)
+- **The Wind Rises / Ветер крепчает** (2013)
+- **The Tale of the Princess Kaguya / Сказание о принцессе Кагуя** (2013, режиссёр Такахата)
+- **The Boy and the Heron / Мальчик и птица** (2023)
 
 ## Ссылки
 

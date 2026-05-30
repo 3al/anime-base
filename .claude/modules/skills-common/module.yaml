@@ -1,10 +1,111 @@
 name: skills-common
-version: 0.3.1
+version: 0.4.5
 description: |
   Тема-нейтральные скиллы, общие для любого волта: fix-links, audit-note,
-  new-note, rename-note, verify, expand-stub, add-note-kind. Устанавливаются в
-  .claude/skills/ под `.managed` маркерами — фреймворк может синхронизировать
-  обновления, не затирая пользовательские правки.
+  new-note, rename-note, verify, expand-stub, add-note-kind,
+  harness-agnostic-audit. Устанавливаются в .claude/skills/ под `.managed`
+  маркерами — фреймворк может синхронизировать обновления, не затирая
+  пользовательские правки.
+
+  v0.4.5 (add-note-kind — творческая часть + самопроверка, общая форма):
+  Мотив: на E2E v0.4.4 модель залила instance-specific поля (издание) на
+  карточку произведения, не заметив внутреннего противоречия — генерируемый
+  скилл был «рельсой», без точки самопроверки. Усиление БЕЗ хардкода
+  частных решений (add-note-kind остаётся общим генератором — КРИТИЧНО #14):
+  - Lever A: новая ось типизации поля — intrinsic (свойство сущности) vs
+    instance-specific (свойство воплощения/издания/релиза). Напряжение с
+    единицей учёта (probe 1.6) ловится на дизайне (фаза 2.2).
+  - Lever B: placeholder `{{consistency_checks}}` + шаг 6.9 в генерируемом
+    скилле. add-note-kind ВЫВОДИТ конкретные проверки согласованности из
+    семантики kind и впечатывает в порождённый скилл (мета-инструкция «как
+    вывести», не зашитый список). Гоняется перед записью файла.
+  - Lever C: фаза 2.4 — на развилках дизайна предлагать 2–3 варианта с
+    tradeoff'ами, не railroad'ить одну схему.
+  - КРИТИЧНО #14: guard — kind-specific логика выводится и живёт в
+    порождённом /new-<slug>, не хардкодится в add-note-kind.
+  Patch: уточнения/добавления в существующий скилл, контракт не ломается.
+
+  v0.4.4 (F7 — USER-ONLY поля никогда не удаляются):
+  - Найдено на E2E v0.4.3 (Opencode/GLM): поле `rating` (рекомендуемое +
+    USER-ONLY) GLM удалил из frontmatter по правилу «ненайденную строку
+    можно удалить» → пользователь о поле не узнал. Удаление USER-ONLY поля
+    убивает discoverability — противоречит смыслу F5 (поле-приглашение).
+  - Fix: `add-note-kind` шаг 4.8 + template шаг 4 — USER-ONLY поля
+    рендерятся ВСЕГДА, НИКОГДА не удаляются при создании, даже если
+    опциональные. «Удалить ненайденную строку» теперь явно только про
+    не-USER-ONLY рекомендуемые поля.
+  Patch: уточнение существующего правила, контракт не ломается.
+
+  v0.4.3 (add-note-kind generation-quality — F4/F5/F6 из Phase 6.2b):
+  - F5 (`USER-ONLY` дисциплина): субъективные поля/секции (отзыв, рейтинг,
+    статус) больше не выдумываются генерируемым /new-<kind>. Фаза 2.2/3.2
+    помечают их `USER-ONLY`; шаг 4.8 рендерит как пустой плейсхолдер
+    (`_Заполняется пользователем._` в теле, `# USER-ONLY` во frontmatter).
+    Новая КРИТИЧНО #13. Та же дисциплина, что у co_authored/фактчекинга.
+  - F6 (рекомендуемые поля): `{{fields_yaml}}` рендерит обязательные И
+    рекомендуемые (опциональные/закомментированные) поля — пользователь
+    узнаёт о них, /new-<kind> заполняет web-находимые.
+  - F4 (`--no-images` целостно): новый placeholder `{{argument_hint}}` —
+    image-kind получает флаг в сигнатуре + шаг детекции в фото-секции
+    (`{{gallery_section}}` п.0) + упоминание в баннере. КРИТИЧНО #12
+    расширена. Закрывает хлипкий escape-hatch гейта.
+  - Фаза 1.6 (опц. probe): «единица учёта kind + основной сценарий» —
+    нудж против семантических пробелов схемы (произведение vs издание).
+  Patch (не minor): add-note-kind — существующий скилл, контракт не
+  ломается. Marker version bump триггерит re-sync managed копий.
+
+  v0.4.2 (vision-gate для image-kind):
+  - `add-note-kind`: если на фазе 3.5 включены изображения — генерация
+    теперь встраивает vision-gate. Новый template
+    `templates/image-handling.claude-fragment.md` (канон правил
+    скачивания/валидации + активный gate мультимодальности). Шаг 4.5b
+    сеет его в `CLAUDE.md` волта (вне managed-block, идемпотентно — не
+    дублирует если секция уже есть). Новые placeholders
+    `{{vision_gate_banner}}` (баннер сверху) + обогащённый
+    `{{gallery_section}}` (inline-gate в фото-шаге). КРИТИЧНО #12
+    связывает три части (seed + баннер + запрет эвристики).
+  - Цель: новый image-kind ведёт себя ровно как эталонные фото-скиллы
+    волта, без расхождения между фреймворком и развёрнутыми скиллами.
+  Patch (не minor): add-note-kind — существующий скилл, контракт не
+  ломается. Marker version bump триггерит re-sync managed копий при
+  следующем /init-vault.
+
+  v0.4.1 (harness-agnostic by default — unconditional cross-harness setup):
+  - `harness-agnostic-audit`: снят гейт «Opencode detected» с генерации
+    wrappers (Этап 4) — wrappers создаются всегда, для всех скиллов волта.
+    CC игнорирует .opencode/commands/, Opencode при следующем заходе
+    подхватывает готовое без ручных шагов. Принцип: волт harness-agnostic
+    by default, не «опционально совместим с Opencode».
+  - `harness-agnostic-audit`: новый Этап 5 — вставка durable sub-block в
+    CLAUDE.md (marker-managed `<!-- harness-agnostic-conventions:start/end -->`).
+    Sub-block содержит cheat-sheet правил R1-R8 + рекомендации по workflow.
+    Всегда в контексте агента → ручные правки скиллов автоматически
+    следуют правилам, без необходимости перезапускать audit. Безусловная
+    вставка (не гейтится на detection харнеса).
+  - `add-note-kind` шаг 4.9: снят гейт — wrapper для нового /new-<slug>
+    создаётся всегда, не только при Opencode-detection.
+  - Итоговый Summary в harness-agnostic-audit обновлён под новые шаги.
+  Версия — patch (не minor): изменения в существующих managed скиллах
+  не ломают контракт. Marker version bump триггерит re-sync managed
+  копий в .claude/skills/<name>/SKILL.md при следующем /init-vault.
+
+  v0.4.0 (Этап 1A opencode-support — harness-agnostic skill conventions):
+  - Новый скилл `harness-agnostic-audit` — one-stop миграция existing-волта
+    в harness-agnostic форму для работы в обоих CC и Opencode. Pattern
+    catalog R1-R8 (mcp__, AskUserQuestion, WebFetch, Task*, subagent_type,
+    $1/$2 → natural language). Per-file diff confirmation UX. Этап 4
+    генерирует .opencode/commands/<name>.md wrappers по heuristic detection
+    (opencode.json / .opencode/ / harness-opencode в манифесте).
+  - `add-note-kind`: КРИТИЧНО #11 (harness-agnostic generation для новых
+    /new-<slug>) + шаг 4.9 (immediate Opencode wrapper generation при
+    создании тематического скилла).
+  - `new-note`, `verify`: R3-R8 правки. `verify` — $1/$2 → «первый/второй
+    аргумент» (закрывает naive substitution mess в logic-ветках Opencode).
+  - templates/claude-md.fragment: harness-agnostic-audit добавлен в список
+    установленных скиллов.
+  Version bump (minor, не patch) обусловлен новым скиллом + изменениями в
+  существующих managed скиллах — install handler сравнивает marker version
+  с module version, чтобы re-sync существующие .claude/skills/<name>/SKILL.md.
 
   v0.3.1 (add-note-kind iteration 2 — gaps from observation live run):
   - frontmatter-patterns.md: новый паттерн list[dict] (структурированные
@@ -45,6 +146,7 @@ provides:
     - verify
     - expand-stub
     - add-note-kind
+    - harness-agnostic-audit
 config_schema: {}
 ops:
   install: ops/install.mjs

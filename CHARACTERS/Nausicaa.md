@@ -3,7 +3,8 @@ type: reference
 domain: anime
 stability: stable
 priority: medium
-quality: draft
+quality: verified
+co_authored: claude-opus-4.7
 note_kind: character
 tags:
   - pacifist
@@ -14,7 +15,7 @@ aliases:
   - ナウシカ
   - Принцесса Долины ветров
 created: 2026-05-23
-updated: 2026-05-23
+updated: 2026-05-26
 name_romaji: Nausicaä
 name_native: ナウシカ
 name_english: Nausicaä

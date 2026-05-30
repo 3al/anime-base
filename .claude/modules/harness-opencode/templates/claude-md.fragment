@@ -1,0 +1,7 @@
+**Harness: Opencode** (модуль `harness-opencode` v0.1.0):
+- Регистрирует MCP-серверы из всех модулей манифеста, у которых `module.yaml` объявляет `provides.mcp_server`. Шаблонные переменные (`{vault_root}`, `{module_dir}`, `{module_dist}`, `{module_bin}`) резолвятся при патче. Тот же контракт, что у harness-claude-code, — общий `core/lib/mcp_registry.mjs`.
+- Записи живут под top-level: `mcp["<имя_сервера>"]` в `<vault>/opencode.json`. Opencode-specific формат entry: `command: ["node", "<path>"]` (массив, не строка), `environment` вместо `env`, `type: "local"` для stdio, `enabled: true`.
+- Backup при изменении конфига — `<vault>/opencode.json.bak.<ISO-timestamp>` (последние 5, ротация автоматическая).
+- Bulk wrapper generation: при install сканирует `<vault>/.claude/skills/*/SKILL.md`, для каждого пишет `.opencode/commands/<name>.md` через `core/lib/opencode_wrappers.mjs::buildWrapperContent`. Wrapper — тонкий императивный trigger (`Invoke ... NOW`, `IMMEDIATELY`), без него slash-вызов в Opencode даёт passive load. Idempotent: обновляет только при diff (description-drift после skill rewrite).
+- Reconcile-семантика — add/update only. Удаление модуля из манифеста НЕ вычищает регистрацию из `opencode.json` автоматически — нужно вручную. То же для wrapper'ов удалённых скиллов.
+- Управляется через `/init-vault`. Ручные правки соответствующих ключей будут перезаписаны при следующем install.

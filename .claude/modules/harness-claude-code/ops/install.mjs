@@ -19,16 +19,14 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join, dirname, resolve } from 'node:path';
 import { ensureSubBlock } from '../../core/lib/managed_block.mjs';
-import { readJson, writeJsonWithBackup } from '../lib/config_patch.mjs';
-import { buildRegistry } from '../lib/mcp_registry.mjs';
+import { readJson, writeJsonWithBackup } from '../../core/lib/config_patch.mjs';
+import { buildRegistry } from '../../core/lib/mcp_registry.mjs';
+import { readStdin } from '../../core/lib/read_input.mjs';
 
 const SUB_BLOCK_TARGET = 'CLAUDE.md';
 const MODULE_NAME = 'harness-claude-code';
 const DEFAULT_TYPE = 'stdio';
 
-function readStdin() {
-  try { return readFileSync(0, 'utf-8'); } catch { return ''; }
-}
 
 function emit(result) {
   process.stdout.write(JSON.stringify(result, null, 2));

@@ -23,6 +23,7 @@ import { join, dirname } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { ensureSubBlock } from '../../core/lib/managed_block.mjs';
 import { logVenvOp, venvAuditPath } from '../../core/lib/venv_audit.mjs';
+import { readStdin } from '../../core/lib/read_input.mjs';
 
 const SUB_BLOCK_TARGET = 'CLAUDE.md';
 const MODULE_NAME = 'vault-semantic';
@@ -53,9 +54,6 @@ const PERF_HINT = {
   measured_on: 'RTX 3070 Laptop / driver 591.74 / Python 3.14 / cp314+cu126',
 };
 
-function readStdin() {
-  try { return readFileSync(0, 'utf-8'); } catch { return ''; }
-}
 
 function emit(result) {
   process.stdout.write(JSON.stringify(result, null, 2));

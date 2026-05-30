@@ -27,6 +27,7 @@ tags:
 | `ANIME/` | Карточки аниме-тайтлов: сериалы, фильмы, OVA (`note_kind: anime`) | `ANIME/Demon_Slayer.md` |
 | `PERSONS/` | Карточки людей из аниме-индустрии: режиссёры, сценаристы, композиторы, продюсеры, аниматоры (`note_kind: person`) | `PERSONS/Hayao_Miyazaki.md` |
 | `CHARACTERS/` | Карточки вымышленных персонажей аниме и манги (`note_kind: character`) | `CHARACTERS/Kamado_Tanjiro.md` |
+| `STUDIOS/` | Карточки анимационных студий-производителей (`note_kind: studio`) | `STUDIOS/Ufotable.md` |
 | `SYSTEM/` | Мета-документы волта: схемы, правила, таксономии | `SYSTEM/Metadata_schema.md` |
 | `attachments/` | Все вложения: изображения, PDF, аудио | — |
 

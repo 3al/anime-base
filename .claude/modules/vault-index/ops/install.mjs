@@ -2,15 +2,29 @@
 // vault-index module — install handler.
 //
 // Wraps the existing in-place MCP source at <vault>/.claude/mcp-server/.
-// If dist/ is missing, runs `npm install && npm run build` once.
+// If dist/ is missing or stale (src newer than dist), runs `npm install && npm run build`.
 // Adds a sub-block in CLAUDE.md with a short module description.
 //
 // Contract: see SYSTEM/Vault_Bootstrap_Architecture.md → "Контракт операций".
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync, statSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { ensureSubBlock } from '../../core/lib/managed_block.mjs';
+import { readStdin } from '../../core/lib/read_input.mjs';
+
+// Newest mtime (ms) among all files under dir, recursively. 0 if dir absent.
+function newestMtimeMs(dir) {
+  if (!existsSync(dir)) return 0;
+  let newest = 0;
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const full = join(dir, entry.name);
+    newest = entry.isDirectory()
+      ? Math.max(newest, newestMtimeMs(full))
+      : Math.max(newest, statSync(full).mtimeMs);
+  }
+  return newest;
+}
 
 const LEGACY_SOURCE_REL = '.claude/mcp-server';
 const CANONICAL_SOURCE_SUBDIR = 'mcp';
@@ -68,13 +82,6 @@ function detectLayout(vault_root, module_dir) {
   return { mcpDir: null, layout: 'missing', warnings: [], next_steps: [] };
 }
 
-function readStdin() {
-  try {
-    return readFileSync(0, 'utf-8');
-  } catch {
-    return '';
-  }
-}
 
 function emit(result) {
   process.stdout.write(JSON.stringify(result, null, 2));
@@ -159,9 +166,17 @@ function main() {
     target: mcpDir.replace(vault_root, '').replace(module_dir, '<module>'),
   });
 
-  // 2. Build if dist/ missing.
+  // 2. Build if dist/ missing OR source is newer than dist (stale build).
+  //    Без staleness-проверки version-bump с правкой src оставлял протухший
+  //    dist (npm-сборка пропускалась) — re-materialize обновляет src, но
+  //    dist gitignored и не пересобирался. См. B-003.
   const distEntry = join(mcpDir, 'dist', 'index.js');
-  if (!existsSync(distEntry)) {
+  const distMissing = !existsSync(distEntry);
+  const distStale =
+    !distMissing &&
+    newestMtimeMs(join(mcpDir, 'src')) > statSync(distEntry).mtimeMs;
+  if (distMissing || distStale) {
+    actions.push({ type: 'build_triggered', reason: distMissing ? 'dist_missing' : 'dist_stale' });
     actions.push({ type: 'npm_install_start', target: mcpDir });
     const inst = runNpm(['install', '--no-audit', '--no-fund'], mcpDir);
     if (inst.code !== 0) {
@@ -186,7 +201,7 @@ function main() {
       });
     }
   } else {
-    actions.push({ type: 'verified', target: 'dist/index.js', detail: 'already built, skipping npm' });
+    actions.push({ type: 'verified', target: 'dist/index.js', detail: 'built and up-to-date (src not newer), skipping npm' });
   }
 
   // 3. Sub-block in CLAUDE.md.

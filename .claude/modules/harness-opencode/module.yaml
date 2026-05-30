@@ -1,0 +1,38 @@
+name: harness-opencode
+version: 0.1.0
+description: |
+  Регистрирует MCP-серверы из всех модулей манифеста в <vault>/opencode.json
+  (Opencode harness) под top-level ключом `mcp[<name>]`. Дополнительно
+  bulk-генерирует тонкие slash-wrappers .opencode/commands/<name>.md из
+  каждого <vault>/.claude/skills/<name>/SKILL.md — без них slash-вызов
+  скилла в Opencode делает passive load (SKILL.md дампится как spec,
+  модель acknowledges, не выполняет). Wrapper template — императивный
+  trigger, заставляющий active execution.
+
+  Phase 1B (v0.1.0) — initial release:
+  - MCP registration: mirror harness-claude-code, но формат entry
+    Opencode-specific (command: ["node", path] массив, environment вместо
+    env, type: "local", enabled: true). Backup + ротация через
+    core/lib/config_patch.mjs (общий helper, делёный с CC harness).
+  - Bulk wrapper generation: сканирует .claude/skills/*/SKILL.md, парсит
+    frontmatter (name + description), пишет .opencode/commands/<name>.md
+    через core/lib/opencode_wrappers.mjs::buildWrapperContent. Idempotent —
+    diff'ит existing вс generated, обновляет только при изменении (например,
+    description-drift после rewrite).
+  - Drift recovery: reinstall/version-bump модуля с изменённым entry point
+    → обновляет опкодную MCP entry (config_resolved/config_unchanged
+    actions, как у harness-claude-code).
+mandatory: false
+requires:
+  - core
+provides:
+  mcp_server: null
+  skills: []
+config_schema:
+  config_path:
+    type: string
+    description: Override path to opencode.json (default <vault_root>/opencode.json).
+    default: null
+ops:
+  install: ops/install.mjs
+  status: ops/status.mjs

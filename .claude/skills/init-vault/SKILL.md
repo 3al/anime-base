@@ -151,26 +151,26 @@ JSON marker битый. **Не блокирует**, но WARN с `error` из s
 3. **Auto-pull**: если модуль в `requires` отсутствует в манифесте — добавить с уведомлением пользователю.
 4. **Cycle detection**: если граф циклический — ошибка, остановиться.
 5. **Topological sort** — модуль ставится после всех своих зависимостей.
+6. **Harness — последними (КРИТИЧНО).** После топосорта применить вторичное правило: **harness-модули** (те, чья роль — регистрировать MCP-серверы, объявленные *другими* модулями; по конвенции названы `harness-*` и в `module.yaml` имеют `provides.mcp_server: null`) обязаны идти **после всех** модулей, объявляющих `provides.mcp_server: {name: …}` (vault-index, vault-semantic и т.п.). Причина: harness читает per-vault `.installed` маркеры провайдеров и пропускает регистрацию (`module_not_installed`) для тех, что ещё не поставлены. Если harness отработает раньше провайдера в том же проходе — MCP-сервер останется незарегистрированным до повторного прогона harness. Формально harness `requires` только `core`, поэтому топосорт сам по себе их в конец не двигает — это правило надо применить явно.
 
 ### Шаг 4. Status check (всегда)
 
 Для каждого модуля по порядку:
-1. Прочитать `module.yaml`, получить путь к `ops/status.mjs` + поле `install_scope` (default `per-vault`).
+1. Прочитать `module.yaml`, получить путь к `ops/status.mjs`.
 2. Запустить через Bash: `echo '<INPUT_JSON>' | node .claude/modules/<name>/ops/status.mjs`.
-3. INPUT_JSON формируется по контракту из `Vault_Bootstrap_Architecture.md` — раздел «Общий ввод/вывод». Для **shared**-модулей добавь `install_scope` + `shared_module_dir` (см. Шаг 6.0):
+3. INPUT_JSON формируется по контракту из `Vault_Bootstrap_Architecture.md` — раздел «Общий ввод/вывод»:
    ```json
    {
      "vault_root": "<абсолютный путь к корню волта>",
      "module_name": "<имя модуля>",
      "module_dir": "<абсолютный путь к .claude/modules/<name>>",
-     "install_scope": "shared",                  // только для shared-модулей
-     "shared_module_dir": "<абс. путь>",         // только для shared-модулей
      "config": <значения из manifest.config.<name>, или {}>,
      "language": "<из манифеста>",
      "harness": ["claude-code"],
      "platform": "<win32|darwin|linux>"
    }
    ```
+   `install_scope` и `shared_module_dir` передавать **не нужно** — status-handler сам читает scope из `module.yaml` и резолвит shared path через `core/lib/paths.mjs::resolveSharedToolsHome()`. Если хочется явно override'нуть scope (для тестов с изолированным `VAULT_TOOLS_HOME`) — input-поля по-прежнему принимаются и имеют приоритет над манифестом.
 4. Распарсить stdout как JSON. Собрать `module_status` каждого.
 
 ### Шаг 5. Plan
@@ -260,6 +260,8 @@ Stdout содержит:
 3. Если `status: needs_torch_decision` (см. 6.1.1) — handler не поставил модуль и ждёт решения юзера.
 4. Накопить `actions`, `warnings`, `next_steps`.
 
+**6.1-net. Финальный harness-проход (safety net).** Шаг 3.6 уже ставит harness последними, поэтому штатно повторный прогон не нужен. Но если по какой-то причине **harness-модуль вернул warning `module_not_installed`** (он отработал раньше, чем провайдер этого MCP-сервера был поставлен в том же проходе) — после завершения всех установок **повторно запусти install этого harness-модуля один раз**. На втором проходе провайдер уже имеет `.installed` маркер → регистрация проходит. Это гарантирует регистрацию MCP даже если порядок почему-то нарушился; без него `module_not_installed` остаётся неразрешённым и MCP-сервер не зарегистрирован. Не зацикливаться (один повтор).
+
 #### 6.1.1 Обработка `needs_torch_decision` (vault-semantic v0.4.0+)
 
 `vault-semantic` install handler возвращает `status: needs_torch_decision` если:
@@ -292,7 +294,7 @@ Stdout содержит блок `decision`:
 
 **Что делать:**
 
-1. **Показать юзеру конкретный trade-off** через AskUserQuestion. Сформируй текст из полей `decision`:
+1. **Показать юзеру конкретный trade-off** структурированным multi-choice вопросом. Сформируй текст из полей `decision`:
    - GPU: `gpu_detected[0]`
    - Размер волта: `vault_note_count` заметок
    - Если `shared_torch_variant` не null — упомянуть: «На машине уже стоит shared venv с `<shared_torch_variant>`».
@@ -338,7 +340,7 @@ Stdout содержит блок `conflict`:
 
 **Что делать:**
 
-1. **Показать юзеру конкретный конфликт** через AskUserQuestion. Текст из полей `conflict`:
+1. **Показать юзеру конкретный конфликт** структурированным multi-choice вопросом. Текст из полей `conflict`:
    - Сейчас shared venv на: `current_shared_variant`
    - Этот волт (`requesting_vault`) просит: `requested_variant`
    - Другие волты, использующие тот же shared venv: `other_registered_projects` (если пуст — упомяни «других волтов не зарегистрировано»)
@@ -502,23 +504,16 @@ Detection — любой из критериев:
 
 ## Формат запуска handler'а
 
-Канонический способ из bash:
+Handler читает INPUT_JSON из **stdin**. Канонический способ — **одностроковый** JSON через `echo … | node`, он портативен между bash и PowerShell (одинарные кавычки = литерал в обоих shell'ах, pipe направляет в stdin в обоих):
 
 ```bash
-node .claude/modules/<name>/ops/<op>.mjs <<'EOF'
-{
-  "vault_root": "...",
-  "module_name": "...",
-  "module_dir": "...",
-  "config": {},
-  "language": "ru",
-  "harness": ["claude-code"],
-  "platform": "win32"
-}
-EOF
+echo '{"vault_root":"D:/Vault","module_name":"<name>","module_dir":"D:/Vault/.claude/modules/<name>","config":{},"language":"ru","harness":["claude-code"],"platform":"win32"}' | node .claude/modules/<name>/ops/<op>.mjs
 ```
 
-Heredoc решает экранирование Windows-путей (обратные слэши, пробелы). На Windows-bash это работает.
+Используй **forward slashes** в путях (`D:/Vault`) — валидно в JSON и не требует экранирования. Одинарные кавычки вокруг JSON обязательны (литеральная строка, без интерполяции `$`).
+
+> [!warning] Shell-портативность
+> **Bash heredoc** (`node … <<'EOF' … EOF`) удобен для многострочного JSON, но **в PowerShell не работает** (heredoc там нет — это всплыло в Phase 6.2b на Opencode/Windows). Если нужен многострочный ввод именно в PowerShell — используй single-quoted here-string: `@'`…JSON…`'@ | node …`. Кросс-shell дефолт — одностроковый `echo '…' | node …` выше.
 
 **Для shared-модулей** (см. Шаг 6.0) INPUT_JSON расширяется:
 ```json
@@ -545,7 +540,7 @@ Heredoc решает экранирование Windows-путей (обратн
 5. **Финальный отчёт — обязателен**, даже если ничего не делалось. Покажи пользователю текущее состояние всех модулей.
 6. **Язык всего user-facing narrative — `manifest.language`.** Это значит:
    - Status-апдейты между шагами («Now running status checks», «Pre-install for shared vault-semantic», «Handler needs torch decision») — на языке манифеста.
-   - Текст AskUserQuestion (заголовок вопроса, labels опций, descriptions) — на языке манифеста.
+   - Текст structured-question диалога (заголовок вопроса, labels опций, descriptions) — на языке манифеста.
    - Финальный отчёт целиком (заголовки секций, формулировки статусов, дополнительные пояснения) — на языке манифеста.
    - Прямые цитаты warnings/next_steps из handler stdout — **как есть** (модули сами решают на каком языке возвращать тексты; не переводи их).
    - Программные event-имена в `actions[]` (`pip_install_done`, `torch_variant_resolved`, `nvidia_smi_probe` и т.д.) — **всегда английские**, не переводи.

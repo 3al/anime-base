@@ -13,6 +13,9 @@
 # CC permission cache — не версионируется
 .claude/settings.local.json
 
+# Opencode config backups — пишутся harness-opencode при патче, ротация newest-5
+opencode.json.bak.*
+
 # Legacy layout (pre-Phase-4.5 — на случай существующих волтов)
 .claude/mcp-server[s]/*/node_modules
 .claude/mcp-server[s]/*/dist

@@ -14,18 +14,12 @@
 
 import { readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
+import { readStdin } from '../../core/lib/read_input.mjs';
 
 const LEGACY_SOURCE_REL = '.claude/mcp-server';
 const CANONICAL_SOURCE_SUBDIR = 'mcp';
 const MODULE_NAME = 'vault-index';
 
-function readStdin() {
-  try {
-    return readFileSync(0, 'utf-8');
-  } catch {
-    return '';
-  }
-}
 
 function emit(result) {
   process.stdout.write(JSON.stringify(result, null, 2));
