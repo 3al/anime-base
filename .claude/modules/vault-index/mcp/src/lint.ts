@@ -1,5 +1,6 @@
 import type { NoteRecord, LintIssue } from './types.js';
 import type { VaultIndex } from './vault-index.js';
+import type { AsymmetricPair } from './asymmetric.js';
 
 // Directories excluded from lint (same as lint-vault.sh)
 const LINT_SKIP_PREFIXES = ['SYSTEM/', 'ARTIFACTS/'];
@@ -17,8 +18,22 @@ export function isLintable(record: NoteRecord): boolean {
 /**
  * Lint a single note record against vault rules.
  * Reproduces all checks from lint-vault.sh.
+ *
+ * `asymByTargetPath` — optional precomputed map (path of note missing the
+ * reverse link → asymmetric pairs). When provided, surfaces one-directional
+ * reciprocal links on the note that should add the reverse link.
+ * `asymmetricSeverity` — WARN (default) or ERROR; per-vault policy passed by
+ * the caller (vault_lint via the asymmetricSeverity param, sourced from
+ * vault-manifest.yaml::asymmetry_severity).
+ * Theme-neutral: the caller decides which kind-pairs to check and at what
+ * severity; lint itself knows no kinds here.
  */
-export function lintNote(record: NoteRecord, index: VaultIndex): LintIssue[] {
+export function lintNote(
+  record: NoteRecord,
+  index: VaultIndex,
+  asymByTargetPath?: Map<string, AsymmetricPair[]>,
+  asymmetricSeverity: 'WARN' | 'ERROR' = 'WARN',
+): LintIssue[] {
   const issues: LintIssue[] = [];
 
   // --- No frontmatter ---
@@ -121,6 +136,20 @@ export function lintNote(record: NoteRecord, index: VaultIndex): LintIssue[] {
   }
   if (linkCount > 15) {
     issues.push({ severity: 'WARN', code: 'too-many-links', message: `Has ${linkCount} outgoing WikiLinks (max 15)` });
+  }
+
+  // --- Asymmetric reciprocal links (opt-in, only when caller passed pairs) ---
+  if (asymByTargetPath) {
+    const missing = asymByTargetPath.get(record.path);
+    if (missing) {
+      for (const p of missing) {
+        issues.push({
+          severity: asymmetricSeverity,
+          code: 'asymmetric-link',
+          message: `Missing reverse WikiLink to ${p.source} (${p.source} links here, not reciprocated)`,
+        });
+      }
+    }
   }
 
   return issues;

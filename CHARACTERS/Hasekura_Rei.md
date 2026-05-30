@@ -13,7 +13,7 @@ aliases:
   - Рэй Хасэкура
   - Rei Hasekura
 created: 2026-05-30
-updated: 2026-05-30
+updated: 2026-05-31
 name_romaji: "Hasekura Rei"
 name_native: "支倉令"
 name_english: "Rei Hasekura"
@@ -33,9 +33,13 @@ affiliations:
 voice_actors: []
 mal_url: "https://myanimelist.net/character/1628/Rei_Hasekura"
 anilist_url: "https://anilist.co/character/1628/Rei-Hasekura"
+images:
+  cover: "attachments/Hasekura_Rei_cover.jpg"
 ---
 
 # Hasekura Rei (支倉令)
+
+![[Hasekura_Rei_cover.jpg|300]]
 
 **Рэй Хасэкура** — член Совета Ямаюрикай католической женской академии Лилиан, носительница титула Rosa Foetida en bouton (позднее — Rosa Foetida) в сериале «Мария-сама смотрит за нами». Старшая сестра Ёсино Симадзу, внешне — мальчишеская бисёнэн, внутри — нежная и домашняя.
 

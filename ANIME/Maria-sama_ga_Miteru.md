@@ -15,7 +15,7 @@ aliases:
   - Дева Мария смотрит за вами
   - Мария-сама смотрит на нас
 created: 2026-05-24
-updated: 2026-05-30
+updated: 2026-05-31
 title_romaji: Maria-sama ga Miteru
 title_original: マリア様がみてる
 format: tv
@@ -87,7 +87,7 @@ images:
 | ![[Sato_Sei_cover.jpg\|60]] **[[Sato_Sei\|Сэй Сато]]**                           | Megumi Toyoguchi                                          |
 | ![[Mizuno_Yoko_cover.jpg\|60]] **[[Mizuno_Yoko\|Ёко Мидзуно]]**                  | Emi Shinohara                                             |
 | ![[Torii_Eriko_cover.jpg\|60]] **[[Torii_Eriko\|Эрико Тории]]**                  | Hitomi Nabatame                                           |
-| **[[Hasekura_Rei\|Рэй Хасэкура]]**                                                | Shizuka Itō                                               |
+| ![[Hasekura_Rei_cover.jpg\|60]] **[[Hasekura_Rei\|Рэй Хасэкура]]**                                                | Shizuka Itō                                               |
 | **Ёсино Симадзу**                                                                | Haruna Ikezawa                                            |
 | **Симако Тодо**                                                                  | Mamiko Noto                                               |
 | **Юки Фукудзава**                                                                | Mitsuhiro Ichiki                                          |

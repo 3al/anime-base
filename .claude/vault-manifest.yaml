@@ -65,6 +65,10 @@ folders:
 reciprocity_pairs:
   - [character, character]
 
+# Severity для asymmetric-link issue в vault_lint (per-vault). WARN (дефолт) | ERROR.
+# Anime_Base: ERROR — реципрокность character↔character железная (см. Linking_guidelines § character).
+asymmetry_severity: ERROR
+
 # Per-module configuration overrides (advanced).
 config:
   vault-semantic:

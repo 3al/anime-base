@@ -1,5 +1,5 @@
 name: skills-common
-version: 0.4.6
+version: 0.4.7
 description: |
   Тема-нейтральные скиллы, общие для любого волта: fix-links, audit-note,
   new-note, rename-note, verify, expand-stub, add-note-kind,
@@ -147,6 +147,7 @@ provides:
     - expand-stub
     - add-note-kind
     - harness-agnostic-audit
+    - vision-gate-audit
 config_schema: {}
 ops:
   install: ops/install.mjs

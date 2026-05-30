@@ -15,7 +15,7 @@ aliases:
   - "Дева Мария смотрит за вами: Весна"
   - "Мария-сама смотрит на нас: Весна"
 created: 2026-05-25
-updated: 2026-05-30
+updated: 2026-05-31
 title_romaji: "Maria-sama ga Miteru: Haru"
 title_original: マリア様がみてる～春～
 format: tv
@@ -91,7 +91,7 @@ images:
 | **Норико Нидзё**                                                                 | Kaori Shimizu                                             |
 | **Тоуко Мацудайра**                                                              | Rie Kugimiya                                              |
 | **Ёсино Симадзу**                                                                | Haruna Ikezawa                                            |
-| **[[Hasekura_Rei\|Рэй Хасэкура]]**                                                | Shizuka Itō                                               |
+| ![[Hasekura_Rei_cover.jpg\|60]] **[[Hasekura_Rei\|Рэй Хасэкура]]**                                                | Shizuka Itō                                               |
 | ![[Torii_Eriko_cover.jpg\|60]] **[[Torii_Eriko\|Эрико Тории]]**                                                      | Hitomi Nabatame                                           |
 | ![[Mizuno_Yoko_cover.jpg\|60]] **[[Mizuno_Yoko\|Ёко Мидзуно]]**                     | Emi Shinohara                                             |
 | **Сугуру Касиваги**                                                              | Nobuyuki Hiyama                                           |

@@ -1,5 +1,6 @@
-**MCP-сервер `vault-index`** (модуль `vault-index` v0.4.0):
+**MCP-сервер `vault-index`** (модуль `vault-index` v0.4.1):
 - Структурный индекс волта — frontmatter, граф ссылок, lint, query.
 - 14 MCP tools: `vault_lint`, `vault_broken_links`, `vault_orphans`, `vault_duplicate_links`, `vault_query`, `vault_backlinks`, `vault_note_profile`, `vault_stats`, `vault_reindex`, `vault_image_status`, `vault_add_image`, `vault_lookalike_peers`, `vault_text_mentions`, `vault_asymmetric_links`.
+- `vault_lint` принимает опциональные `reciprocityPairs` (из `vault-manifest.yaml::reciprocity_pairs`) + `asymmetricSeverity` (из `asymmetry_severity`, дефолт WARN) → асимметрия всплывает `asymmetric-link` issue. Та же engine-логика, что у `vault_asymmetric_links` (`src/asymmetric.ts`).
 - Source: `.claude/modules/vault-index/mcp/` (canonical layout). Полная архитектура: `SYSTEM/MCP_Server_Design.md`.
 - Регистрация в `~/.claude.json` / `opencode.json` — через harness-* модули (см. `.claude/vault-manifest.yaml`).

@@ -3,6 +3,7 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { VaultIndex } from '../vault-index.js';
 import { lintNote, isLintable } from '../lint.js';
 import type { LintIssue } from '../types.js';
+import { computeAsymmetricForPairs, type AsymmetricPair } from '../asymmetric.js';
 
 interface LintFileResult {
   file: string;
@@ -25,13 +26,36 @@ interface LintFileResult {
 export function registerLintTool(server: McpServer, index: VaultIndex): void {
   server.tool(
     'vault_lint',
-    'Validate frontmatter, tags, and links. Replaces lint-vault.sh.',
+    'Validate frontmatter, tags, and links. Replaces lint-vault.sh. Optionally pass reciprocityPairs (from vault-manifest reciprocity_pairs) to also surface one-directional links as a WARN (code asymmetric-link) on the note missing the reverse link. Theme-neutral: kind-pairs are passed in, not hardcoded.',
     {
       target: z.string().optional().describe('File name, relative path, or folder. Omit for entire vault.'),
       showAll: z.boolean().optional().describe('Return all files (true) or only files with issues (false, default).'),
+      reciprocityPairs: z
+        .array(z.array(z.string()))
+        .optional()
+        .describe('Optional list of [sourceKind, targetKind] pairs (e.g. [["character","character"]]). When given, lint adds an asymmetric-link issue on each note that is linked by a sourceKind note but does not link back. Omit to skip the check.'),
+      asymmetricSeverity: z
+        .enum(['WARN', 'ERROR'])
+        .optional()
+        .describe('Severity for asymmetric-link issues (per-vault policy from vault-manifest.yaml::asymmetry_severity). Default WARN. Only applies when reciprocityPairs is given.'),
     },
-    async ({ target, showAll }) => {
+    async ({ target, showAll, reciprocityPairs, asymmetricSeverity }) => {
       await index.ensureFresh();
+
+      // Precompute asymmetric pairs once, indexed by the note that must add the
+      // reverse link (the B side). Opt-in: skipped unless caller passes pairs.
+      let asymByTargetPath: Map<string, AsymmetricPair[]> | undefined;
+      if (reciprocityPairs && reciprocityPairs.length > 0) {
+        const kindPairs = reciprocityPairs
+          .filter((p) => p.length >= 2)
+          .map((p) => [p[0]!, p[1]!] as [string, string]);
+        asymByTargetPath = new Map();
+        for (const p of computeAsymmetricForPairs(index, kindPairs)) {
+          const arr = asymByTargetPath.get(p.targetPath);
+          if (arr) arr.push(p);
+          else asymByTargetPath.set(p.targetPath, [p]);
+        }
+      }
 
       const records = getTargetRecords(index, target);
       const isSingleFile = records.length === 1;
@@ -43,7 +67,7 @@ export function registerLintTool(server: McpServer, index: VaultIndex): void {
       for (const record of records) {
         if (!isLintable(record)) continue;
 
-        const issues = lintNote(record, index);
+        const issues = lintNote(record, index, asymByTargetPath, asymmetricSeverity ?? 'WARN');
         const errCount = issues.filter(i => i.severity === 'ERROR').length;
         const warnCount = issues.filter(i => i.severity === 'WARN').length;
 

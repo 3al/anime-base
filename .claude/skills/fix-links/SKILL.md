@@ -43,7 +43,7 @@ model: sonnet
 | `vault_duplicate_links` | `{ folder? }` | `{ duplicates: [{ file, target, count }], count }` |
 | `vault_orphans` | `{ folder? }` | `{ orphans: [{ file, type, domain }], count }` |
 | `vault_asymmetric_links` | `{ sourceKind, targetKind, folder? }` | `{ pairs: [{ source, sourcePath, line, target, targetPath, missingReverse }], count }` |
-| `vault_lint` | `{ target?, showAll? }` | `{ files: [...], summary }` |
+| `vault_lint` | `{ target?, showAll?, reciprocityPairs? }` | `{ files: [...], summary }` |
 
 Все tools принимают опциональный параметр `folder`. Передавать папку из `$ARGUMENTS` если указана.
 
@@ -52,6 +52,8 @@ model: sonnet
 ### 1. Диагностика
 
 Вызвать MCP-tools в зависимости от аргумента (`all` = broken_links, duplicate_links, orphans + asymmetric, если `reciprocity_pairs` непуст).
+
+При вызове `vault_lint` (тип `lint`, либо в составе `all`): если `reciprocity_pairs` в манифесте непуст — передать его как `reciprocityPairs`, чтобы асимметрия всплыла `asymmetric-link` прямо в lint-выводе (на стороне карточки, которой не хватает обратной ссылки). Severity — из `vault-manifest.yaml::asymmetry_severity` (дефолт `WARN`; передать как `asymmetricSeverity`, если поле задано). Это слой непрерывной видимости; фактический ремонт — под-режим `asymmetric` (шаг 4.5).
 
 Если все tools вернули пустые массивы (count: 0) — сообщить «Проблем не найдено» и завершить.
 

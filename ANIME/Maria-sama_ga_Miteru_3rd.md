@@ -15,7 +15,7 @@ aliases:
   - Дева Мария смотрит за вами 3rd
   - Мария-сама смотрит на нас 3rd
 created: 2026-05-30
-updated: 2026-05-30
+updated: 2026-05-31
 title_romaji: Maria-sama ga Miteru 3rd
 title_original: マリア様がみてる〜３rd〜
 format: ova
@@ -83,7 +83,7 @@ images:
 | -------------------------------------------------------------------------------- | --------------------------------------------------------- |
 | ![[Fukuzawa_Yumi_cover.jpg\|60]] **[[Fukuzawa_Yumi\|Юми Фукудзава]]**            | ![[Kana_Ueda_cover.png\|60]] **[[Kana_Ueda\|Kana Ueda]]** |
 | ![[Ogasawara_Sachiko_cover.jpg\|60]] **[[Ogasawara_Sachiko\|Сатико Огасавара]]** | Miki Itō                                                  |
-| **[[Hasekura_Rei\|Рэй Хасэкура]]**                                                | Shizuka Itō                                               |
+| ![[Hasekura_Rei_cover.jpg\|60]] **[[Hasekura_Rei\|Рэй Хасэкура]]**                                                | Shizuka Itō                                               |
 | **Ёсино Симадзу**                                                                | Haruna Ikezawa                                            |
 | **Симако Тодо**                                                                  | Mamiko Noto                                               |
 | **Тоуко Мацудайра**                                                              | Rie Kugimiya                                              |
