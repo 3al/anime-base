@@ -15,7 +15,7 @@ aliases:
   - "Дева Мария смотрит за вами: Весна"
   - "Мария-сама смотрит на нас: Весна"
 created: 2026-05-25
-updated: 2026-05-26
+updated: 2026-05-30
 title_romaji: "Maria-sama ga Miteru: Haru"
 title_original: マリア様がみてる～春～
 format: tv
@@ -41,6 +41,7 @@ mal_score: 7.67
 shikimori_score:
 related_titles:
   - Maria-sama_ga_Miteru
+  - Maria-sama_ga_Miteru_3rd
 staff:
   - person: Yukihiro_Matsushita
     role: director
@@ -90,9 +91,9 @@ images:
 | **Норико Нидзё**                                                                 | Kaori Shimizu                                             |
 | **Тоуко Мацудайра**                                                              | Rie Kugimiya                                              |
 | **Ёсино Симадзу**                                                                | Haruna Ikezawa                                            |
-| **Рэй Хасэкура**                                                                 | Shizuka Itō                                               |
-| **Эрико Тории**                                                                  | Hitomi Nabatame                                           |
-| **Ёко Мидзуно**                                                                  | Emi Shinohara                                             |
+| **[[Hasekura_Rei\|Рэй Хасэкура]]**                                                | Shizuka Itō                                               |
+| ![[Torii_Eriko_cover.jpg\|60]] **[[Torii_Eriko\|Эрико Тории]]**                                                      | Hitomi Nabatame                                           |
+| ![[Mizuno_Yoko_cover.jpg\|60]] **[[Mizuno_Yoko\|Ёко Мидзуно]]**                     | Emi Shinohara                                             |
 | **Сугуру Касиваги**                                                              | Nobuyuki Hiyama                                           |
 | **Юки Фукудзава**                                                                | Mitsuhiro Ichiki                                          |
 | **Цутако Такэсима**                                                              | Rina Satō                                                 |
@@ -100,16 +101,17 @@ images:
 ## Связанные тайтлы
 
 - ![[Maria-sama_ga_Miteru_cover.jpg|80]] **[[Maria-sama_ga_Miteru|Maria-sama ga Miteru]]** (2004) — первый сезон, прямой приквел; знакомит зрителя с Лилиан, советом Ямаюри и школьной системой сестринства.
+- ![[Maria-sama_ga_Miteru_3rd_cover.jpg|80]] **[[Maria-sama_ga_Miteru_3rd|Maria-sama ga Miteru 3rd]]** (2006) — прямой сиквел, третий сезон (OVA); арка Канако Хосокавы и выборы в Совете Ямаюри.
 
 ## Студия и команда
 
 Второй сезон выпущен Studio Deen летом 2004 года, спустя полгода после первого: режиссёр Юкихиро Мацусита, сценарист Рэйко Ёсида и композитор Микия Катакура остаются на своих местах, обеспечивая прямую преемственность тона и визуального языка. Производственный костяк по-прежнему опирается на оригинальные лайт-новеллы Оюки Конно, выходящие в журнале Cobalt с 1998 года: материал второго сезона покрывает примерно тома 4–7, включая основную арку Сэй с Сиори и появление Тоуко.
 
 - ![[Studio_Deen_cover.png|60]] **[[Studio_Deen|Studio Deen]]** — студия-производитель.
-- **Yukihiro Matsushita** — режиссёр сериала.
+- ![[Yukihiro_Matsushita_cover.jpg|60]] **[[Yukihiro_Matsushita|Yukihiro Matsushita]]** — режиссёр сериала.
 - **Reiko Yoshida** — сценарист, series composition.
 - **Mikiya Katakura** — композитор. 
-- **Oyuki Konno** — автор оригинальных лайт-новелл.
+- ![[Oyuki_Konno_cover.jpg|60]] **[[Oyuki_Konno|Oyuki Konno]]** — автор оригинальных лайт-новелл.
 
 ## Резонанс
 

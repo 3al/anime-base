@@ -1,5 +1,5 @@
 name: vault-index
-version: 0.3.2
+version: 0.4.0
 description: |
   Структурный MCP-сервер волта: индекс frontmatter, граф ссылок, lint, query.
   Подробности — SYSTEM/MCP_Server_Design.md.

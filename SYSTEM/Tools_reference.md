@@ -106,6 +106,8 @@ updated: 2026-05-23
 
 Это **не следует** из описания tool'а («Find all notes that link to a given note») — знание получено эмпирически. Используется в `/add-images` шаг 4.5 для cross-update embeds при смене расширения постера.
 
+**`vault_backlinks` — единственный верификатор реципрокности связей.** `vault_text_mentions` по контракту исключает строки, где WikiLink на target уже стоит (идемпотентность реверс-ноги create-скиллов). Побочный эффект: как только одна сторона связи `A → B` стала WikiLink, недостающая обратная `B → A` становится **невидимой** для text-mention-слоя — он её больше не вернёт. Однонаправленная связь «вмораживается». Подсветить её можно только через `vault_backlinks`, который видит WikiLink независимо от того, был ли там когда-то plain-text: сравнение `vault_backlinks(note=A)` и `vault_backlinks(note=B)` даёт расхождение = список асимметричных связей. Применяется в `/new-character` шаг 7.5d (reciprocity backstop форвард-ноги). Vault-wide детектор накопленного долга — кандидат на новый tool в vault-index + под-режим `/fix-links` (см. roadmap).
+
 **Wikimedia Commons требует descriptive User-Agent.** При скачивании изображений с `upload.wikimedia.org` (логотипы студий, infobox-картинки) generic `Mozilla/5.0` даёт 429 даже с одного запроса. Wikimedia [User-Agent policy](https://meta.wikimedia.org/wiki/User-Agent_policy) требует UA вида `<BotName>/<version> (<repo or contact URL>; <email>)`. Также: thumbnail URL'ы (`/thumb/.../<N>px-...`) принимаются только для whitelisted размеров — кастомные (300px и т.п.) дают 400. Безопасно качать оригинал без `/thumb/`. Полная нота — `memory/reference_wikimedia_download_ua_and_thumb_policy.md`. Зафиксировано в `/new-studio` шаг 6.5; `/new-character` и `/new-anime` пока используют generic UA — могут уткнуться, если столкнутся с Wikimedia.
 
 ### Tools, унаследованные из общего vault-index и НЕ применяемые в Anime_Base
@@ -144,6 +146,7 @@ updated: 2026-05-23
 | Найти embeds картинки по filename | `vault_backlinks(note="<filename.ext>")` | Не Grep по `\!\[\[<name>` — медленнее и не даёт ширину |
 | Найти WikiLinks на заметку | `vault_backlinks(note="<basename>")` | — |
 | Найти plain-text упоминания заметки (для апгрейда text → WikiLink после создания/переименования) | `vault_text_mentions(note="<target>", noteKinds=[...])` | Не Grep по name — он не знает aliases цели и не фильтрует уже-WikiLinked строки. Не `vault_backlinks` — он находит только существующие WikiLinks. |
+| Проверить, что связь двунаправленна (нет вмороженной однонаправленной `A→B` без `B→A`) | `vault_backlinks` обеих сторон + сравнение | Не `vault_text_mentions` — он слеп к строкам, где WikiLink уже стоит, поэтому пропущенную обратную сторону не покажет. |
 | Найти заметки по полю frontmatter (`featured_in`, `staff[].person`) | `vault_query` (если поле в схеме) или `vault_backlinks` если поле — foreign-key WikiLink | Не Grep, не semantic |
 | Найти заметки про определённую тему (без точного слова) | `vault_semantic_search` | Не Grep — пропустит парафраз/синонимы |
 | Найти точное слово/имя в теле волта | `Grep` | Не `vault_semantic_search` — лишний шум на лексическом матче |
@@ -181,7 +184,9 @@ MCP-tools выполняют **механические** проверки и и
                     web fetch (MAL/AniList — постер + данные)
                     Read featured_in карточек
                     vault_text_mentions(note=созданный, noteKinds=[character, person])
-                                  ← sibling reverse-check (шаг 7.5b)
+                                  ← sibling reverse-check, реверс-нога (шаг 7.5b)
+                    vault_backlinks(note=созданный)
+                                  ← reciprocity backstop, верификация форвард-ноги (шаг 7.5d)
                     vault_lint(target=созданная карточка)
 
 /vault-rag       →  vault_query (L1, если запрос фактологический)

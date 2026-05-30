@@ -57,6 +57,14 @@ folders:
     keywords: [character, персонаж, hero, герой, villain, antagonist]
     create_skill: /new-character
 
+# Reciprocity pairs — kind-пары, для которых межкарточные навигационные связи
+# обязаны быть двунаправленными по конвенции волта. Читается /fix-links (под-режим
+# asymmetric) + tool vault_asymmetric_links. Пусто/отсутствует = проверка выключена (opt-in).
+# Anime_Base: только character↔character (FK-классы character↔anime/person исключены
+# тем, что просто не входят в список — см. docs/Asymmetric_Links_Spec.md §5).
+reciprocity_pairs:
+  - [character, character]
+
 # Per-module configuration overrides (advanced).
 config:
   vault-semantic:

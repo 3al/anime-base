@@ -63,6 +63,7 @@ Lint покрывает механику (наличие полей, лимит 
 - Регистр совпадает с именем файла.
 - Все target существуют (проверить через Glob).
 - Не менее 1 исходящей, не более 15.
+- **Реципрокность связей** — если `note_kind` заметки образует пару в `reciprocity_pairs` (`.claude/vault-manifest.yaml`; для Anime_Base — `[character, character]`): вызвать `vault_asymmetric_links(sourceKind=<note_kind>, targetKind=<note_kind>)`. Любая запись в `pairs[]`, где `source` **или** `target` = эта заметка — **ERROR** (односторонняя связь). Чинить добавлением обратного навигационного линка в карточку `missingReverse.from` (gallery-формат по [[Linking_guidelines]]). Политика волта: связь в разделе `## Связи` **строго двунаправленная**, односторонних быть не должно.
 
 ### 3.4 Имя файла
 

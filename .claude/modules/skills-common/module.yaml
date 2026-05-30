@@ -1,5 +1,5 @@
 name: skills-common
-version: 0.4.5
+version: 0.4.6
 description: |
   Тема-нейтральные скиллы, общие для любого волта: fix-links, audit-note,
   new-note, rename-note, verify, expand-stub, add-note-kind,
