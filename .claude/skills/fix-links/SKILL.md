@@ -15,7 +15,7 @@ model: sonnet
 ## Аргументы
 
 `$ARGUMENTS` — парсить как `[тип] [папка]`:
-- **Тип проверки** (первое слово, по умолчанию `all`): `broken`, `duplicates`, `orphans`, `asymmetric`, `lint`, `all`
+- **Тип проверки** (первое слово, по умолчанию `all`): `broken`, `duplicates`, `basenames`, `orphans`, `asymmetric`, `lint`, `all`
 - **Папка** (остальное, опционально): путь для ограничения поиска
 
 Примеры:
@@ -24,6 +24,7 @@ model: sonnet
 - `/fix-links lint AI/Models` — только lint, только AI/Models
 - `/fix-links all AI/Models` — все проверки, только AI/Models
 - `/fix-links duplicates PRINCIPLES` — только дубликаты в PRINCIPLES
+- `/fix-links basenames` — только заметки с одинаковым basename в разных папках
 - `/fix-links asymmetric` — только односторонние межкарточные связи
 
 ## Источники правил
@@ -32,6 +33,7 @@ model: sonnet
 
 1. **`SYSTEM/Linking_guidelines.md`** — правила линковки
 2. **`.claude/vault-manifest.yaml` → `reciprocity_pairs`** — только для под-режима `asymmetric`: список kind-пар `[sourceKind, targetKind]`, реципрокность которых держится на конвенции (а не на frontmatter-FK). Поле опциональное, дефолт `[]` (opt-in). Пусто или отсутствует → под-режим `asymmetric` пропускается.
+3. **`.claude/vault-manifest.yaml` → `link_cap`** — для под-режима `lint`: потолок исходящих WikiLinks для проверки `too-many-links`. Поле опциональное: отсутствует → дефолт 15; число → переопределить порог; `null` → отключить проверку (для формализованных волтов, где карточки by design материализуют десятки структурных gallery/cast-ссылок). Прокидывается в `vault_lint` параметром `linkCap`.
 
 ## MCP-инструменты (vault-index)
 
@@ -41,9 +43,10 @@ model: sonnet
 |------|-----------|----------------|
 | `vault_broken_links` | `{ folder? }` | `{ broken: [{ file, line, target }], count }` |
 | `vault_duplicate_links` | `{ folder? }` | `{ duplicates: [{ file, target, count }], count }` |
+| `vault_duplicate_basenames` | `{ folder? }` | `{ duplicates: [{ basename, files: [...] }], count }` |
 | `vault_orphans` | `{ folder? }` | `{ orphans: [{ file, type, domain }], count }` |
 | `vault_asymmetric_links` | `{ sourceKind, targetKind, folder? }` | `{ pairs: [{ source, sourcePath, line, target, targetPath, missingReverse }], count }` |
-| `vault_lint` | `{ target?, showAll?, reciprocityPairs? }` | `{ files: [...], summary }` |
+| `vault_lint` | `{ target?, showAll?, reciprocityPairs?, asymmetricSeverity?, linkCap? }` | `{ files: [...], summary }` |
 
 Все tools принимают опциональный параметр `folder`. Передавать папку из `$ARGUMENTS` если указана.
 
@@ -51,9 +54,11 @@ model: sonnet
 
 ### 1. Диагностика
 
-Вызвать MCP-tools в зависимости от аргумента (`all` = broken_links, duplicate_links, orphans + asymmetric, если `reciprocity_pairs` непуст).
+Вызвать MCP-tools в зависимости от аргумента (`all` = broken_links, duplicate_links, duplicate_basenames, orphans + asymmetric, если `reciprocity_pairs` непуст).
 
 При вызове `vault_lint` (тип `lint`, либо в составе `all`): если `reciprocity_pairs` в манифесте непуст — передать его как `reciprocityPairs`, чтобы асимметрия всплыла `asymmetric-link` прямо в lint-выводе (на стороне карточки, которой не хватает обратной ссылки). Severity — из `vault-manifest.yaml::asymmetry_severity` (дефолт `WARN`; передать как `asymmetricSeverity`, если поле задано). Это слой непрерывной видимости; фактический ремонт — под-режим `asymmetric` (шаг 4.5).
+
+Если в манифесте задан `link_cap` — передать его как `linkCap` (число → порог; `null` → отключить `too-many-links`). Поле отсутствует → параметр не передавать, движок применит дефолт 15.
 
 Если все tools вернули пустые массивы (count: 0) — сообщить «Проблем не найдено» и завершить.
 
@@ -78,6 +83,15 @@ model: sonnet
 2. Оставить WikiLink на **первом** смысловом упоминании (по Linking_guidelines)
 3. Заменить остальные на plain text (убрать `[[` и `]]`)
 4. Если дубликат в секции «Связанные заметки» — удалить строку целиком (ссылка уже есть в теле)
+
+### 3.5. Исправление одинаковых basename
+
+Запускать при аргументе `basenames` или `all`. Для каждой группы из `vault_duplicate_basenames` (`{ basename, files: [...] }`):
+
+1. Это **молчаливый разрыв графа**: Obsidian резолвит `[[<basename>]]` по имени файла без учёта папки, поэтому при коллизии каждая такая ссылка неоднозначна.
+2. Показать пользователю группу (какие файлы делят имя) и предложить, какую заметку переименовать в дизамбигуированное имя (более полное/уточнённое имя либо квалификатор-суффикс). Какую именно — решает пользователь; обычно ту, что добавлена позже / тематически вторична.
+3. Переименование выполнять **через `/rename-note`** (или его протокол: `git mv` + обновление всех WikiLinks + старое имя в `aliases`) — не править имя файла вручную, иначе обратные ссылки повиснут.
+4. Per-file confirm перед применением.
 
 ### 4. Перенаправление на orphans
 
@@ -109,6 +123,7 @@ model: sonnet
 |---|---|---|
 | Сломанные ссылки | N | N |
 | Дубликаты | N | N |
+| Одинаковые basename | N | N |
 | Сироты | N | → /link-orphans |
 | Асимметричные связи | N | N |
 ```

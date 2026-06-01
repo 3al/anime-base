@@ -25,14 +25,20 @@ export function isLintable(record: NoteRecord): boolean {
  * `asymmetricSeverity` — WARN (default) or ERROR; per-vault policy passed by
  * the caller (vault_lint via the asymmetricSeverity param, sourced from
  * vault-manifest.yaml::asymmetry_severity).
- * Theme-neutral: the caller decides which kind-pairs to check and at what
- * severity; lint itself knows no kinds here.
+ * `linkCap` — outgoing-WikiLink ceiling for the too-many-links check; per-vault
+ * policy passed by the caller (vault_lint via the linkCap param, sourced from
+ * vault-manifest.yaml::link_cap). `null` disables the check entirely (for
+ * formalized vaults whose cards materialize many structural gallery/cast links
+ * by design); a number overrides the threshold. Default 15.
+ * Theme-neutral: the caller decides which kind-pairs to check, at what
+ * severity, and the link ceiling; lint itself knows no kinds or vault shape.
  */
 export function lintNote(
   record: NoteRecord,
   index: VaultIndex,
   asymByTargetPath?: Map<string, AsymmetricPair[]>,
   asymmetricSeverity: 'WARN' | 'ERROR' = 'WARN',
+  linkCap: number | null = 15,
 ): LintIssue[] {
   const issues: LintIssue[] = [];
 
@@ -148,8 +154,9 @@ export function lintNote(
   if (linkCount === 0) {
     issues.push({ severity: 'WARN', code: 'no-outgoing-links', message: 'No outgoing WikiLinks' });
   }
-  if (linkCount > 15) {
-    issues.push({ severity: 'WARN', code: 'too-many-links', message: `Has ${linkCount} outgoing WikiLinks (max 15)` });
+  // linkCap === null → check disabled (per-vault policy); else threshold.
+  if (linkCap !== null && linkCount > linkCap) {
+    issues.push({ severity: 'WARN', code: 'too-many-links', message: `Has ${linkCount} outgoing WikiLinks (max ${linkCap})` });
   }
 
   // --- Asymmetric reciprocal links (opt-in, only when caller passed pairs) ---

@@ -5,6 +5,7 @@ import { registerLintTool } from './tools/vault-lint.js';
 import { registerBrokenLinksTool } from './tools/vault-broken-links.js';
 import { registerOrphansTool } from './tools/vault-orphans.js';
 import { registerDuplicateLinksTool } from './tools/vault-duplicate-links.js';
+import { registerDuplicateBasenamesTool } from './tools/vault-duplicate-basenames.js';
 import { registerQueryTool } from './tools/vault-query.js';
 import { registerBacklinksTool } from './tools/vault-backlinks.js';
 import { registerNoteProfileTool } from './tools/vault-note-profile.js';
@@ -25,11 +26,12 @@ const server = new McpServer({
 
 const index = new VaultIndex(VAULT_ROOT);
 
-// Register all 14 tools
+// Register all 15 tools
 registerLintTool(server, index);
 registerBrokenLinksTool(server, index);
 registerOrphansTool(server, index);
 registerDuplicateLinksTool(server, index);
+registerDuplicateBasenamesTool(server, index);
 registerQueryTool(server, index);
 registerBacklinksTool(server, index);
 registerNoteProfileTool(server, index);

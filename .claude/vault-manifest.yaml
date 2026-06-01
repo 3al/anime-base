@@ -77,6 +77,13 @@ reciprocity_pairs:
 # (см. Linking_guidelines § character / «Взаимность с anime»).
 asymmetry_severity: ERROR
 
+# Порог проверки too-many-links в vault_lint (per-vault). Число = порог + в тексте issue;
+# null = проверка отключена; отсутствие поля = дефолт 15. Читается /fix-links (lint) и
+# /audit-note, прокидывается в vault_lint как linkCap.
+# Anime_Base: null — gallery/cast-карточки штатно дают десятки структурных ссылок,
+# хардкод-порог ложно срабатывал. «Чистый lint = доверяю» восстановлен.
+link_cap: null
+
 # Per-module configuration overrides (advanced).
 config:
   vault-semantic:

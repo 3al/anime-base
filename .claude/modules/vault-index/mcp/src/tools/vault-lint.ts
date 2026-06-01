@@ -26,7 +26,7 @@ interface LintFileResult {
 export function registerLintTool(server: McpServer, index: VaultIndex): void {
   server.tool(
     'vault_lint',
-    'Validate frontmatter, tags, and links. Replaces lint-vault.sh. Optionally pass reciprocityPairs (from vault-manifest reciprocity_pairs) to also surface one-directional links as a WARN (code asymmetric-link) on the note missing the reverse link. Theme-neutral: kind-pairs are passed in, not hardcoded.',
+    'Validate frontmatter, tags, and links. Replaces lint-vault.sh. Optionally pass reciprocityPairs (from vault-manifest reciprocity_pairs) to also surface one-directional links as a WARN (code asymmetric-link) on the note missing the reverse link. Optionally pass linkCap (from vault-manifest link_cap) to override the too-many-links threshold, or null to disable that check. Theme-neutral: kind-pairs and the link ceiling are passed in, not hardcoded.',
     {
       target: z.string().optional().describe('File name, relative path, or folder. Omit for entire vault.'),
       showAll: z.boolean().optional().describe('Return all files (true) or only files with issues (false, default).'),
@@ -38,8 +38,12 @@ export function registerLintTool(server: McpServer, index: VaultIndex): void {
         .enum(['WARN', 'ERROR'])
         .optional()
         .describe('Severity for asymmetric-link issues (per-vault policy from vault-manifest.yaml::asymmetry_severity). Default WARN. Only applies when reciprocityPairs is given.'),
+      linkCap: z
+        .union([z.number(), z.null()])
+        .optional()
+        .describe('Outgoing-WikiLink ceiling for the too-many-links check (per-vault policy from vault-manifest.yaml::link_cap). A number overrides the threshold; null disables the check (formalized vaults with many structural links by design). Omit for the default cap of 15.'),
     },
-    async ({ target, showAll, reciprocityPairs, asymmetricSeverity }) => {
+    async ({ target, showAll, reciprocityPairs, asymmetricSeverity, linkCap }) => {
       await index.ensureFresh();
 
       // Precompute asymmetric pairs once, indexed by the note that must add the
@@ -67,7 +71,15 @@ export function registerLintTool(server: McpServer, index: VaultIndex): void {
       for (const record of records) {
         if (!isLintable(record)) continue;
 
-        const issues = lintNote(record, index, asymByTargetPath, asymmetricSeverity ?? 'WARN');
+        // linkCap omitted (undefined) → default 15; explicit null → disabled.
+        // Cannot use ?? here: `null ?? 15` would wrongly re-enable the check.
+        const issues = lintNote(
+          record,
+          index,
+          asymByTargetPath,
+          asymmetricSeverity ?? 'WARN',
+          linkCap === undefined ? 15 : linkCap,
+        );
         const errCount = issues.filter(i => i.severity === 'ERROR').length;
         const warnCount = issues.filter(i => i.severity === 'WARN').length;
 

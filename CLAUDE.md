@@ -35,10 +35,11 @@ Skill `/new-note` использует секцию `folders` в `.claude/vault-
 **Не создавайте заметки руками вне зарегистрированных папок** — сначала зарегистрируйте новую папку через `/new-note` или ручной правкой манифеста.
 <!-- END: module:skills-common -->
 <!-- BEGIN: module:vault-index -->
-**MCP-сервер `vault-index`** (модуль `vault-index` v0.4.1):
+**MCP-сервер `vault-index`** (модуль `vault-index` v0.5.0):
 - Структурный индекс волта — frontmatter, граф ссылок, lint, query.
-- 14 MCP tools: `vault_lint`, `vault_broken_links`, `vault_orphans`, `vault_duplicate_links`, `vault_query`, `vault_backlinks`, `vault_note_profile`, `vault_stats`, `vault_reindex`, `vault_image_status`, `vault_add_image`, `vault_lookalike_peers`, `vault_text_mentions`, `vault_asymmetric_links`.
-- `vault_lint` принимает опциональные `reciprocityPairs` (из `vault-manifest.yaml::reciprocity_pairs`) + `asymmetricSeverity` (из `asymmetry_severity`, дефолт WARN) → асимметрия всплывает `asymmetric-link` issue. Та же engine-логика, что у `vault_asymmetric_links` (`src/asymmetric.ts`).
+- 15 MCP tools: `vault_lint`, `vault_broken_links`, `vault_orphans`, `vault_duplicate_links`, `vault_duplicate_basenames`, `vault_query`, `vault_backlinks`, `vault_note_profile`, `vault_stats`, `vault_reindex`, `vault_image_status`, `vault_add_image`, `vault_lookalike_peers`, `vault_text_mentions`, `vault_asymmetric_links`.
+- `vault_lint` принимает опциональные `reciprocityPairs` (из `vault-manifest.yaml::reciprocity_pairs`) + `asymmetricSeverity` (из `asymmetry_severity`, дефолт WARN) → асимметрия всплывает `asymmetric-link` issue. Та же engine-логика, что у `vault_asymmetric_links` (`src/asymmetric.ts`). Также `linkCap` (из `link_cap`, дефолт 15; `null` → отключить) — порог проверки `too-many-links`.
+- `vault_duplicate_basenames` — детект заметок с одинаковым basename в разных папках (Obsidian резолвит WikiLinks по basename без учёта папки → коллизия молча ломает граф). Lint-backstop к create-time страж-проверке в `/new-<kind>`.
 - Source: `.claude/modules/vault-index/mcp/` (canonical layout). Полная архитектура: `SYSTEM/MCP_Server_Design.md`.
 - Регистрация в `~/.claude.json` / `opencode.json` — через harness-* модули (см. `.claude/vault-manifest.yaml`).
 <!-- END: module:vault-index -->

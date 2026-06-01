@@ -22,7 +22,7 @@ model: opus
 1. Найти файл по `$ARGUMENTS` (Glob если нужно)
 2. Прочитать файл
 3. Прочитать `SYSTEM/Audit_checklist.md` и выполнить **все шаги** из него — буквально, включая:
-   - **Шаг 1**: lint — MCP-tool `vault_lint` с `target: <файл>`
+   - **Шаг 1**: lint — MCP-tool `vault_lint` с `target: <файл>`. Если в `.claude/vault-manifest.yaml` задан `link_cap` — передать его как `linkCap` (число → порог `too-many-links`; `null` → отключить проверку). Поле отсутствует → параметр не передавать (дефолт 15).
    - **Шаг 1.5**: ссылки — MCP-tool `vault_broken_links` и `vault_duplicate_links`. Также вручную проверить: нет ли WikiLinks в заголовках (`##`, `###`)
    - **Шаг 2**: прочитать governance-документы (`SYSTEM/Metadata_schema.md`, `SYSTEM/Tag_taxonomy.md`, `SYSTEM/Linking_guidelines.md`)
    - **Шаг 3**: семантические проверки (frontmatter, теги, ссылки, имя файла)
