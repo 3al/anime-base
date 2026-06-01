@@ -4,7 +4,7 @@ domain: anime
 stability: stable
 priority: medium
 quality: draft
-co_authored: glm-5.1
+co_authored: claude-opus-4.8
 note_kind: character
 tags:
   - shoujo
@@ -21,7 +21,7 @@ name_native: 水野蓉子
 featured_in:
   - Maria-sama_ga_Miteru
   - Maria-sama_ga_Miteru_Haru
-  - Maria-sama_ga_Miteru_3rd
+  - Maria-sama_ga_Miteru_4th
 character_role: supporting
 gender: female
 status: alive
@@ -65,7 +65,7 @@ images:
 
 - ![[Maria-sama_ga_Miteru_cover.jpg|80]] **[[Maria-sama_ga_Miteru|Maria-sama ga Miteru]]** (2004) — первый сезон; Ёко — действующая Роза Киненсис, наставница Сатико и неформальный лидер Совета Ямаюрикай.
 - ![[Maria-sama_ga_Miteru_Haru_cover.jpg|80]] **[[Maria-sama_ga_Miteru_Haru|Maria-sama ga Miteru: Haru]]** (2004) — второй сезон; выпускной год Ёко, прощание с Лиллиан и передача титула Сатико.
-- ![[Maria-sama_ga_Miteru_3rd_cover.jpg|80]] **[[Maria-sama_ga_Miteru_3rd|Maria-sama ga Miteru 3rd]]** (2006) — третий сезон (OVA); Ёко уже выпускница, появляется наездами как голос опыта.
+- ![[Maria-sama_ga_Miteru_4th_cover.jpg|80]] **[[Maria-sama_ga_Miteru_4th|Maria-sama ga Miteru 4th]]** (2009) — четвёртый сезон; выпускница, появляется эпизодически как голос опыта.
 
 ## Связи
 
@@ -74,10 +74,11 @@ images:
 - ![[Sato_Sei_cover.jpg|60]] **[[Sato_Sei|Сэй Сато]]** — ближайшая подруга со средней школы; именно Ёко постоянно пыталась достучаться до Сэй в её самые тёмные моменты и попросила Сиори оставить письмо перед уходом. Фэндом широко интерпретирует их связь как безответную любовь Ёко.
 - ![[Torii_Eriko_cover.jpg|60]] **[[Torii_Eriko|Эрико Тории]]** — одноклассница и третья из троицы старших Роз; вместе с Сэй — одна из ближайших подруг.
 - ![[Hasekura_Rei_cover.jpg|60]] **[[Hasekura_Rei|Рэй Хасэкура]]** — Rosa Foetida en bouton; обращается к Ёко за советом в спорных ситуациях.
+- ![[Toudou_Shimako_cover.jpg|60]] **[[Toudou_Shimako|Симако Тодо]]** — petite soeur Сэй, Rosa Gigantea en bouton; после выпуска Ёко Симако наследует белый титул.
 
 ## Сэйю
 
-- **Japanese (все тайтлы):** Emi Shinohara (篠原恵美)
+- **Emi Shinohara (篠原恵美)** — японская озвучка, все тайтлы.
 
 ## Ссылки
 

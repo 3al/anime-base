@@ -4,7 +4,7 @@ domain: anime
 stability: stable
 priority: medium
 quality: draft
-co_authored: claude-opus-4.7
+co_authored: claude-opus-4.8
 note_kind: studio
 tags:
   - japanese-animation
@@ -13,7 +13,7 @@ aliases:
   - Studio DEEN
   - Kabushiki-gaisha Sutajio Dīn
 created: 2026-05-24
-updated: 2026-05-30
+updated: 2026-05-31
 name_primary: Studio Deen
 name_native: 株式会社スタジオディーン
 founded_year: 1975
@@ -56,6 +56,7 @@ Studio Deen не ассоциируется с собственным узнав
 - ![[Maria-sama_ga_Miteru_cover.jpg|80]] **[[Maria-sama_ga_Miteru|Мария-сама смотрит за нами]]** (2004) — камерная school-драма по лайт-новеллам Оюки Конно; классика жанра class-S.
 - ![[Maria-sama_ga_Miteru_Haru_cover.jpg|80]] **[[Maria-sama_ga_Miteru_Haru|Мария-сама смотрит за нами: Весна]]** (2004) — второй сезон, продолжение лайт-новелл Оюки Конно; арка прощания Сэй и появление Тоуко.
 - ![[Maria-sama_ga_Miteru_3rd_cover.jpg|80]] **[[Maria-sama_ga_Miteru_3rd|Мария-сама смотрит за нами 3rd]]** (2006) — третий сезон в формате OVA; арка Канако Хосокавы и выборы в Совете Ямаюри.
+- ![[Maria-sama_ga_Miteru_4th_cover.jpg|80]] **[[Maria-sama_ga_Miteru_4th|Мария-сама смотрит за нами 4th]]** (2009) — четвёртый (финальный) TV-сезон франшизы по лайт-новеллам Оюки Конно.
 - **Ranma ½** (1989–1992) — длинный shounen-сериал по манге Румико Такахаси; первый коммерческий хит студии.
 - **Rurouni Kenshin** (1997–1998) — вторая половина культового сериала по манге Нобухиро Вацуки, эпизоды 67–95.
 - **Fate/stay night** (2006) — первая аниме-адаптация визуальной новеллы Type-Moon, давшая старт мегафраншизе Fate.

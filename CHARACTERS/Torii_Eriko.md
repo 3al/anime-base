@@ -13,13 +13,14 @@ aliases:
   - Эрико Тории
 created: 2026-05-30
 updated: 2026-05-31
-co_authored: moonshotai-kimi-k2.6-free
+co_authored: claude-opus-4.8
 name_romaji: "Torii Eriko"
 name_native: "鳥居 江利子"
 name_english: "Eriko Torii"
 featured_in:
   - Maria-sama_ga_Miteru
   - Maria-sama_ga_Miteru_Haru
+  - Maria-sama_ga_Miteru_4th
 character_role: supporting
 gender: female
 status: alive
@@ -57,20 +58,22 @@ images:
 
 - ![[Maria-sama_ga_Miteru_cover.jpg|80]] **[[Maria-sama_ga_Miteru|Maria-sama ga Miteru]]** (2004) — первый сезон; дебют персонажа как старшей розы Rosa Foetida.
 - ![[Maria-sama_ga_Miteru_Haru_cover.jpg|80]] **[[Maria-sama_ga_Miteru_Haru|Maria-sama ga Miteru: Haru]]** (2004) — второй сезон; арка выпуска и передачи титула.
+- ![[Maria-sama_ga_Miteru_4th_cover.jpg|80]] **[[Maria-sama_ga_Miteru_4th|Maria-sama ga Miteru 4th]]** (2009) — четвёртый сезон; выпускница Rosa Foetida, появляется эпизодически.
 
 ## Связи
 
 ### В каноне
 
 - ![[Hasekura_Rei_cover.jpg|60]] **[[Hasekura_Rei|Рэй Хасэкура]]** — младшая сестра (petite soeur). Эрико выбрала её ради эксперимента, но со временем их связь окрепла, хотя и сохраняет ироническую дистанцию.
-- **Ёсино Симадзу** — младшая сестра Рэй Хасэкуры, отношения с Эрико построены на ревности: Ёсино завидует связи Рэй со старшей розой и часто конфликтует с Эрико.
+- ![[Yoshino_Shimazu_cover.jpg|60]] **[[Yoshino_Shimazu|Ёсино Симадзу]]** — младшая сестра Рэй Хасэкуры, отношения с Эрико построены на ревности: Ёсино завидует связи Рэй со старшей розой и часто конфликтует с Эрико.
 - ![[Mizuno_Yoko_cover.jpg|60]] **[[Mizuno_Yoko|Ёко Мидзуно]]** — Роза Китайская (Rosa Chinensis, красная роза), коллега по Совету Ямаюри.
 - ![[Sato_Sei_cover.jpg|60]] **[[Sato_Sei|Сэй Сато]]** — Роза Гигантея (Rosa Gigantea, белая роза). Детское соперничество из-за дразнилок превратилось во взрослое взаимоуважение, хотя насмешки Сэй не прекращаются.
 - ![[Ogasawara_Sachiko_cover.jpg|60]] **[[Ogasawara_Sachiko|Сатико Огасавара]]** — бутон красной розы (Rosa Chinensis en bouton), младшая сестра Ёко; Эрико наблюдает за динамикой Юми и Сатико со стороны.
+- ![[Toudou_Shimako_cover.jpg|60]] **[[Toudou_Shimako|Симако Тодо]]** — petite soeur Сэй, Rosa Gigantea en bouton; коллега по Совету.
 
 ## Сэйю
 
-- **Japanese (Maria-sama ga Miteru / Haru):** Hitomi Nabatame
+- **Hitomi Nabatame** — японская озвучка (Maria-sama ga Miteru, Haru).
 
 ## Ссылки
 

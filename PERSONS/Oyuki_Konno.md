@@ -35,6 +35,8 @@ works:
     roles: [novelist]
   - title: "Maria-sama_ga_Miteru_3rd"
     roles: [novelist]
+  - title: "Maria-sama_ga_Miteru_4th"
+    roles: [novelist]
 images:
   cover: "attachments/Oyuki_Konno_cover.jpg"
 ---
@@ -64,6 +66,7 @@ images:
 - ![[Maria-sama_ga_Miteru_cover.jpg|80]] **[[Maria-sama_ga_Miteru|Мария-сама смотрит на нас]]** (2004) — автор оригинальных лайт-новелл, на которых основан первый сезон; начало франшизы.
 - ![[Maria-sama_ga_Miteru_Haru_cover.jpg|80]] **[[Maria-sama_ga_Miteru_Haru|Maria-sama ga Miteru: Haru]]** (2004) — автор первоисточника второго сезона; также автор текста опенинга.
 - ![[Maria-sama_ga_Miteru_3rd_cover.jpg|80]] **[[Maria-sama_ga_Miteru_3rd|Maria-sama ga Miteru 3rd]]** (2006) — автор первоисточника OVA-сезона; также автор текста эндинга.
+- ![[Maria-sama_ga_Miteru_4th_cover.jpg|80]] **[[Maria-sama_ga_Miteru_4th|Maria-sama ga Miteru 4th]]** (2009) — автор первоисточника четвёртого сезона; финал арки Юми в аниме.
 
 ## Ссылки
 

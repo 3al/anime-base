@@ -1,11 +1,28 @@
 name: skills-common
-version: 0.4.7
+version: 0.4.8
 description: |
   Тема-нейтральные скиллы, общие для любого волта: fix-links, audit-note,
   new-note, rename-note, verify, expand-stub, add-note-kind,
   harness-agnostic-audit. Устанавливаются в .claude/skills/ под `.managed`
   маркерами — фреймворк может синхронизировать обновления, не затирая
   пользовательские правки.
+
+  v0.4.8 (B-009 + B-010 — vision-gate pre-flight probe + capability-ось):
+  - B-009: `vision-gate-audit` и `add-note-kind` переведены на pre-flight
+    probe — gate-шаг открывает через Read core-ассет
+    `.claude/assets/vision_probe.png` ДО любого скачивания (вердикт по
+    поведению Read), вместо пробы на первом боевом постере. Канон-SSOT
+    `add-note-kind/templates/image-handling.claude-fragment.md` переписан;
+    `add-note-kind` баннер/gallery_section/КРИТИЧНО #12 ссылаются на probe.
+    Слепая модель узнаёт о слепоте до первой сетевой попытки (ноль скачиваний,
+    без удаления-после-факта). Probe-ассет генерит core install ≥ 0.8.0.
+  - B-010: `vision-gate-audit` классификатор (2.2) переведён с оси «про фото
+    ли скилл» на **«требуется ли визуальное суждение?»** (хардкод имён
+    `add-image`/`audit-images` убран) — механическая укладка готового файла
+    выведена из gate-scope (не флагать, никакого ложного STOP). `--no-images`
+    сделан **обязательным** для download-capable скилла (отсутствие в
+    argument-hint = issue ретрофита, не «опционально»). Theme_Skills_Patterns
+    синхронизирован. Legacy-проба-на-постере — мягкий drift на миграцию.
 
   v0.4.5 (add-note-kind — творческая часть + самопроверка, общая форма):
   Мотив: на E2E v0.4.4 модель залила instance-specific поля (издание) на

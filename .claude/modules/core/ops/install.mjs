@@ -14,6 +14,7 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync, copyFileSync, readd
 import { join, dirname } from 'node:path';
 import { ensureManagedBlock } from '../lib/managed_block.mjs';
 import { readStdin } from '../lib/read_input.mjs';
+import { writeVisionProbe } from '../lib/vision_probe.mjs';
 
 
 function emit(result) {
@@ -123,6 +124,12 @@ function main() {
       );
     }
   }
+
+  // 4.5. Vision-gate probe asset. Image-handling skills Read this tiny PNG as a
+  //      pre-flight multimodality check before any poster download (B-009).
+  //      Generated (not shipped binary) → self-heals if corrupted; gitignored.
+  const probe = writeVisionProbe(vault_root);
+  actions.push({ type: probe.action, target: 'vision_probe.png' });
 
   // 5. Write .installed marker
   const installedMarker = join(module_dir, '.installed');

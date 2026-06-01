@@ -3,6 +3,9 @@
 .claude/modules/*/.installed
 .claude/.bootstrap-source.json
 
+# Vision-gate probe asset (generated per-vault by core install, self-heals)
+.claude/assets/vision_probe.png
+
 # MCP server build artifacts (canonical Phase 4.5 layout)
 .claude/modules/*/mcp/node_modules
 .claude/modules/*/mcp/dist

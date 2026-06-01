@@ -1,15 +1,7 @@
 import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { VaultIndex } from '../vault-index.js';
-
-// Media file extensions — not notes, skip in broken-link checks
-const MEDIA_EXTS = new Set(['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg', '.pdf', '.mp4', '.mp3', '.wav', '.ogg']);
-
-function isMediaTarget(target: string): boolean {
-  const dot = target.lastIndexOf('.');
-  if (dot === -1) return false;
-  return MEDIA_EXTS.has(target.slice(dot).toLowerCase());
-}
+import { isMediaTarget } from '../links.js';
 
 export function registerBrokenLinksTool(server: McpServer, index: VaultIndex): void {
   server.tool(

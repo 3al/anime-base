@@ -4,7 +4,7 @@ domain: anime
 stability: stable
 priority: medium
 quality: verified
-co_authored: claude-opus-4.7
+co_authored: claude-opus-4.8
 note_kind: person
 tags:
   - japanese-animation
@@ -13,7 +13,7 @@ aliases:
   - "Ueda Kana"
   - "植田 佳奈"
 created: 2026-05-26
-updated: 2026-05-26
+updated: 2026-05-31
 name_primary: "Kana Ueda"
 name_native: "植田佳奈"
 roles:
@@ -34,6 +34,12 @@ works:
     roles: [voice-actor]
     character: "Fukuzawa_Yumi"
   - title: "Maria-sama_ga_Miteru_Haru"
+    roles: [voice-actor]
+    character: "Fukuzawa_Yumi"
+  - title: "Maria-sama_ga_Miteru_3rd"
+    roles: [voice-actor]
+    character: "Fukuzawa_Yumi"
+  - title: "Maria-sama_ga_Miteru_4th"
     roles: [voice-actor]
     character: "Fukuzawa_Yumi"
 ---
@@ -60,6 +66,8 @@ works:
 
 - ![[Maria-sama_ga_Miteru_cover.jpg|80]] **[[Maria-sama_ga_Miteru|Maria-sama ga Miteru]]** (2004) — Юми Фукудзава, главная роль; дебютная значимая работа, проходит через все четыре TV-сезона и OVA.
 - ![[Maria-sama_ga_Miteru_Haru_cover.jpg|80]] **[[Maria-sama_ga_Miteru_Haru|Maria-sama ga Miteru: Haru]]** (2004) — Юми Фукудзава; продолжение центральной роли во втором сезоне.
+- ![[Maria-sama_ga_Miteru_3rd_cover.jpg|80]] **[[Maria-sama_ga_Miteru_3rd|Maria-sama ga Miteru 3rd]]** (2006) — Юми Фукудзава; озвучка протагониста в OVA-сезоне.
+- ![[Maria-sama_ga_Miteru_4th_cover.jpg|80]] **[[Maria-sama_ga_Miteru_4th|Maria-sama ga Miteru 4th]]** (2009) — Юми Фукудзава; финальный TV-сезон франшизы.
 - **Fate/stay night** (2006) — Рин Тосака; роль, ставшая визитной карточкой во всей франшизе Type-Moon.
 - **Mahou Shoujo Lyrical Nanoha A's** (2005) — Хаятэ Ягами.
 - **Saki** (2009) — заглавная роль Саки Миянаги.

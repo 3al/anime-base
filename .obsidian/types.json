@@ -4,6 +4,8 @@
     "cssclasses": "multitext",
     "tags": "tags",
     "personal_score": "number",
+    "opening_score": "number",
+    "ending_score": "number",
     "mal_score": "number",
     "shikimori_score": "number",
     "episodes": "number",

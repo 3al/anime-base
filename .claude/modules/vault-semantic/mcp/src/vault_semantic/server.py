@@ -32,7 +32,13 @@ from mcp.server.fastmcp import FastMCP
 from . import __version__
 from .embedding import EmbeddingConfig, get_embedding_dim
 from .indexer import connect, ensure_fresh_safe, reindex
-from .search import K_HARD_CAP, SearchError, search
+from .models import (
+    RESPONSE_MAX_CHARS_CEILING,
+    RESPONSE_MAX_CHARS_DEFAULT,
+    RESPONSE_MAX_CHARS_FLOOR,
+    RESPONSE_VERBOSITY_DEFAULT,
+)
+from .search import DEFAULT_K, K_HARD_CAP, SearchError, search
 
 
 _DB_RELATIVE = Path(".claude") / "modules" / "vault-semantic" / "data" / "vault.sqlite"
@@ -79,13 +85,35 @@ def vault_semantic_search(
     query: str,
     filter: dict | None = None,
     mode: str = "hybrid",
-    k: int = 20,
+    k: int = DEFAULT_K,
     section_path_prefix: list[str] | None = None,
     min_score: float | None = None,
+    verbosity: str = RESPONSE_VERBOSITY_DEFAULT,
+    response_max_chars: int | None = None,
 ) -> dict:
     """Hybrid semantic + BM25 search across the vault. See §5.1 for the
     parameter shapes and §6 for the `filter` dialect.
+
+    Payload-size controls (v0.5.0) — these bound what the server EMITS so it
+    fits one in-context tool-result; they do NOT touch ranking:
+      * `verbosity`: 'lean' (default) | 'full'. 'full' adds debug
+        `score_components` per chunk. Unknown values fall back to 'lean'.
+      * `response_max_chars`: total serialized-char budget. Top chunks emit
+        full records, the remainder degrade to header-only locators. Defaults
+        to RESPONSE_MAX_CHARS_DEFAULT; per-call overrides are clamped to
+        [RESPONSE_MAX_CHARS_FLOOR, RESPONSE_MAX_CHARS_CEILING].
+    `k` is clamped to K_CEILING inside `search()`.
     """
+    if verbosity not in ("lean", "full"):
+        verbosity = RESPONSE_VERBOSITY_DEFAULT
+    if response_max_chars is None:
+        response_max_chars = RESPONSE_MAX_CHARS_DEFAULT
+    else:
+        response_max_chars = max(
+            RESPONSE_MAX_CHARS_FLOOR,
+            min(int(response_max_chars), RESPONSE_MAX_CHARS_CEILING),
+        )
+
     ensure_fresh_safe(_vault_root(), _db_path())
     try:
         resp = search(
@@ -101,7 +129,7 @@ def vault_semantic_search(
         return _error(exc.code, str(exc), exc.data)
     except Exception as exc:  # noqa: BLE001
         return _error("INTERNAL_ERROR", str(exc))
-    return resp.to_dict()
+    return resp.to_dict(verbosity=verbosity, max_chars=response_max_chars)
 
 
 @server.tool()

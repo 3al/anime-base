@@ -1,9 +1,76 @@
 name: vault-semantic
-version: 0.4.7
+version: 0.5.1
 description: |
   Семантический MCP-сервер волта (L2 в архитектуре RAG) + L3 skill
   `/vault-rag` (router). Hybrid search поверх embedding-модели + BM25
   через SQLite + sqlite-vec, с RRF-fusion. См. docs/RAG_Architecture.md.
+
+  v0.5.1 (char-budget calibration follow-up к 0.5.0): закрыт класс «при
+  эскалации (`k≥~18`) на текстовых волтах envelope превышает harness cap,
+  хотя `payload.bounded` рапортует, что бюджет включился» (Anime_Base,
+  26 prose-cards: k=20 → `bounded:true, full=17`, но tool-result = 68 631
+  байт → всё равно spill). ДВЕ причины:
+    1. Единица бюджета. 0.5.0 мерил `len(json.dumps(...))` в Python str-
+       символах, а harness-cap бьётся по байтам/токенам. Для кириллицы
+       1 символ = 2 UTF-8 байта → 40k-символьный бюджет давал ~68 KB на
+       диске. Fix: `SearchResponse.to_dict` считает FULL record (text +
+       metadata) в UTF-8 байтах. `bounded`/budget теперь честны для не-ASCII;
+       публичное имя `response_max_chars` сохранено (value = байтовый
+       бюджет), payload получил `budget_unit: utf8_bytes` + `approx_bytes`.
+       (NB: `note_metadata` в 0.5.0 УЖЕ считался в бюджете — диагноз репорта
+       «budget не считает metadata» был неточен; реальная причина — единица.)
+    2. Дублирование. После удаления `frontmatter_prefix` (0.5.0 §1)
+       доминирующим балластом стал `note_metadata.extra` = полный frontmatter
+       карточки (staff[]/aliases/genres/urls/images), повторявшийся verbatim
+       на КАЖДОМ чанке одной заметки (3 чанка Maria-sama → 3× один extra).
+       Fix: в lean-режиме `ChunkResult.to_dict` дропает `extra` (роутер имеет
+       `note_path` + скаляры, читает карточку напрямую на Этапе 3 когда extra
+       нужен). В `full` — `extra` сохраняется. Ранжирование/порядок не
+       затронуты; header-only локаторы по-прежнему без metadata.
+  Эффект (валидировано на синтетике prose-cards с fat extra): k=20 lean —
+  ~37 KB envelope в одном tool-result без spill (было 68 KB), `bounded`
+  отражает реальный байтовый размер. Это и материализует экономию контекста,
+  которой 0.5.0 не давал (header-only урезка считалась в неверной единице).
+  SKILL.md §2.2 дополнен заметкой про lean-`note_metadata` без `extra`;
+  bump версии ре-синкает managed-копию. pyproject.toml bumped 0.5.0→0.5.1
+  синхронно.
+
+  v0.5.0 (bound search response size + skill-side adaptive escalation):
+  закрывает класс «`vault_semantic_search` с `k≥20` на текстовых волтах
+  превышает harness per-tool-result token cap» (Anime_Base, 26 заметок:
+  k=25 → ~90 KB/~25k tokens → spill-to-file). Разведены два порога: (A)
+  harness-cap — НЕ управляется модулем, out of scope; (B) размер, который
+  EMIT'ит сервер — его и ограничиваем by construction.
+    1. Lean payload (`models.py::ChunkResult.to_dict`): `frontmatter_prefix`
+       больше не сериализуется в MCP-вывод (дубль `note_metadata`; в
+       indexing/embedding остаётся), `score_components` — только при
+       `verbosity='full'` (debug). Ранжирование не затронуто, режется лишь
+       вес payload.
+    2. Char-budget (`models.py::SearchResponse.to_dict`): top-N чанков —
+       full record, хвост — header-only локаторы (`note_path`+`section_path`+
+       `score`). Bounds вывод даже при небрежном `k`. Top-1 всегда full
+       (одиночный oversized chunk = легитимный spill-путь). `payload.bounded`
+       сигналит скиллу, что хвост урезан.
+    3. Per-call args на `vault_semantic_search`: `verbosity` (lean|full) и
+       `response_max_chars` (clamp к [2000, 200000]). `k`/`min_score` были
+       per-call и раньше.
+    4. Default `k` 20→12 (`search.py::DEFAULT_K`); добавлен `K_CEILING=40` —
+       per-call clamp (anti-runaway), `K_HARD_CAP=100` остаётся абсолютным
+       schema-потолком. SKILL.md §2.2/§2.3 синхронизированы.
+    5. `/vault-rag` SKILL.md §2.6 — формализована адаптивная эскалация с
+       явными триггерами (результатов <3 / max score <0.5 / пустое L1∩L2),
+       разведением recall (расширять) vs precision (сужать), макс. 1–2
+       попытки. Инвариант: эскалация двигает request-параметры, никогда —
+       harness-cap; overflow обрабатывается чтением спиленного файла.
+  config_schema расширен декларациями `response_verbosity`/`response_max_chars`/
+  `k_ceiling`/`response_max_chars_ceiling` (floors/ceilings). NB: сегодня
+  runtime-сервер получает конфиг ТОЛЬКО через `provides.mcp_server.env`, а
+  `core/lib/template_vars.mjs::TOKEN_RE` не умеет резолвить `config.*` —
+  поэтому config-defaults пока НЕ долетают до running server (значения берутся
+  из серверных констант). Пламбинг `config.vault-semantic.* → env` —
+  отдельный follow-up в core (см. roadmap). pyproject.toml bumped синхронно
+  (0.4.7→0.5.0) — `importlib.metadata.version` остаётся source of truth для
+  stats/warmup/smoke.
 
   v0.4.7 (Этап 1A opencode-support — vault-rag SKILL.md rewrite):
   переписаны 10 procedural MCP-вызовов формата `mcp__<server>__<tool>`
@@ -203,6 +270,41 @@ config_schema:
       Drift между manifest и `.installed{torch_variant}` → install свопает
       torch на ходу (~7 мин download для cuda variant).
     default: auto
+  # v0.5.0 — response-size budget knobs. ВНИМАНИЕ: пока ДЕКЛАРАТИВНЫ.
+  # Runtime-сервер получает конфиг только через provides.mcp_server.env, а
+  # core/lib/template_vars.mjs::TOKEN_RE не резолвит config.* в env — поэтому
+  # эти значения ещё НЕ долетают до running server (он использует серверные
+  # константы из models.py/search.py). Per-call override этих параметров на
+  # vault_semantic_search РАБОТАЕТ уже сейчас. Config-defaults подключатся,
+  # когда в core появится механизм config.<module>.* → env (roadmap follow-up).
+  response_verbosity:
+    type: string
+    enum: [lean, full]
+    description: |
+      Дефолтная детализация payload поиска (floor; per-call `verbosity`
+      переопределяет). `lean` — без `score_components`/`frontmatter_prefix`;
+      `full` — добавляет debug `score_components`. См. models.py.
+    default: lean
+  response_max_chars:
+    type: integer
+    description: |
+      Дефолтный бюджет вывода поиска (top-N full → хвост header-only). v0.5.1:
+      считается в UTF-8 БАЙТАХ (единица harness-cap; имя `*_chars` сохранено
+      для совместимости API/конфига). Per-call `response_max_chars`
+      переопределяет, clamp к [2000, response_max_chars_ceiling].
+    default: 40000
+  k_ceiling:
+    type: integer
+    description: |
+      Потолок per-call `k` (anti-runaway). Не может превышать абсолютный
+      schema-cap 100. Сейчас энфорсится серверной константой K_CEILING.
+    default: 40
+  response_max_chars_ceiling:
+    type: integer
+    description: |
+      Потолок для per-call `response_max_chars`. Сейчас энфорсится серверной
+      константой RESPONSE_MAX_CHARS_CEILING.
+    default: 200000
 ops:
   install: ops/install.mjs
   status: ops/status.mjs

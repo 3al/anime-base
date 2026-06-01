@@ -4,7 +4,9 @@ import { parseNote } from './parser.js';
 import { getCanonicalTags } from './taxonomy.js';
 import type { NoteRecord, IndexData } from './types.js';
 
-const INDEX_VERSION = 2;
+// v3: NoteRecord gained `frontmatterError`; bump forces a full rebuild so the
+// field is populated rather than left undefined from a stale v2 cache.
+const INDEX_VERSION = 3;
 
 // Directories to skip entirely during scanning
 const SKIP_DIRS = new Set(['.claude', '.opencode', '.obsidian', '.git', 'node_modules']);

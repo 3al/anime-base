@@ -50,7 +50,7 @@ updated: 2026-05-23
 |------------------|----------------------------|----------|
 | `/verify`        | `<файл> [verified\|draft]` | Проставить `co_authored`, `quality`, `updated`. По умолчанию `quality: verified`. Модель: haiku |
 | `/audit-note`    | `<файл>`                   | Полный аудит заметки: `vault_lint` (механика) + LLM-проверки (таксономия, ссылки, факт-чек через web search, шумоподавление контента). Модель: opus |
-| `/audit-review`  | `<файл>`                   | Аудит секции `## Личный отзыв`: пунктуация, опечатки, форматирование + извлечение `personal_score` / `personal_status` из прозы. Kind-agnostic. Модель: opus |
+| `/audit-review`  | `<файл>`                   | Аудит секции `## Личный отзыв`: пунктуация, опечатки, форматирование + извлечение `personal_score` / `personal_status` (+ `opening_score` / `ending_score` для anime) из прозы. Kind-agnostic. Модель: opus |
 
 ### Ссылки и граф
 
@@ -130,10 +130,20 @@ updated: 2026-05-23
 
 | Tool                       | Параметры                                            | Что делает |
 |----------------------------|------------------------------------------------------|------------|
-| `vault_semantic_search`    | `{ query, limit?, scope? }`                          | Гибридный поиск по смыслу + лексике. Возвращает chunks с score'ом |
+| `vault_semantic_search`    | `{ query, k?, mode?, min_score?, filter?, verbosity?, response_max_chars?, section_path_prefix? }` | Гибридный поиск по смыслу + лексике. Возвращает chunks с score'ом. `mode` ∈ hybrid (default) / bm25 / dense. `k` дефолт 12 (clamp ≤40, hard cap 100) |
 | `vault_semantic_reindex`   | `{ scope? }`                                         | Принудительная переиндексация. Обычно НЕ нужна (incremental refresh через mtime-snapshot). Использовать только при смене chunker'а / схемы / модели |
 | `vault_semantic_stats`     | `{}`                                                 | Состояние индекса: число чанков, последний refresh |
 | `vault_semantic_warmup`    | `{}`                                                 | Прогрев модели и кеша (первый запрос после старта server'а медленный) |
+
+### Эмпирические знания о tool'ах
+
+**Payload-бюджет `vault_semantic_search` (v0.5.1+) меряется в UTF-8 БАЙТАХ, не символах.** Поле `response_max_chars` исторически так названо, но `value` — байтовый бюджет (дефолт 40000 ≈ 40 КБ). В ответе — блок `payload: { verbosity, full_text_count, header_only_count, bounded, max_chars, budget_unit: "utf8_bytes", approx_bytes }`. При превышении бюджета top-N чанков идут full, хвост деградирует в header-only локаторы (`note_path` + `section_path` + `score`, без `text`/metadata); top-1 всегда full. Ранжирование/порядок при урезке не меняются — режется только эмитируемый payload. **`approx_bytes` может слегка превышать `max_chars`** (наблюдалось 40 061 при бюджете 40 000) — это by-design overshoot: top-1 всегда full + хвостовые header-only строки добавляются уже после «закрытия» бюджета. Overshoot структурно ограничен (десятки байт) и НЕ растёт с `k`, так что до точки спила (~68 КБ на кириллице) запас огромный.
+
+**Почему байты важны: кириллица = ~2 UTF-8 байта/символ.** До v0.5.1 бюджет считался в Python str-символах, а harness-cap бьётся по байтам/токенам → 40k символов кириллицы = ~68 КБ на диске → спил в `tool-results/<hash>.txt`. Это был тонкий unit-mismatch баг (не «бюджет не считал metadata», как ошибочно диагностировалось по симптомам — урок в `memory/feedback_diagnose_tool_bug_from_source_not_symptoms.md`).
+
+**`verbosity` (v0.5.0+): lean (default) vs full.** В lean из каждого чанка выкинут `note_metadata.extra` (полный frontmatter карточки: staff[]/aliases/urls/images) — он дублировался на каждом чанке одной заметки и был доминирующим балластом после удаления `frontmatter_prefix`. `verbosity='full'` возвращает `extra` + отладочные `score_components` (dense/bm25/rrf ранги). Для синтеза в `/vault-rag` lean достаточно: `staff[]`/urls/images подтягиваются из самой карточки на Этапе 3 (чтение top-K), `note_path` служит указателем.
+
+**Эмпирика на прозовой кириллице (Anime_Base, ~27 заметок, длинные карточки):** k=12 (дефолт) → ~28 КБ, `bounded:false`, все чанки full, inline. k=20 → ~40 КБ, `bounded:true` (≈17 full + 3 header-only), но **всё ещё inline** (без спила). То есть дефолтный путь полностью помещается в контекст, header-only включается только на эскалации. Если на конкретном запросе нужны все чанки целиком при большом `k` — поднять `response_max_chars` (per-call; через манифест-config пока нельзя — config→env плумбинг отложен в core-follow-up).
 
 ---
 
@@ -203,7 +213,7 @@ MCP-tools выполняют **механические** проверки и и
 | Документ                   | Что регулирует |
 |----------------------------|----------------|
 | [[Metadata_schema]]        | Обязательные и опциональные поля frontmatter по `note_kind` |
-| [[enums]] (`enums.yaml`)   | Машинно-читаемые множества значений enum-полей. Единственный источник истины. |
+| `enums.yaml`               | Машинно-читаемые множества значений enum-полей. Единственный источник истины. |
 | [[Tag_taxonomy]]           | Каноничный набор тегов, категории, обязательные теги по `note_kind` |
 | [[Linking_guidelines]]     | Правила WikiLinks, обязательные ссылки по `note_kind`, конвенция «WikiLinks на персонажей — только в одной секции тайтла» |
 | [[Naming_conventions]]     | Формат имён файлов (`PascalCase_With_Underscores`, только латиница) |

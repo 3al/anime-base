@@ -23,6 +23,8 @@ name_native: 小笠原祥子
 featured_in:
   - Maria-sama_ga_Miteru
   - Maria-sama_ga_Miteru_Haru
+  - Maria-sama_ga_Miteru_3rd
+  - Maria-sama_ga_Miteru_4th
 character_role: deuteragonist
 gender: female
 status: alive
@@ -34,6 +36,15 @@ affiliations:
   - Совет Ямаюрикай
   - Семья Огасавара
 mal_url: https://myanimelist.net/character/1638/Sachiko_Ogasawara
+voice_actors:
+  - anime: "Maria-sama_ga_Miteru"
+    person: "Miki_Itou"
+  - anime: "Maria-sama_ga_Miteru_Haru"
+    person: "Miki_Itou"
+  - anime: "Maria-sama_ga_Miteru_3rd"
+    person: "Miki_Itou"
+  - anime: "Maria-sama_ga_Miteru_4th"
+    person: "Miki_Itou"
 images:
   cover: attachments/Ogasawara_Sachiko_cover.jpg
 ---
@@ -66,23 +77,28 @@ images:
 
 - ![[Maria-sama_ga_Miteru_cover.jpg|80]] **[[Maria-sama_ga_Miteru|Maria-sama ga Miteru]]** — 2004, school-драма с элементами class-S; старшая сестра Юми и центральная фигура её эмоциональной арки.
 - ![[Maria-sama_ga_Miteru_Haru_cover.jpg|80]] **[[Maria-sama_ga_Miteru_Haru|Maria-sama ga Miteru: Haru]]** — 2004, второй сезон; принимает титул Rosa Chinensis после выпуска Ёко.
+- ![[Maria-sama_ga_Miteru_3rd_cover.jpg|80]] **[[Maria-sama_ga_Miteru_3rd|Maria-sama ga Miteru 3rd]]** — 2006, третий сезон (OVA); Rosa Chinensis, арки с андрофобией и растущей близостью с Юми.
+- ![[Maria-sama_ga_Miteru_4th_cover.jpg|80]] **[[Maria-sama_ga_Miteru_4th|Maria-sama ga Miteru 4th]]** — 2009, четвёртый сезон; grande soeur Юми, борется с ревностью к кандидаткам и страхом перемен, поручая Юми самой найти младшую сестру.
 
 ## Связи
 
 ### В каноне
 
 - ![[Fukuzawa_Yumi_cover.jpg|60]] **[[Fukuzawa_Yumi|Юми Фукудзава]]** — младшая сестра Сатико, центральная фигура её эмоциональной жизни и противовес аристократической дистанции.
+- ![[Fukuzawa_Yuuki_cover.jpg|60]] **[[Fukuzawa_Yuuki|Юки Фукудзава]]** — младший брат Юми; единственный мужчина, которого Сатико не боится — вероятно, именно потому, что он брат Юми.
 - ![[Mizuno_Yoko_cover.jpg|60]] **[[Mizuno_Yoko|Ёко Мидзуно]]** — Rosa Chinensis, старшая сестра Сатико; спокойная наставница, формирующая её представление о роли в совете.
-- **Сугуру Касиваги** — кузен и формальный жених из корпоративного договора семей; гей, относится к Сатико по-родственному, что делает помолвку источником постоянной боли.
+- ![[Kashiwagi_Suguru_cover.jpg|60]] **[[Kashiwagi_Suguru|Сугуру Касиваги]]** — кузен и формальный жених из корпоративного договора семей; гей, относится к Сатико по-родственному, что делает помолвку источником постоянной боли.
 - ![[Sato_Sei_cover.jpg|60]] **[[Sato_Sei|Сэй Сато]]** — Rosa Gigantea, ироничный антагонист первого сезона; провоцирует Сатико условием о роли принца, чем толкает её на сближение с Юми.
 - ![[Torii_Eriko_cover.jpg|60]] **[[Torii_Eriko|Эрико Тории]]** — Rosa Foetida, третья из старших Роз; коллега по Совету Ямаюри, после выпуска которого Сатико наследует титул Rosa Chinensis.
 - ![[Hasekura_Rei_cover.jpg|60]] **[[Hasekura_Rei|Рэй Хасэкура]]** — Rosa Foetida en bouton, коллега по Совету Ямаюрикай одного поколения бутонов.
-- **Тоэ Мацудайра** — двоюродная сестра Сатико из ветви Мацудайра, позже становится младшей сестрой Юми; источник ревности Сатико и одновременно её собственный родственный круг.
+- ![[Touko_Matsudaira_cover.jpg|60]] **[[Touko_Matsudaira|Токо Матсудaira]]** — дальняя родственница Сатико, позже становится petite soeur Юми; источником её появления в Лилиан стала восхищение Сатико.
 - **Сайко Огасавара** — бабушка Сатико, выпускница Лилиан, эмоциональная опора её детства; её смерть запускает одну из самых тяжёлых арок персонажа.
+- ![[Yoshino_Shimazu_cover.jpg|60]] **[[Yoshino_Shimazu|Ёсино Симадзу]]** — младшая сестра Рэй, коллега по Совету Ямаюрикай; их взаимодействие опосредовано через общие дела совета.
+- ![[Toudou_Shimako_cover.jpg|60]] **[[Toudou_Shimako|Симако Тодо]]** — Rosa Gigantea en bouton, коллега по Совету одного поколения.
 
 ## Сэйю
 
-- **Japanese:** Miki Itō (伊藤 美紀)
+- ![[Miki_Itou_cover.jpg|60]] **[[Miki_Itou|Miki Itou]]** — японская озвучка, все тайтлы.
 
 ## Ссылки
 

@@ -33,6 +33,8 @@ studio: Studio_Deen
 source: light-novel
 episode_duration_minutes: 51
 personal_score: 10
+opening_score: null
+ending_score: null
 times_watched: 2
 last_episode_watched: 5
 watched_with:
@@ -82,17 +84,17 @@ images:
 | Персонаж                                                                         | Сэйю                                                      |
 | -------------------------------------------------------------------------------- | --------------------------------------------------------- |
 | ![[Fukuzawa_Yumi_cover.jpg\|60]] **[[Fukuzawa_Yumi\|Юми Фукудзава]]**            | ![[Kana_Ueda_cover.png\|60]] **[[Kana_Ueda\|Kana Ueda]]** |
-| ![[Ogasawara_Sachiko_cover.jpg\|60]] **[[Ogasawara_Sachiko\|Сатико Огасавара]]** | Miki Itō                                                  |
+| ![[Ogasawara_Sachiko_cover.jpg\|60]] **[[Ogasawara_Sachiko\|Сатико Огасавара]]** | ![[Miki_Itou_cover.jpg\|60]] **[[Miki_Itou\|Miki Itou]]** |
 | ![[Hasekura_Rei_cover.jpg\|60]] **[[Hasekura_Rei\|Рэй Хасэкура]]**                                                | Shizuka Itō                                               |
-| **Ёсино Симадзу**                                                                | Haruna Ikezawa                                            |
-| **Симако Тодо**                                                                  | Mamiko Noto                                               |
-| **Тоуко Мацудайра**                                                              | Rie Kugimiya                                              |
+| ![[Yoshino_Shimazu_cover.jpg\|60]] **[[Yoshino_Shimazu\|Ёсино Симадзу]]**            | Haruna Ikezawa                                            |
+| ![[Toudou_Shimako_cover.jpg\|60]] **[[Toudou_Shimako\|Симако Тодо]]**              | Mamiko Noto                                               |
+| ![[Touko_Matsudaira_cover.jpg\|60]] **[[Touko_Matsudaira\|Тоуко Мацудайра]]**              | Rie Kugimiya                                              |
 | **Норико Нидзё**                                                                 | Kaori Shimizu                                             |
 | **Канако Хосокава**                                                              | Ami Koshimizu                                             |
 | ![[Sato_Sei_cover.jpg\|60]] **[[Sato_Sei\|Сэй Сато]]**                           | Megumi Toyoguchi                                          |
-| **Сугуру Касиваги**                                                              | Nobuyuki Hiyama                                           |
-| **Юки Фукудзава**                                                                | Mitsuhiro Ichiki                                          |
-| **Цутако Такэсима**                                                              | Rina Satō                                                 |
+| ![[Kashiwagi_Suguru_cover.jpg\|60]] **[[Kashiwagi_Suguru\|Сугуру Касиваги]]** | Nobuyuki Hiyama                                           |
+| ![[Fukuzawa_Yuuki_cover.jpg\|60]] **[[Fukuzawa_Yuuki\|Юки Фукудзава]]**            | Mitsuhiro Ichiki                                          |
+| ![[Takeshima_Tsutako_cover.jpg\|60]] **[[Takeshima_Tsutako\|Цутако Такэсима]]**  | Rina Satō                                                 |
 | **Кинтаро Арисугава**                                                            | Junko Minagawa                                            |
 | **Сидзука Канина**                                                               | rino                                                      |
 | **Кикуё Аянокодзи**                                                              | Yuu Kobayashi                                             |
@@ -101,7 +103,7 @@ images:
 
 - ![[Maria-sama_ga_Miteru_cover.jpg|80]] **[[Maria-sama_ga_Miteru|Maria-sama ga Miteru]]** (2004) — первый сезон, начало франшизы; знакомит с академией Лилиан, Советом Ямаюри и системой сестринства.
 - ![[Maria-sama_ga_Miteru_Haru_cover.jpg|80]] **[[Maria-sama_ga_Miteru_Haru|Maria-sama ga Miteru: Haru]]** (2004) — прямой приквел, второй сезон; завершает выпуск старших Роз и оставляет Совет в обновлённом составе.
-- **Maria-sama ga Miteru 4th** (2009) — прямой сиквел, четвёртый сезон (TV); подхватывает открытые арки Тоуко и Канако. Карточки в волте пока нет.
+- ![[Maria-sama_ga_Miteru_4th_cover.jpg|80]] **[[Maria-sama_ga_Miteru_4th|Maria-sama ga Miteru 4th]]** (2009) — прямой сиквел, четвёртый сезон (TV); подхватывает открытые арки Тоуко и Канако.
 
 ## Студия и команда
 

@@ -29,6 +29,10 @@ export interface NoteRecord {
   // Specialized frontmatter (model_name, vendor, etc.)
   extra: Record<string, unknown>;
 
+  // Parse diagnostic: set when a `---` block exists but YAML failed to parse
+  // (e.g. duplicate key). null when frontmatter is absent or parsed cleanly.
+  frontmatterError: string | null;
+
   // WikiLinks
   outgoingLinks: WikiLink[];
 }

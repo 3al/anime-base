@@ -15,6 +15,7 @@ export function registerQueryTool(server: McpServer, index: VaultIndex): void {
       stability: z.string().optional().describe('Filter by stability (stable, evolving, experimental).'),
       noteKind: z.string().optional().describe('Filter by note_kind (model-card, benchmark, coding-assistant).'),
       hasField: z.string().optional().describe('Note must have this extra field with truthy value.'),
+      malformedFrontmatter: z.boolean().optional().describe('Only notes whose `---` block exists but failed to parse (frontmatterError != null). These have note_kind/type = null and silently drop from kind filters.'),
       folder: z.string().optional().describe('Restrict to a subfolder.'),
       limit: z.number().optional().describe('Max results (default 50).'),
     },
@@ -30,6 +31,7 @@ export function registerQueryTool(server: McpServer, index: VaultIndex): void {
         tags: string[];
         quality: string | null;
         note_kind: string | null;
+        frontmatter_error: string | null;
       }> = [];
 
       for (const record of index.allNotes()) {
@@ -59,6 +61,8 @@ export function registerQueryTool(server: McpServer, index: VaultIndex): void {
           if (!record.extra[params.hasField]) continue;
         }
 
+        if (params.malformedFrontmatter && !record.frontmatterError) continue;
+
         results.push({
           path: record.path,
           name: record.name,
@@ -67,6 +71,7 @@ export function registerQueryTool(server: McpServer, index: VaultIndex): void {
           tags: record.tags,
           quality: record.quality,
           note_kind: record.note_kind,
+          frontmatter_error: record.frontmatterError,
         });
       }
 

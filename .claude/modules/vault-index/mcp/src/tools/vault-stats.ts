@@ -2,6 +2,7 @@ import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { VaultIndex } from '../vault-index.js';
 import { lintNote, isLintable } from '../lint.js';
+import { isMediaTarget } from '../links.js';
 
 export function registerStatsTool(server: McpServer, index: VaultIndex): void {
   server.tool(
@@ -24,6 +25,11 @@ export function registerStatsTool(server: McpServer, index: VaultIndex): void {
       let totalErrors = 0;
       let totalWarnings = 0;
       const nonCanonicalTags = new Set<string>();
+      // Notes whose `---` block exists but failed to parse. Surfaced here (a
+      // cheap, frequently-run signal) so a degraded note doesn't stay invisible
+      // between full vault_lint runs — its fields are null, so it silently drops
+      // from kind-aware tools otherwise. Lists paths; note_kind is NOT fabricated.
+      const frontmatterErrorFiles: string[] = [];
 
       for (const record of index.allNotes()) {
         // Counts by field
@@ -33,11 +39,15 @@ export function registerStatsTool(server: McpServer, index: VaultIndex): void {
         if (record.stability) byStability[record.stability] = (byStability[record.stability] ?? 0) + 1;
         if (record.note_kind) byNoteKind[record.note_kind] = (byNoteKind[record.note_kind] ?? 0) + 1;
 
+        if (record.frontmatterError) frontmatterErrorFiles.push(record.path);
+
         totalLinks += record.outgoingLinks.length;
         totalTags += record.tags.length;
 
-        // Broken links
+        // Broken links — skip media embeds (X_cover.jpg etc. are attachments,
+        // not notes), matching vault_broken_links semantics so the two tools agree.
         for (const link of record.outgoingLinks) {
+          if (isMediaTarget(link.target)) continue;
           if (!index.targetExists(link.target)) totalBrokenLinks++;
         }
 
@@ -76,6 +86,7 @@ export function registerStatsTool(server: McpServer, index: VaultIndex): void {
         totalOrphans,
         canonicalTagCount: index.canonicalTags.size,
         nonCanonicalTagsUsed: Array.from(nonCanonicalTags).sort(),
+        frontmatterErrors: { count: frontmatterErrorFiles.length, files: frontmatterErrorFiles },
         lint: { errors: totalErrors, warnings: totalWarnings },
       };
 

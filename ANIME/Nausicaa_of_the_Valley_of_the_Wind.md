@@ -33,6 +33,8 @@ studio: Topcraft
 source: manga
 episode_duration_minutes: 117
 personal_score: 10
+opening_score: null
+ending_score: null
 times_watched: 2
 last_episode_watched: 1
 watched_with:

@@ -4,7 +4,7 @@ domain: anime
 stability: stable
 priority: medium
 quality: draft
-co_authored: glm-5.1
+co_authored: claude-opus-4.8
 note_kind: character
 tags:
   - shoujo
@@ -21,6 +21,7 @@ featured_in:
   - Maria-sama_ga_Miteru
   - Maria-sama_ga_Miteru_Haru
   - Maria-sama_ga_Miteru_3rd
+  - Maria-sama_ga_Miteru_4th
 character_role: supporting
 gender: female
 status: alive
@@ -62,22 +63,24 @@ images:
 - ![[Maria-sama_ga_Miteru_cover.jpg|80]] **[[Maria-sama_ga_Miteru|Maria-sama ga Miteru]]** — 2004, school-драма с элементами class-S; Rosa Foetida en bouton, опекунша Ёсино.
 - ![[Maria-sama_ga_Miteru_Haru_cover.jpg|80]] **[[Maria-sama_ga_Miteru_Haru|Maria-sama ga Miteru: Haru]]** — 2004, второй сезон; выпуск из Лилиан и передача титула Rosa Foetida.
 - ![[Maria-sama_ga_Miteru_3rd_cover.jpg|80]] **[[Maria-sama_ga_Miteru_3rd|Maria-sama ga Miteru 3rd]]** — 2006, третий сезон (OVA); реакция на выборную кампанию Ёсино.
+- ![[Maria-sama_ga_Miteru_4th_cover.jpg|80]] **[[Maria-sama_ga_Miteru_4th|Maria-sama ga Miteru 4th]]** — 2009, четвёртый сезон; отпускает повзрослевшую Ёсино, ставшую Rosa Foetida en bouton.
 
 ## Связи
 
 ### В каноне
 
-- **Ёсино Симадзу** — младшая сестра (petite soeur) и двоюродная сестра; центр привязанности Рэй, её навязчивая забота — одновременно источник тепла и напряжения в их отношениях.
+- ![[Yoshino_Shimazu_cover.jpg|60]] **[[Yoshino_Shimazu|Ёсино Симадзу]]** — младшая сестра (petite soeur) и двоюродная сестра; центр привязанности Рэй, её навязчивая забота — одновременно источник тепла и напряжения в их отношениях.
 - ![[Torii_Eriko_cover.jpg|60]] **[[Torii_Eriko|Эрико Тории]]** — старшая сестра (grande soeur); выбрала Рэй ради эксперимента, но связь оказалась глубже, чем предполагалось.
 - ![[Fukuzawa_Yumi_cover.jpg|60]] **[[Fukuzawa_Yumi|Юми Фукудзава]]** — коллега по Совету Ямаюрикай; Рэй относится к ней мягко, как и ко всем окружающим.
 - ![[Ogasawara_Sachiko_cover.jpg|60]] **[[Ogasawara_Sachiko|Сатико Огасавара]]** — Rosa Chinensis en bouton, коллега по Совету.
 - ![[Sato_Sei_cover.jpg|60]] **[[Sato_Sei|Сэй Сато]]** — Rosa Gigantea, одна из старших Роз; единственная, кто может сравниться с Рэй в «мальчишеском» имидже.
 - ![[Mizuno_Yoko_cover.jpg|60]] **[[Mizuno_Yoko|Ёко Мидзуно]]** — Rosa Chinensis, лидер выпускного триумвирата; к ней Рэй обращается за советом в спорных ситуациях.
+- ![[Toudou_Shimako_cover.jpg|60]] **[[Toudou_Shimako|Симако Тодо]]** — Rosa Gigantea en bouton, коллега по Совету одного поколения.
 
 ## Сэйю
 
-- **Japanese (все тайтлы):** Shizuka Itō (伊藤 静)
-- **English (Maria-sama ga Miteru):** Candice Moore
+- **Shizuka Itō (伊藤 静)** — японская озвучка, все тайтлы.
+- **Candice Moore** — английский дубляж (Maria-sama ga Miteru).
 
 ## Ссылки
 

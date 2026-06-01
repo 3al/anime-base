@@ -4,7 +4,7 @@ domain: anime
 stability: stable
 priority: medium
 quality: draft
-co_authored: claude-opus-4.7
+co_authored: claude-opus-4.8
 note_kind: character
 tags:
   - shoujo
@@ -22,6 +22,8 @@ name_native: 佐藤 聖
 featured_in:
   - Maria-sama_ga_Miteru
   - Maria-sama_ga_Miteru_Haru
+  - Maria-sama_ga_Miteru_3rd
+  - Maria-sama_ga_Miteru_4th
 character_role: supporting
 gender: female
 status: alive
@@ -67,6 +69,8 @@ images:
 
 - ![[Maria-sama_ga_Miteru_cover.jpg|80]] **[[Maria-sama_ga_Miteru|Maria-sama ga Miteru]]** — 2004, school-драма с элементами class-S; Rosa Gigantea, провокатор арки Юми–Сатико.
 - ![[Maria-sama_ga_Miteru_Haru_cover.jpg|80]] **[[Maria-sama_ga_Miteru_Haru|Maria-sama ga Miteru: Haru]]** — 2004, второй сезон; центральная арка с Сиори, выпуск из Лилиан и передача титула Симако.
+- ![[Maria-sama_ga_Miteru_3rd_cover.jpg|80]] **[[Maria-sama_ga_Miteru_3rd|Maria-sama ga Miteru 3rd]]** — 2006, третий сезон (OVA); появляется наездами как выпускница — голос опыта и привычная ирония со стороны.
+- ![[Maria-sama_ga_Miteru_4th_cover.jpg|80]] **[[Maria-sama_ga_Miteru_4th|Maria-sama ga Miteru 4th]]** — 2009, четвёртый сезон; появляется наездами как выпускница, поддерживает Юми и Симако.
 
 ## Связи
 
@@ -74,15 +78,18 @@ images:
 
 - ![[Fukuzawa_Yumi_cover.jpg|60]] **[[Fukuzawa_Yumi|Юми Фукудзава]]** — постоянный объект подколок и нежности Сэй, через которую та одновременно поддерживает первокурсницу и нарочно злит Сатико.
 - ![[Ogasawara_Sachiko_cover.jpg|60]] **[[Ogasawara_Sachiko|Сатико Огасавара]]** — Rosa Chinensis en bouton; принципиальный «соперник» по совету, на чьё чувство собственного достоинства Сэй любит давить, в том числе условием с ролью принца.
-- **Симако Тодо** — младшая сестра Сэй, единственный персонаж, перед которым Сэй позволяет себе быть серьёзной; их связь со стороны выглядит холодной, но это форма взаимного уважения, а не дистанции.
-- **Сиори Кубо** — первая любовь Сэй и её несостоявшаяся младшая сестра; ушла в монастырь, оставив рану, которая остаётся ключом ко всему поведению Сэй до арки Haru.
+- ![[Toudou_Shimako_cover.jpg|60]] **[[Toudou_Shimako|Симако Тодо]]** — младшая сестра Сэй, единственный персонаж, перед которым Сэй позволяет себе быть серьёзной; их связь со стороны выглядит холодной, но это форма взаимного уважения, а не дистанции.
+- ![[Kubo_Shiori_cover.jpg|60]] **[[Kubo_Shiori|Шиори Кубо]]** — первая любовь Сэй и её несостоявшаяся младшая сестра; ушла в монастырь, оставив рану, которая остаётся ключом ко всему поведению Сэй до арки Haru.
 - ![[Mizuno_Yoko_cover.jpg|60]] **[[Mizuno_Yoko|Ёко Мидзуно]]** — Rosa Chinensis, одногодка Сэй и её ближайшая подруга в совете; одна из немногих, перед кем Сэй снимает фасад.
 - ![[Torii_Eriko_cover.jpg|60]] **[[Torii_Eriko|Эрико Тории]]** — Rosa Foetida, третья из выпускного триумвирата; вместе с Сэй и Ёко формирует «старшее поколение» совета, уходящее в финале Haru.
 - ![[Hasekura_Rei_cover.jpg|60]] **[[Hasekura_Rei|Рэй Хасэкура]]** — Rosa Foetida en bouton; единственная в совете, кто разделяет с Сэй «мальчишеский» имидж.
+- ![[Yoshino_Shimazu_cover.jpg|60]] **[[Yoshino_Shimazu|Ёсино Симадзу]]** — младшая сестра Рэй, член Совета Ямаюрикай; Сэй наблюдает за её становлением как Rosa Foetida en bouton.
+- ![[Touko_Matsudaira_cover.jpg|60]] **[[Touko_Matsudaira|Токо Матсудaira]]** — первокурсница, дальняя родственница Сатико; Сэй дала ей прозвище «Механическая дрель» за характерные спиральные косички.
+- ![[Kashiwagi_Suguru_cover.jpg|60]] **[[Kashiwagi_Suguru|Сугуру Касиваги]]** — президент совета учеников Ханадэра; взаимная неприязнь, оба постоянно обмениваются колкостями, хотя, похоже, знают друг о друге больше, чем показывают.
 
 ## Сэйю
 
-- **Japanese (все тайтлы):** Megumi Toyoguchi (豊口 めぐみ) — закреплена за ролью во всех TV-сезонах MariMite.
+- **Megumi Toyoguchi (豊口 めぐみ)** — японская озвучка, все тайтлы.
 
 ## Личный отзыв
 

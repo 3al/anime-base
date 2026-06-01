@@ -114,7 +114,7 @@ $VAULT_TOOLS_HOME/vault-semantic/
 
 ## MCP tools
 
-- `vault_semantic_search(query, mode, k, filter?)` — dense / bm25 / hybrid (RRF).
+- `vault_semantic_search(query, mode, k=12, filter?, min_score?, verbosity='lean', response_max_chars?)` — dense / bm25 / hybrid (RRF). v0.5.0+: lean payload по умолчанию + budget (top-N full → хвост header-only) держат `k=12–20` в одном tool-result; `verbosity='full'` добавляет `extra`+`score_components`; `k` clamp к 40. v0.5.1: бюджет считается в UTF-8 байтах (единица harness-cap; для кириллицы char-счёт недомеривал ~2×), lean дропает `note_metadata.extra` (дубль на каждом чанке заметки).
 - `vault_semantic_reindex(scope: 'changed'|'full')` — обычно не нужен (lazy refresh в `search/stats`).
 - `vault_semantic_stats()` — chunks count / version / device hint.
 - `vault_semantic_warmup()` — eager bge-m3 load (first call slow).

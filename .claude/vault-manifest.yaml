@@ -60,13 +60,21 @@ folders:
 # Reciprocity pairs — kind-пары, для которых межкарточные навигационные связи
 # обязаны быть двунаправленными по конвенции волта. Читается /fix-links (под-режим
 # asymmetric) + tool vault_asymmetric_links. Пусто/отсутствует = проверка выключена (opt-in).
-# Anime_Base: только character↔character (FK-классы character↔anime/person исключены
-# тем, что просто не входят в список — см. docs/Asymmetric_Links_Spec.md §5).
+# Cross-kind пара НАПРАВЛЕННАЯ: чтобы покрыть обе стороны character↔anime, нужны ОБЕ
+# записи [character, anime] и [anime, character]. Anime_Base:
+#   • character↔character — нарративные связи в ## Связи.
+#   • character↔anime — порог наличие карточки персонажа: карточка есть → обе стороны
+#     обязательны (## Тайтлы у персонажа ⟷ ## Персонажи у тайтла). См. Linking_guidelines.
+#   person↔anime НЕ включена: voice-actor в person.works[]→anime, но не в anime.staff[] →
+#   by-design односторонняя, пара false-флагала бы каждого сэйю. См. docs/Asymmetric_Links_Spec.md §5.
 reciprocity_pairs:
   - [character, character]
+  - [character, anime]
+  - [anime, character]
 
 # Severity для asymmetric-link issue в vault_lint (per-vault). WARN (дефолт) | ERROR.
-# Anime_Base: ERROR — реципрокность character↔character железная (см. Linking_guidelines § character).
+# Anime_Base: ERROR — реципрокность character↔character и character↔anime железная
+# (см. Linking_guidelines § character / «Взаимность с anime»).
 asymmetry_severity: ERROR
 
 # Per-module configuration overrides (advanced).

@@ -15,7 +15,7 @@ aliases:
   - Дева Мария смотрит за вами
   - Мария-сама смотрит на нас
 created: 2026-05-24
-updated: 2026-05-31
+updated: 2026-06-01
 title_romaji: Maria-sama ga Miteru
 title_original: マリア様がみてる
 format: tv
@@ -33,6 +33,8 @@ studio: Studio_Deen
 source: light-novel
 episode_duration_minutes: 23
 personal_score: 8.5
+opening_score: null
+ending_score: null
 times_watched: 2
 last_episode_watched: 13
 watched_with:
@@ -42,6 +44,7 @@ shikimori_score: 7.29
 related_titles:
   - Maria-sama_ga_Miteru_Haru
   - Maria-sama_ga_Miteru_3rd
+  - Maria-sama_ga_Miteru_4th
 staff:
   - person: Yukihiro_Matsushita
     role: director
@@ -83,21 +86,24 @@ images:
 | Персонаж                                                                         | Сэйю                                                      |
 | -------------------------------------------------------------------------------- | --------------------------------------------------------- |
 | ![[Fukuzawa_Yumi_cover.jpg\|60]] **[[Fukuzawa_Yumi\|Юми Фукудзава]]**            | ![[Kana_Ueda_cover.png\|60]] **[[Kana_Ueda\|Kana Ueda]]** |
-| ![[Ogasawara_Sachiko_cover.jpg\|60]] **[[Ogasawara_Sachiko\|Сатико Огасавара]]** | Miki Itō                                                  |
+| ![[Ogasawara_Sachiko_cover.jpg\|60]] **[[Ogasawara_Sachiko\|Сатико Огасавара]]** | ![[Miki_Itou_cover.jpg\|60]] **[[Miki_Itou\|Miki Itou]]** |
 | ![[Sato_Sei_cover.jpg\|60]] **[[Sato_Sei\|Сэй Сато]]**                           | Megumi Toyoguchi                                          |
 | ![[Mizuno_Yoko_cover.jpg\|60]] **[[Mizuno_Yoko\|Ёко Мидзуно]]**                  | Emi Shinohara                                             |
 | ![[Torii_Eriko_cover.jpg\|60]] **[[Torii_Eriko\|Эрико Тории]]**                  | Hitomi Nabatame                                           |
-| ![[Hasekura_Rei_cover.jpg\|60]] **[[Hasekura_Rei\|Рэй Хасэкура]]**                                                | Shizuka Itō                                               |
-| **Ёсино Симадзу**                                                                | Haruna Ikezawa                                            |
-| **Симако Тодо**                                                                  | Mamiko Noto                                               |
-| **Юки Фукудзава**                                                                | Mitsuhiro Ichiki                                          |
-| **Цутако Такэсима**                                                              | Rina Satō                                                 |
-| **Сугуру Касиваги**                                                              | Nobuyuki Hiyama                                           |
+| ![[Hasekura_Rei_cover.jpg\|60]] **[[Hasekura_Rei\|Рэй Хасэкура]]**               | Shizuka Itō                                               |
+| ![[Yoshino_Shimazu_cover.jpg\|60]] **[[Yoshino_Shimazu\|Ёсино Симадзу]]**        | Haruna Ikezawa                                            |
+| ![[Toudou_Shimako_cover.jpg\|60]] **[[Toudou_Shimako\|Симако Тодо]]**            | Mamiko Noto                                               |
+| ![[Fukuzawa_Yuuki_cover.jpg\|60]] **[[Fukuzawa_Yuuki\|Юки Фукудзава]]**          | Mitsuhiro Ichiki                                          |
+| ![[Takeshima_Tsutako_cover.jpg\|60]] **[[Takeshima_Tsutako\|Цутако Такэсима]]**  | Rina Satō                                                 |
+| ![[Kubo_Shiori_cover.jpg\|60]] **[[Kubo_Shiori\|Шиори Кубо]]** | Akiko Nakagawa |
+| ![[Kashiwagi_Suguru_cover.jpg\|60]] **[[Kashiwagi_Suguru\|Сугуру Касиваги]]**    | Nobuyuki Hiyama                                           |
+|                                                                                  |                                                           |
 
 ## Связанные тайтлы
 
 - ![[Maria-sama_ga_Miteru_Haru_cover.jpg|80]] **[[Maria-sama_ga_Miteru_Haru|Maria-sama ga Miteru: Haru]]** (2004) — прямой сиквел, второй сезон; продолжает арки совета, фокусируется на прощании Сэй с Лилиан и появлении Тоуко Мацудайры.
 - ![[Maria-sama_ga_Miteru_3rd_cover.jpg|80]] **[[Maria-sama_ga_Miteru_3rd|Maria-sama ga Miteru 3rd]]** (2006) — третий сезон франшизы (OVA); арка Канако Хосокавы и выборы в Совете Ямаюри.
+- ![[Maria-sama_ga_Miteru_4th_cover.jpg|80]] **[[Maria-sama_ga_Miteru_4th|Maria-sama ga Miteru 4th]]** (2009) — четвёртый сезон; финал арки Юми, выбор младшей сестры.
 
 ## Студия и команда
 

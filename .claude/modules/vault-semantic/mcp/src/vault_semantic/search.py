@@ -31,8 +31,9 @@ from .models import ChunkResult, FilterSpec, FilterWarning, SearchResponse
 # ---------------------------------------------------------------------------
 
 K_RRF = 60
-K_HARD_CAP = 100
-DEFAULT_K = 20
+K_HARD_CAP = 100  # absolute schema ceiling (config k_ceiling may not exceed it)
+K_CEILING = 40    # v0.5.0 active default clamp on per-call k (anti-runaway)
+DEFAULT_K = 12    # v0.5.0: lowered 20→12 — leaner default keeps payload in-context
 BM25_SCALE = 10.0  # exp(-bm25_raw / scale) — see §5.3
 
 # Pre-retrieval filter knowledge — must stay in sync with §6.2.
@@ -649,11 +650,13 @@ def search(
         )
 
     extra_warnings: list[FilterWarning] = []
-    if k > K_HARD_CAP:
+    if k > K_CEILING:
         extra_warnings.append(
-            FilterWarning(field="k", reason="clamped", detail=f"capped at {K_HARD_CAP}")
+            FilterWarning(
+                field="k", reason="clamped", detail=f"capped at k_ceiling={K_CEILING}"
+            )
         )
-        k = K_HARD_CAP
+        k = K_CEILING
     if k < 1:
         k = 1
 

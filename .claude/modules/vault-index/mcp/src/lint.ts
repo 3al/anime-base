@@ -36,6 +36,20 @@ export function lintNote(
 ): LintIssue[] {
   const issues: LintIssue[] = [];
 
+  // --- Malformed frontmatter (block present but YAML failed to parse) ---
+  // Distinct from no-frontmatter: the `---` block exists, so reporting it as
+  // "no frontmatter" would mislead and the note would silently drop out of
+  // kind-aware tools (its fields are all null). Surface the parser message so
+  // the author can locate the cause (e.g. a duplicate key line).
+  if (record.frontmatterError) {
+    issues.push({
+      severity: 'ERROR',
+      code: 'malformed-frontmatter',
+      message: `Frontmatter present but failed to parse: ${record.frontmatterError}`,
+    });
+    return issues; // Fields are unparsed — no further checks possible
+  }
+
   // --- No frontmatter ---
   if (
     record.type === null &&

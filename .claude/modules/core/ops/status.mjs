@@ -8,6 +8,7 @@ import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { hasOuterBlock } from '../lib/managed_block.mjs';
 import { readStdin } from '../lib/read_input.mjs';
+import { VISION_PROBE_REL } from '../lib/vision_probe.mjs';
 
 
 function emit(result) {
@@ -66,6 +67,7 @@ function main() {
     claude_md_block: hasOuterBlock(join(vault_root, 'CLAUDE.md'), 'html'),
     gitignore_block: hasOuterBlock(join(vault_root, '.gitignore'), 'hash'),
     system_templates: collectSystemTemplates(vault_root, module_dir),
+    vision_probe: existsSync(join(vault_root, VISION_PROBE_REL)),
   };
 
   const version_available = readModuleVersion(module_dir);
@@ -78,8 +80,9 @@ function main() {
     module_status = 'missing';
   } else if (version_installed !== version_available) {
     module_status = 'outdated';
-  } else if (!components.claude_md_block || !components.gitignore_block) {
-    // Marker says installed but managed artifacts are gone — partial state, reinstall fixes it.
+  } else if (!components.claude_md_block || !components.gitignore_block || !components.vision_probe) {
+    // Marker says installed but a managed artifact is gone (block or vision
+    // probe) — partial state, reinstall regenerates it.
     module_status = 'partial';
   } else {
     module_status = 'installed';

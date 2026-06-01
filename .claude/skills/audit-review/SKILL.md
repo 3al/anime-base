@@ -2,8 +2,9 @@
 name: audit-review
 description: >
   Audit the personal review section ("## Личный отзыв") of a vault note: polish typos,
-  punctuation, formatting, and extract metadata signals (personal_score, personal_status)
-  from the prose to suggest frontmatter updates. Kind-agnostic — works for any card with
+  punctuation, formatting, and extract metadata signals (personal_score, personal_status,
+  opening_score/ending_score for anime) from the prose to suggest frontmatter updates.
+  Kind-agnostic — works for any card with
   the review section. Use when the user says /audit-review, "проверь мой отзыв",
   "почисти отзыв", "пройди по отзыву", "audit my review".
 argument-hint: "<note>"
@@ -26,7 +27,7 @@ model: opus
 
 ## Источники правил
 
-1. `SYSTEM/Metadata_schema.md` — `personal_score`, `personal_status` для anime; аналогичные поля для будущих kinds.
+1. `SYSTEM/Metadata_schema.md` — `personal_score`, `personal_status`, `opening_score`/`ending_score` (anime); аналогичные поля для будущих kinds.
 2. `SYSTEM/enums.yaml` — допустимые значения `personal_status` для kind карточки.
 3. `SYSTEM/Tag_taxonomy.md` — обязательный тег статуса для kind (например, anime).
 
@@ -95,7 +96,26 @@ model: opus
 
 Если несколько паттернов с разными значениями — выбрать **последнее по позиции** (предполагаем, что итоговая оценка — в конце отзыва).
 
-#### 5.2. Статус → `personal_status`
+#### 5.2. Оценки опенинга и эндинга → `opening_score` / `ending_score`
+
+**Применяется только к kind'ам, чья схема определяет эти поля** (сейчас — `anime`). Если в `Metadata_schema.md` для kind карточки полей `opening_score`/`ending_score` нет (или в самой карточке их нет во frontmatter) — пропустить этот шаг целиком, не предлагать.
+
+Это **независимые** оси от `personal_score`: оценку OP/ED **нельзя** выводить из общей оценки или настроения отзыва. Извлекать **только** при явном совпадении двух условий в одном предложении/клаузе:
+
+1. **Маркер элемента** (что именно оценивается):
+   - Опенинг: `опенинг`, `опен(?!\w)`, `\bOP\b`, `заставк`, `вступительн(ая|ую|ой) (тема|песня|композиция)`, `открывающ(ая|ую) (тема|песня|композиция)`.
+   - Эндинг: `эндинг`, `эндин(?!\w)`, `\bED\b`, `закрывающ(ая|ую) (тема|песня|композиция)`, `финальн(ая|ую) (песня|тема|композиция)`.
+2. **Балл рядом** — те же score-паттерны, что в 5.1 (`\b(10|[1-9])\s*/\s*10\b`, `(?:оценка|ставлю|даю)[:\s]+...`, `\b(10|[1-9])\b\s*из\s*10`, плюс `(?:опенинг|эндинг|опен|OP|ED)\D{0,15}\bна\s+(10|[1-9])\b` для «опенинг на 10»).
+
+**Осторожно с «концовка» / «финал».** Эти слова в отзыве чаще означают **сюжетную** развязку, а не ED-песню. Засчитывать их в `ending_score` **только** если в той же клаузе явно стоит музыкальный контекст (`песн`, `тема`, `композиц`, `музык`, `саундтрек`, `OST`). Иначе — игнорировать (это не про эндинг как элемент).
+
+Извлечь `N` для каждого найденного элемента, сравнить с текущим значением:
+- Совпадает → ничего не делать.
+- Отличается / `null` / отсутствует → собрать в `extracted_changes.opening_score = N` / `extracted_changes.ending_score = N`.
+
+Если для одного элемента несколько разных баллов — выбрать **последний по позиции** (как в 5.1).
+
+#### 5.3. Статус → `personal_status`
 
 Паттерны (case-insensitive, кириллица):
 - «(досмотрел|закончил|пересмотрел|посмотрел) (все|до конца|целиком|залпом)», «всё (\d+ серий|серии)» → candidate `completed`
@@ -109,7 +129,7 @@ model: opus
 - Совпадает → ничего не делать.
 - Отличается → собрать в `extracted_changes.personal_status = <candidate>`.
 
-#### 5.3. Валидация по enums.yaml
+#### 5.4. Валидация по enums.yaml
 
 Перед предложением изменения — проверить, что кандидат `personal_status` присутствует в `enums.yaml::note_kinds.<kind>.personal_status`. Если нет (например, скрипт нашёл `dropped` в карточке `note_kind: person`, где такого статуса нет) — пропустить кандидата.
 
@@ -129,7 +149,7 @@ model: opus
 ### 7. Применение
 
 1. **Edit секции** — записать polished текст. Один Edit на всю секцию.
-2. **Edit frontmatter** — точечно изменить только согласованные поля (`personal_score`, `personal_status`, `updated`). `tags[]` не трогать.
+2. **Edit frontmatter** — точечно изменить только согласованные поля (`personal_score`, `opening_score`, `ending_score`, `personal_status`, `updated`). `tags[]` не трогать.
 3. **Bump `updated`** — на сегодняшнюю дату, **только если** были изменения (полировка или мета). Если ни секция, ни frontmatter не менялись — не трогать.
 
 **Минимальный патч.** Не нормализовывать другие поля, не сортировать ключи. Только нужные строки.
@@ -153,11 +173,13 @@ Polish phase:
 
 Metadata extraction:
   • Найдено: personal_score=9 (паттерн «9/10»)         → принято / отклонено
+  • Найдено: opening_score=10 (паттерн «опенинг на 10») → принято / отклонено
   • Найдено: personal_status=completed (паттерн «...») → принято / отклонено
   ... (или «не найдено явных мета-сигналов»)
 
 Frontmatter обновления:
   • personal_score: null → 9
+  • opening_score: null → 10
   • personal_status: plan-to-watch → completed
   • tags: [plan-to-watch, ...] → [completed, ...]
   • updated: <today>

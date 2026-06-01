@@ -1,9 +1,27 @@
 name: core
-version: 0.7.6
+version: 0.8.0
 description: |
   Core module — обязательная база для любого волта в bootstrap-фреймворке.
   Управляет: outer managed-блоками в CLAUDE.md и .gitignore, governance-шаблонами
-  в SYSTEM/ (skip-if-exists), маркером .installed. Sub-block helpers через lib/managed_block.mjs.
+  в SYSTEM/ (skip-if-exists), vision-gate probe-ассетом, маркером .installed.
+  Sub-block helpers через lib/managed_block.mjs.
+
+  v0.8.0 (B-009 — vision-gate probe расцеплён от боевого скачивания):
+  - `lib/vision_probe.mjs` — генератор крошечного детерминированного PNG
+    (`writeVisionProbe(vaultRoot)` → `.claude/assets/vision_probe.png`, красный
+    круг на белом, 32×32, ~143 байта, zlib + ручной CRC32). Install-шаг 4.5
+    вызывает его (action `probe_generated` | `probe_present`). Image-скиллы
+    читают этот ассет как pre-flight проверку мультимодальности ДО любого
+    скачивания постера: Read вернул визуал → модель мультимодальна; ошибка/
+    только метаданные → слепая, фото-часть пропускается с нулём сетевых попыток.
+    Расцепляет пробу от реального скачка (раньше проба == скачать первый постер
+    → 1–N сетевых попыток + удаление-после-факта у слепой модели).
+  - Генерируется, а не коммитится бинарём: идиома «текст-в-бандле → артефакт-
+    на-install», self-heal при порче (write-if-absent-or-invalid), пиксельный
+    контент не попадает в рантайм-контекст модели (anti-parrot для secondary-
+    проверки «назови фигуру»). gitignored (per-vault generated state).
+  - `ops/status.mjs` — `components.vision_probe`; отсутствие при installed-
+    маркере → `partial` (reinstall регенерит). gitignore.fragment: ассет добавлен.
 
   v0.7.6 (B-005 — managed-block replace стирал sub-блоки):
   - `lib/managed_block.mjs::ensureManagedBlock` при replace внешнего блока
