@@ -36,6 +36,7 @@ mal_url: "https://myanimelist.net/character/1631/Suguru_Kashiwagi"
 anilist_url: "https://anilist.co/character/12155/Suguru-Kashiwagi"
 images:
   cover: "attachments/Kashiwagi_Suguru_cover.jpg"
+personal_score: null
 ---
 
 # Kashiwagi Suguru (柏木 優)

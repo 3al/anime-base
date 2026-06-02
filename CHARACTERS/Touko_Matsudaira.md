@@ -36,6 +36,7 @@ mal_url: "https://myanimelist.net/character/1635/Touko_Matsudaira"
 anilist_url: "https://anilist.co/character/1635/Touko-Matsudaira"
 images:
   cover: "attachments/Touko_Matsudaira_cover.jpg"
+personal_score: null
 ---
 
 # Touko Matsudaira (松平 瞳子)

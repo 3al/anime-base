@@ -31,6 +31,7 @@ voice_actors: []
 mal_url: https://myanimelist.net/character/1634/Shiori_Kubo
 images:
   cover: "attachments/Kubo_Shiori_cover.jpg"
+personal_score: null
 ---
 
 # Kubo Shiori (久保 栞)

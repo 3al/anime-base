@@ -47,6 +47,7 @@ voice_actors:
     person: "Miki_Itou"
 images:
   cover: attachments/Ogasawara_Sachiko_cover.jpg
+personal_score: null
 ---
 
 # Ogasawara Sachiko (小笠原祥子)

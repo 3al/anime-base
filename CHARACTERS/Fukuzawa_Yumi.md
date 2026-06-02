@@ -40,6 +40,7 @@ voice_actors:
     person: Kana_Ueda
 images:
   cover: attachments/Fukuzawa_Yumi_cover.jpg
+personal_score: null
 ---
 
 # Fukuzawa Yumi (福沢祐巳)

@@ -31,6 +31,7 @@ mal_url: "https://myanimelist.net/character/541/Kushana"
 anilist_url: ""
 images:
   cover: "attachments/Kushana_cover.jpg"
+personal_score: null
 ---
 
 # Kushana (クシャナ)

@@ -36,6 +36,7 @@ mal_url: "https://myanimelist.net/character/1642/Tsutako_Takeshima"
 anilist_url: "https://anilist.co/character/1642/Tsutako-Takeshima"
 images:
   cover: "attachments/Takeshima_Tsutako_cover.jpg"
+personal_score: null
 ---
 
 # Takeshima Tsutako (武嶋 蔦子)

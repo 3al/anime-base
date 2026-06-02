@@ -37,6 +37,7 @@ mal_url: https://myanimelist.net/character/1639/Sei_Satou
 voice_actors: []
 images:
   cover: attachments/Sato_Sei_cover.jpg
+personal_score: null
 ---
 
 # Sato Sei (佐藤 聖)

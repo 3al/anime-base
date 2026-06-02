@@ -45,6 +45,7 @@ voice_actors:
 mal_url: "https://myanimelist.net/character/1627/Yuuki_Fukuzawa"
 images:
   cover: "attachments/Fukuzawa_Yuuki_cover.jpg"
+personal_score: null
 ---
 
 # Yuuki Fukuzawa (福沢 祐麒)

@@ -36,6 +36,7 @@ mal_url: "https://myanimelist.net/character/1628/Rei_Hasekura"
 anilist_url: "https://anilist.co/character/1628/Rei-Hasekura"
 images:
   cover: "attachments/Hasekura_Rei_cover.jpg"
+personal_score: null
 ---
 
 # Hasekura Rei (支倉令)

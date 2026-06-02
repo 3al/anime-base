@@ -35,6 +35,10 @@ episode_duration_minutes: 23
 personal_score: 8
 opening_score: null
 ending_score: null
+art_score: null
+story_score: null
+originality_score: null
+content_rating: sfw
 times_watched: 2
 last_episode_watched: 13
 watched_with:

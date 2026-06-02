@@ -34,6 +34,7 @@ mal_url: "https://myanimelist.net/character/1643/Eriko_Torii"
 anilist_url: "https://anilist.co/character/2564"
 images:
   cover: "attachments/Torii_Eriko_cover.jpg"
+personal_score: null
 ---
 
 # Torii Eriko (鳥居 江利子)

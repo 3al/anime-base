@@ -14,7 +14,7 @@ aliases:
   - Вайолет Эвергарден
   - ヴァイオレット・エヴァーガーデン
 created: 2026-06-01
-updated: 2026-06-01
+updated: 2026-06-02
 name_romaji: Violet Evergarden
 name_english: Violet Evergarden
 name_native: ヴァイオレット・エヴァーガーデン
@@ -33,6 +33,7 @@ mal_url: https://myanimelist.net/character/141354
 anilist_url: https://anilist.co/character/126018
 images:
   cover: attachments/Evergarden_Violet_cover.webp
+personal_score: null
 ---
 
 # Violet Evergarden (ヴァイオレット・エヴァーガーデン)
@@ -74,7 +75,7 @@ images:
 
 ### В каноне
 
-- **Гилберт Бугенвиллея** — командир и единственный человек, к кому она привязалась; от него — последние слова «Я люблю тебя», ставшие смыслом её поисков.
+- ![[Gilbert_Bougainvillea_cover.jpg|60]] **[[Gilbert_Bougainvillea|Гилберт Бугенвиллея]]** — командир и единственный человек, к кому она привязалась; от него — последние слова «Я люблю тебя», ставшие смыслом её поисков.
 - **Дитфрид Бугенвиллея** — старший брат Гилберта, нашедший Вайолет; винит её в гибели брата.
 - **Клаудия Ходжинс** — бывший сослуживец Гилберта и владелец Почтовой компании CH; после войны берёт Вайолет под опеку.
 - **Каттлея Бодлер** — старшая коллега-кукла в Почтовой компании CH, наставляющая Вайолет в житейских и социальных вопросах.
@@ -87,6 +88,12 @@ images:
 
 - **Japanese (Violet Evergarden):** Yui Ishikawa
 - **English (Violet Evergarden):** Erika Harlacher
+
+## Галерея
+
+|                                           |                                           |                                           |
+| ----------------------------------------- | ----------------------------------------- | ----------------------------------------- |
+| ![[Evergarden_Violet_gallery_1.png\|150]] | ![[Evergarden_Violet_gallery_2.jpg\|150]] | ![[Evergarden_Violet_gallery_3.jpg\|150]] |
 
 ## Ссылки
 

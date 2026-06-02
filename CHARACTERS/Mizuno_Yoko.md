@@ -37,6 +37,7 @@ mal_url: https://myanimelist.net/character/1636/Youko_Mizuno
 anilist_url: https://anilist.co/character/1636
 images:
   cover: attachments/Mizuno_Yoko_cover.jpg
+personal_score: null
 ---
 
 # Mizuno Yoko (水野蓉子)

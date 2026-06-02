@@ -36,6 +36,7 @@ mal_url: "https://myanimelist.net/character/1644/Shimako_Toudou"
 anilist_url: "https://anilist.co/character/1644/Shimako-Toudou"
 images:
   cover: "attachments/Toudou_Shimako_cover.jpg"
+personal_score: null
 ---
 
 # Toudou Shimako (藤堂 志摩子)

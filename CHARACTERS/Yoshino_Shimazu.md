@@ -36,6 +36,7 @@ mal_url: "https://myanimelist.net/character/1640/Yoshino_Shimazu"
 anilist_url: "https://anilist.co/character/2564/Yoshino-Shimazu"
 images:
   cover: "attachments/Yoshino_Shimazu_cover.jpg"
+personal_score: null
 ---
 
 # Shimazu Yoshino (島津 由乃)

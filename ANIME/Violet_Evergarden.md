@@ -12,7 +12,7 @@ aliases:
   - Вайолет Эвергарден
   - Violet Evergarden
 created: 2026-05-26
-updated: 2026-06-01
+updated: 2026-06-02
 title_romaji: Violet Evergarden
 title_original: ヴァイオレット・エヴァーガーデン
 format: tv
@@ -32,6 +32,10 @@ episode_duration_minutes: 24
 personal_score: 10
 opening_score: null
 ending_score: null
+art_score: null
+story_score: null
+originality_score: null
+content_rating: sfw
 times_watched: 3
 last_episode_watched: 13
 watched_with:
@@ -80,26 +84,26 @@ images:
 
 ## Персонажи
 
-| Персонаж                                                                           | Сэйю             |
-| ---------------------------------------------------------------------------------- | ---------------- |
+| Персонаж                                                                            | Сэйю             |
+| ----------------------------------------------------------------------------------- | ---------------- |
 | ![[Evergarden_Violet_cover.webp\|60]] **[[Evergarden_Violet\|Вайолет Эвергарден]]** | Yui Ishikawa     |
-| **Гилберт Бугенвиллея**                                                            | Daisuke Namikawa |
-| **Клаудия Ходжинс**                                                                | Takehito Koyasu  |
-| **Дитфрид Бугенвиллея**                                                            | Hidenobu Kiuchi  |
-| **Каттлея Бодлер**                                                                 | Aya Endou        |
-| **Бенедикт Блю**                                                                   | Kouki Uchiyama   |
-| **Эрика Браун**                                                                    | Minori Chihara   |
-| **Айрис Каннари**                                                                  | Haruka Tomatsu   |
-| **Лукулия Марльборо**                                                              | Azusa Tadokoro   |
-| **Леон Стефанотис**                                                                | Yuuto Uemura     |
-| **Анна Магнолия**                                                                  | Sumire Morohoshi |
-| **Клара Магнолия**                                                                 | Ayako Kawasumi   |
-| **Шарлотта Абельфрейя Дроссель**                                                   | Megumi Nakajima  |
-| **Дамиан Балдур Флюгель**                                                          | Kenjirou Tsuda   |
-| **Оскар Вебстер**                                                                  | Satoshi Taki     |
-| **Оливия Вебстер**                                                                 | Sayaka Senbongi  |
-| **Расселл Бейли**                                                                  | Kengo Tsujii     |
-| **Альберта**                                                                       | Mami Koyama      |
+| ![[Gilbert_Bougainvillea_cover.jpg\|60]] **[[Gilbert_Bougainvillea\|Гилберт Бугенвиллея]]** | Daisuke Namikawa |
+| **Клаудия Ходжинс**                                                                 | Takehito Koyasu  |
+| **Дитфрид Бугенвиллея**                                                             | Hidenobu Kiuchi  |
+| **Каттлея Бодлер**                                                                  | Aya Endou        |
+| **Бенедикт Блю**                                                                    | Kouki Uchiyama   |
+| **Эрика Браун**                                                                     | Minori Chihara   |
+| **Айрис Каннари**                                                                   | Haruka Tomatsu   |
+| **Лукулия Марльборо**                                                               | Azusa Tadokoro   |
+| **Леон Стефанотис**                                                                 | Yuuto Uemura     |
+| **Анна Магнолия**                                                                   | Sumire Morohoshi |
+| **Клара Магнолия**                                                                  | Ayako Kawasumi   |
+| **Шарлотта Абельфрейя Дроссель**                                                    | Megumi Nakajima  |
+| **Дамиан Балдур Флюгель**                                                           | Kenjirou Tsuda   |
+| **Оскар Вебстер**                                                                   | Satoshi Taki     |
+| **Оливия Вебстер**                                                                  | Sayaka Senbongi  |
+| **Расселл Бейли**                                                                   | Kengo Tsujii     |
+| **Альберта**                                                                        | Mami Koyama      |
 
 ## Студия и команда
 

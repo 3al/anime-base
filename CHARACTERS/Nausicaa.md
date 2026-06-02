@@ -33,6 +33,7 @@ mal_url: https://myanimelist.net/character/539/Nausicaä
 anilist_url: https://anilist.co/character/539
 images:
   cover: attachments/Nausicaa_cover.png
+personal_score: null
 ---
 
 # Nausicaä (ナウシカ)
