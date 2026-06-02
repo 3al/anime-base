@@ -3,7 +3,7 @@ name: audit-review
 description: >
   Audit the personal review section ("## Личный отзыв") of a vault note: polish typos,
   punctuation, formatting, and extract metadata signals (personal_score, personal_status,
-  opening_score/ending_score for anime) from the prose to suggest frontmatter updates.
+  opening_score/ending_score, art_score/story_score/originality_score) from the prose to suggest frontmatter updates.
   Kind-agnostic — works for any card with
   the review section. Use when the user says /audit-review, "проверь мой отзыв",
   "почисти отзыв", "пройди по отзыву", "audit my review".
@@ -115,6 +115,16 @@ model: opus
 
 Если для одного элемента несколько разных баллов — выбрать **последний по позиции** (как в 5.1).
 
+#### 5.2b. Оси art / story / originality → `art_score` / `story_score` / `originality_score`
+
+**Применяется к kind'ам, чья схема определяет эти поля** (`anime`, `manga`). Если полей нет в схеме kind или во frontmatter карточки — шаг пропустить. Это **независимые** оси (как OP/ED): балл нельзя выводить из общей оценки или настроения отзыва. Извлекать **только** при явном совпадении маркера оси + балла рядом в одной клаузе (те же score-паттерны, что 5.1, плюс `<маркер>\D{0,15}\bна\s+(10|[1-9])\b` для «рисовка на 9»):
+
+- **art_score** — маркеры: `рисовк`, `прорисовк`, `анимаци`, `арт(?!\w)`, `визуал`, `график`, `картинк`, `стиль рисунка`.
+- **story_score** — маркеры: `сюжет`, `сценари`, `истори(я|ю|и)`, `повествован`, `драматург`, `арк[аи]`.
+- **originality_score** — маркеры: `оригинальн`, `необычн`, `свеж(ий|есть|о)`, `эксперимент`, `новатор`, `нестандартн`.
+
+Извлечь `N` для каждой найденной оси, сравнить с текущим (совпадает → ничего; отличается/`null`/нет → `extracted_changes.<ось>_score = N`). Несколько баллов на одну ось — последний по позиции (как 5.1). Не угадывать по настроению — только явный «<ось> на N» / «N/10 за <ось>».
+
 #### 5.3. Статус → `personal_status`
 
 Паттерны (case-insensitive, кириллица):
@@ -149,7 +159,7 @@ model: opus
 ### 7. Применение
 
 1. **Edit секции** — записать polished текст. Один Edit на всю секцию.
-2. **Edit frontmatter** — точечно изменить только согласованные поля (`personal_score`, `opening_score`, `ending_score`, `personal_status`, `updated`). `tags[]` не трогать.
+2. **Edit frontmatter** — точечно изменить только согласованные поля (`personal_score`, `opening_score`, `ending_score`, `art_score`, `story_score`, `originality_score`, `personal_status`, `updated`). `tags[]` не трогать.
 3. **Bump `updated`** — на сегодняшнюю дату, **только если** были изменения (полировка или мета). Если ни секция, ни frontmatter не менялись — не трогать.
 
 **Минимальный патч.** Не нормализовывать другие поля, не сортировать ключи. Только нужные строки.

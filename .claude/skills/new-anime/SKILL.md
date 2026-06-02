@@ -149,6 +149,10 @@ episode_duration_minutes: <число или null>
 personal_score: <1-10 или null>     # обычно null при создании — пользователь поставит после просмотра
 opening_score: <1-10 или null>      # обычно null — заполняется ТОЛЬКО если качество опенинга оценивается отдельно от тайтла
 ending_score: <1-10 или null>       # обычно null — заполняется ТОЛЬКО если качество эндинга оценивается отдельно от тайтла
+art_score: <1-10 или null>          # USER-ONLY — оценка рисовки/анимации; обычно null, модель не заполняет
+story_score: <1-10 или null>        # USER-ONLY — оценка сюжета/сценария; обычно null
+originality_score: <1-10 или null>  # USER-ONLY — оригинальность/экспериментальность; обычно null
+content_rating: <sfw|nsfw|explicit> # always-present, default sfw; model-fillable: AniList isAdult + жанры (hentai→explicit, ecchi→nsfw)
 times_watched: <число или null>     # общее число просмотров: 1 = смотрел один раз, 3 = трижды. null для plan-to-watch / dropped
 last_episode_watched: <число или null>  # для completed/favorite = episodes; для watching/on-hold = текущий прогресс; для plan-to-watch = null
 watched_with: []                    # list[enum] из enums.yaml::note_kinds.anime.watched_with. [] если смотрел один или ещё не смотрел
@@ -478,6 +482,8 @@ images:
 - **Ставить `co_authored: <model-id>`** при создании. ID текущей модели в волтовом формате `claude-opus-4.7` / `claude-sonnet-4.6` / `claude-haiku-4.5` (источник — системный промпт, последний дефис → точка). `/verify` это поле не трогает.
 - При обнаружении новых тегов, которых нет в `SYSTEM/Tag_taxonomy.md` — автоматически добавить их туда. Не оставлять заметку без семантически необходимого тега.
 - Web research — обязательная часть фазы 2. Не выдумывать факты, не додумывать данные. Для непопулярных тайтлов — сверять минимум два источника.
+- **Оценочные оси `art_score`/`story_score`/`originality_score`** — USER-ONLY, always-present `null`, модель НЕ заполняет (как `personal_score`). Извлечение из «## Личный отзыв» — задача `/audit-review`.
+- **`content_rating`** (sfw/nsfw/explicit) — модель-заполняемое из AniList `isAdult` + жанров (hentai→explicit, ecchi→nsfw, иначе sfw), default sfw. Для adult-тайтлов: основной источник **AniList** (MAL прячет), синопсис **неграфичный**, **жёсткий предел** — никакого сексуального контента с несовершеннолетними; adult-теги — из категории `Tag_taxonomy` «Контент-рейтинг / adult», только при nsfw/explicit; обложка не прошла визуальную политику → пометка в отчёте, пользователь добавит руками.
 - При наличии связанных заметок в волте (которые попадают в обязательные WikiLinks по правилам Linking_guidelines) — обязательно проставить ссылки.
 - Поле `personal_status` и тег статуса (`watching`/`completed`/...) должны быть синхронны. Изменение одного без другого = непоследовательная карточка.
 - `mal_score` и `shikimori_score` фиксируются на момент создания. Не нужно автоматически обновлять при каждом аудите — только когда пользователь явно попросит «обновить оценки».

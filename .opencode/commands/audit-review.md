@@ -1,6 +1,6 @@
 ---
 description: >
-  Audit the personal review section ("## Личный отзыв") of a vault note: polish typos, punctuation, formatting, and extract metadata signals (personal_score, personal_status, opening_score/ending_score for anime) from the prose to suggest frontmatter updates. Kind-agnostic — works for any card with the review section. Use when the user says /audit-review, "проверь мой отзыв", "почисти отзыв", "пройди по отзыву", "audit my review".
+  Audit the personal review section ("## Личный отзыв") of a vault note: polish typos, punctuation, formatting, and extract metadata signals (personal_score, personal_status, opening_score/ending_score, art_score/story_score/originality_score) from the prose to suggest frontmatter updates. Kind-agnostic — works for any card with the review section. Use when the user says /audit-review, "проверь мой отзыв", "почисти отзыв", "пройди по отзыву", "audit my review".
 ---
 Invoke the `audit-review` skill via the skill tool NOW.
 
