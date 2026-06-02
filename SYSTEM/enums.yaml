@@ -43,7 +43,7 @@ note_kinds:
       - sound-director
       - editor
       - key-animator
-    genres:
+    genres: &media_genres
       - action
       - adventure
       - comedy
@@ -66,6 +66,12 @@ note_kinds:
       - isekai
       - girls-love
       - class-s
+      - hentai
+      - erotica
+    # Возрастной рейтинг контента. Общий якорь для anime и manga.
+    # sfw (безопасно), nsfw (откровенно/ecchi), explicit (хентай/порнография).
+    # Модель-заполняемое (AniList isAdult + жанры), always-present, default sfw.
+    content_rating: &content_rating [sfw, nsfw, explicit]
 
   person:
     status: [alive, deceased]
@@ -102,3 +108,31 @@ note_kinds:
     # Статус деятельности студии. Отличается от status у anime/person/character —
     # это про организацию: работает / закрыта / приостановлена.
     status: [active, defunct, on-hiatus]
+
+  manga:
+    # Статус публикации манги. Отличается от anime.status (выход тайтла):
+    # publishing (выходит), finished (завершена), on-hiatus (на паузе),
+    # discontinued (заброшена/прекращена), upcoming (анонсирована).
+    status: [publishing, finished, on-hiatus, discontinued, upcoming]
+    # Демографическая категория журнала-публикатора. Manga-специфика, нет у anime.
+    # none — додзинси / веб-манга вне журнальной демографики.
+    demographic: [shounen, seinen, shoujo, josei, kodomo, none]
+    # Личный статус чтения. Параллель anime.personal_status, но про чтение.
+    # favorite взаимоисключает completed (как у anime).
+    personal_status: [reading, completed, on-hold, dropped, plan-to-read, favorite]
+    # Жанры — общий с anime набор (MAL/AniList используют единую жанровую таксономию
+    # для обоих носителей). Реюз через YAML-anchor, чтобы не дублировать и не расходиться.
+    genres: *media_genres
+    # Роль автора в записи authors[]. 原作 (story) / 作画 (art) / совмещение.
+    author_role: [story, art, story-and-art]
+    # Носитель/традиция (origin). Зонтик: манга и родственные рисованные форматы.
+    # Не ось format (постранично/вебтун) — только происхождение.
+    tradition: [manga, manhwa, manhua, rumanga, comic]
+    # Статус ПЕРЕВОДА (не оригинала — тот в status). User-filled: модель не знает
+    # состояние скана/перевода на читательском сайте. complete/ongoing/abandoned/
+    # on-hold (заморожен)/none (нет перевода).
+    translation_status: [complete, ongoing, abandoned, on-hold, none]
+    # Цветность. webtoon/манхва/маньхуа обычно full-color, манга обычно b&w, partial — спот-цвет.
+    coloring: [black-and-white, full-color, partial]
+    # Возрастной рейтинг — общий якорь с anime.
+    content_rating: *content_rating

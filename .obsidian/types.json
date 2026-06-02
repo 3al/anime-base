@@ -39,6 +39,16 @@
     "website": "text",
     "times_watched": "number",
     "watched_with": "multitext",
-    "last_episode_watched": "number"
+    "last_episode_watched": "number",
+    "art_score": "number",
+    "story_score": "number",
+    "originality_score": "number",
+    "volumes": "number",
+    "chapters": "number",
+    "last_chapter_read": "number",
+    "content_rating": "text",
+    "tradition": "text",
+    "translation_status": "text",
+    "coloring": "text"
   }
 }

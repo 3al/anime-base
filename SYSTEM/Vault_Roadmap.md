@@ -38,3 +38,22 @@ tags:
 **Открытые вопросы:**
 - Dataview — это привязка к плагину (в отличие от материализованных gallery-секций, которые волт намеренно держит plain-Markdown). Для **дашборда** это приемлемо — он чисто навигационный, не контент. Зафиксировать это решение.
 - Что из «здоровья» брать из Dataview (по frontmatter-полям), а что — из MCP-tools `vault-index` (`vault_orphans`, `vault_lint`, `vault_asymmetric_links`, `vault_image_status`), которые видят граф/ссылки, недоступные Dataview. Возможно, гибрид: Dataview по frontmatter + периодический срез от MCP-tool'ов.
+
+## 3. Доработка `manga`-kind + кросс-режущие метаданные (СОГЛАСОВАНО, в работе)
+
+> Полный план: `~/.claude/plans/cozy-baking-otter.md` (одобрен 2026-06-02). Ниже — самодостаточное резюме на случай, если план-файл подчистят. Статус этапов отмечать здесь.
+
+**Контекст.** `manga`-kind вчерне создан; планирование вскрыло неоднозначности (часть задевает anime/character/person). Закрываем единым заходом.
+
+**Решения:**
+1. `manga` — зонтичный kind для всех рисованных носителей. Поле **`tradition`**: `manga|manhwa|manhua|rumanga|comic` (origin, без оси format). Доп. полей под комиксы нет.
+2. **Оценочные оси** (1–10, USER-ONLY, always-present `null`), общие anime+manga: `art_score`, `story_score`, `originality_score`. `personal_score` — общая независимая ось; `opening`/`ending_score` — только anime.
+3. **Общий принцип:** любое USER-ONLY personal-rating поле — always-present `null`, не удаляется (queryability + анти-silent-drop).
+4. **Фикс дыры:** `character.personal_score` отсутствует во всех 17 карточках → промоут в always-present `null` + бэкафилл.
+5. **Реципрокность manga↔person(автор)** — реципрокно (как `anime.staff↔person.works`): `person.works[]` принимает MANGA, `## Ключевые работы` включает мангу, `reciprocity_pairs += [manga,person]/[person,manga]`. manga↔character/anime уже заложены. Severity ERROR (глобальный); forward от позже-созданных карточек — backstop (`/fix-links asymmetric`).
+6. **Adult без нового kind:** поле `content_rating` (`sfw|nsfw|explicit`, default sfw, модель-заполняемое из AniList isAdult/жанров). Adult-жанры в общий `genres`; adult-теги — отдельная категория `Tag_taxonomy` (только при nsfw/explicit). Источник — AniList. Синопсис неграфичный; жёсткий предел — никаких несовершеннолетних в сексуальном контексте. Обложки adult — качаем как обычно, не прошло политику → пометка, пользователь руками.
+7. **Доп. manga-поля:** `translation_status` (`complete|ongoing|abandoned|on-hold|none`, user-filled), `coloring` (`black-and-white|full-color|partial`, model best-effort), ёнкома — тег `yonkoma`. `last_chapter_read` уже есть (USER-ONLY).
+
+**Затрагивает:** `enums.yaml`, `Metadata_schema`, `Linking_guidelines`, `Tag_taxonomy`, манифест (reciprocity_pairs), скиллы `/new-manga`,`/new-anime`,`/new-character`,`/new-person`,`/audit-review`, `.obsidian/types.json` (number для осей) + свипы (anime: +оси+content_rating; characters: +personal_score). Managed-слой не трогаем.
+
+**Этапы:** ☐ A (схема+enums+манифест+типы) ☐ B (скиллы) ☐ C (свипы) ☐ Верификация (E2E `/new-manga`, adult-кейс, lint).

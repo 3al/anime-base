@@ -28,6 +28,7 @@ tags:
 | `PERSONS/` | Карточки людей из аниме-индустрии: режиссёры, сценаристы, композиторы, продюсеры, аниматоры (`note_kind: person`) | `PERSONS/Hayao_Miyazaki.md` |
 | `CHARACTERS/` | Карточки вымышленных персонажей аниме и манги (`note_kind: character`) | `CHARACTERS/Kamado_Tanjiro.md` |
 | `STUDIOS/` | Карточки анимационных студий-производителей (`note_kind: studio`) | `STUDIOS/Ufotable.md` |
+| `MANGA/` | Карточки манги/произведений (`note_kind: manga`) | `MANGA/Berserk.md` |
 | `SYSTEM/` | Мета-документы волта: схемы, правила, таксономии | `SYSTEM/Metadata_schema.md` |
 | `attachments/` | Все вложения: изображения, PDF, аудио | — |
 

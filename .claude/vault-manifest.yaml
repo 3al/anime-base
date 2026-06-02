@@ -48,6 +48,7 @@ folders:
   - path: MANGA/
     description: "Карточки манги, ранобэ, light novel"
     keywords: [manga, манга, ranobe, light novel, ранобэ]
+    create_skill: /new-manga
   - path: STUDIOS/
     description: "Карточки анимационных студий-производителей (MAPPA, Madhouse, Ufotable, Studio Ghibli и т.п.)"
     keywords: [studio, студия, animation studio, anime production]
@@ -71,6 +72,12 @@ reciprocity_pairs:
   - [character, character]
   - [character, anime]
   - [anime, character]
+  - [manga, character]
+  - [character, manga]
+  - [manga, anime]
+  - [anime, manga]
+  - [manga, person]
+  - [person, manga]
 
 # Severity для asymmetric-link issue в vault_lint (per-vault). WARN (дефолт) | ERROR.
 # Anime_Base: ERROR — реципрокность character↔character и character↔anime железная

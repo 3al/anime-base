@@ -63,6 +63,7 @@ tags: [keyword-1, keyword-2]
 - `person` — карточка человека из аниме-индустрии: режиссёр, сценарист, композитор, продюсер и т.д. (`PERSONS/`)
 - `character` — карточка вымышленного персонажа аниме/манги (`CHARACTERS/`)
 - `studio` — карточка анимационной студии-производителя (`STUDIOS/`)
+- `manga` — карточка манги/произведения (`MANGA/`)
 
 ## Дополнительные поля (рекомендуемые)
 
@@ -81,6 +82,10 @@ aliases: [Альтернативное название]
 **quality** — статус проверки качества:
 - `verified` — проверено, качество устраивает.
 - `draft` — черновик, не проверено.
+
+## USER-ONLY поля личной оценки — always-present с `null`
+
+Любое поле субъективной оценки (`personal_score`, `art_score`/`story_score`/`originality_score`, `opening_score`/`ending_score`, личные статусы просмотра/чтения) рендерится во frontmatter **всегда**, по умолчанию `null`, и **не удаляется** при создании, даже если пустое. Причина: (1) **queryability** — выборки `WHERE art_score >= 8` и «непроставленные = null» работают, только если поле существует во всех карточках; (2) **анти-silent-drop** — пустой слот это явная инструкция, а не «можно опустить» (слабые модели роняют optional-поля). Модель такие поля **не заполняет** — субъективные данные пользователя, как `co_authored`. Скиллы создания (`/new-*`) рендерят их пустыми; `/audit-review` извлекает значения из прозы «## Личный отзыв» по явному запросу пользователя.
 
 ## Домены этого волта
 
@@ -222,6 +227,20 @@ opening_score: 10
 ending_score: 7
 ```
 
+**art_score**, **story_score**, **originality_score** — персональные оси оценки (1–10, рекомендуемые, always-present `null`, **USER-ONLY**): рисовка/анимация, сюжет/сценарий, оригинальность/экспериментальность. Разносят впечатление на измерения для выборок «что люблю». Независимы от `personal_score` (холистическая общая, не среднее из осей) и друг от друга. По умолчанию `null`; модель не заполняет (субъективная оценка пользователя). Общие с `manga`. Тип проперти в Obsidian — number.
+
+```yaml
+art_score: 9
+story_score: 8
+originality_score: 7
+```
+
+**content_rating** — возрастной рейтинг контента (рекомендуемое, always-present, default `sfw`). Допустимые значения — `enums.yaml::note_kinds.anime.content_rating` (`sfw`/`nsfw`/`explicit`). Модель-заполняемое: из AniList `isAdult` + жанров (hentai→explicit, ecchi→nsfw, иначе sfw). Ось фильтра для исключения adult из выборок/семантического индекса.
+
+```yaml
+content_rating: sfw
+```
+
 **times_watched** — общее число просмотров (рекомендуемое). Семантика: `1` = смотрел один раз, `3` = смотрел трижды (то есть «пересматривал два раза»). Для `personal_status: plan-to-watch` / `on-hold` / `dropped` — обычно `null` (поле not applicable). Для `completed` / `favorite` / `watching` — минимум `1`.
 
 ```yaml
@@ -303,6 +322,13 @@ staff:
 
 ```yaml
 mal_url: "https://myanimelist.net/anime/38000"
+```
+
+**manga_source** — манга-первоисточник(и), которые этот тайтл экранизирует; имена файлов карточек в `MANGA/` (рекомендуемое, реверс к `manga.anime_adaptation`). Заполнять, когда `source: manga` и карточка манги есть в волте. Реципрокно: `тайтл ∈ manga.anime_adaptation ⟺ манга ∈ anime.manga_source` (пара в `reciprocity_pairs`, ERROR).
+
+```yaml
+manga_source:
+  - "Berserk"
 ```
 
 ## Поля для карточек Персон (`note_kind: person`)
@@ -395,7 +421,7 @@ works:
     roles: [director, screenwriter]
 ```
 
-`title` — имя файла карточки в `ANIME/` (foreign key). `roles` — list[enum] из `enums.yaml::note_kinds.person.role`.
+`title` — имя файла карточки в `ANIME/` **или `MANGA/`** (foreign key). `roles` — list[enum] из `enums.yaml::note_kinds.person.role`. Для манга-работ роль — `mangaka` / `novelist`; такая запись реципрокна `manga.authors[]` (пары `[manga, person]`/`[person, manga]` в `reciprocity_pairs`), материализуется в `## Ключевые работы` персоны наравне с аниме-работами.
 
 **Для роли `voice-actor`** — запись расширяется обязательным ключом `character` (foreign-key в `CHARACTERS/`), потому что VA-роль определяется не только тайтлом, но и конкретным персонажем. Один сэйю может озвучивать разных персонажей в разных тайтлах, и одного персонажа в одном сезоне, но не в другом (если кастинг сменился) — поэтому каждая комбинация title+character — отдельная запись в `works[]`.
 
@@ -454,7 +480,7 @@ name_romaji: "Kamado Tanjiro"
 name_native: "竈門炭治郎"
 ```
 
-**featured_in** — тайтлы, в которых персонаж появляется в каноне. Имена файлов карточек в `ANIME/` (foreign keys). Список — потому что персонаж может появляться в сиквелах/спиноффах.
+**featured_in** — тайтлы/произведения, в которых персонаж появляется в каноне. Имена файлов карточек в `ANIME/` **или `MANGA/`** (foreign keys, оба носителя — карточка персонажа единая на все носители, см. canon-policy). Список — потому что персонаж может появляться в сиквелах/спиноффах и в разных носителях (аниме + манга-первоисточник).
 
 ```yaml
 featured_in:
@@ -538,10 +564,10 @@ affiliations:
   - "Семья Камадо"
 ```
 
-**personal_score** — личная оценка персонажа по 10-балльной шкале (рекомендуемое, для любимых персонажей).
+**personal_score** — личная оценка персонажа по 10-балльной шкале (рекомендуемое, **always-present `null`**, **USER-ONLY**). Рендерится во frontmatter **всегда** (по умолчанию `null`), не удаляется при создании, даже если персонаж не отмечен как любимый — иначе по полю нельзя сделать выборку и слабые модели его молча роняют (см. общий принцип «USER-ONLY поля личной оценки» выше). Заполняет пользователь, не модель. Тип проперти — number.
 
 ```yaml
-personal_score: 9
+personal_score: null
 ```
 
 **voice_actors** — список сэйю, озвучивавших персонажа, привязанный к конкретным тайтлам (рекомендуемое). Список словарей `{anime, person}`, где `anime` — имя файла карточки в `ANIME/`, `person` — имя файла карточки сэйю в `PERSONS/`.
@@ -679,4 +705,168 @@ mal_url: "https://myanimelist.net/anime/producer/43/ufotable"
 ```yaml
 images:
   cover: "attachments/Ufotable_cover.png"
+```
+
+## Поля для карточек Манги (`note_kind: manga`)
+
+Карточка манги — это **произведение (серия)**, а не конкретный том/издание. Edition-level поля (`isbn`, `publisher`, число страниц конкретного тома) намеренно отсутствуют: единица учёта — произведение, как и у `anime`-тайтла.
+
+Все поля ниже **обязательны** для `note_kind: manga`, если не указано иное.
+
+> **Допустимые значения enum-полей** этого kind — в `SYSTEM/enums.yaml::note_kinds.manga`. Этот раздел описывает семантику; множества значений — машинно-читаемый источник отдельно.
+
+**title_romaji** — главный заголовок в ромадзи, основной идентификатор.
+
+```yaml
+title_romaji: "Berserk"
+```
+
+**title_original** — оригинальное название (японский/язык оригинала).
+
+```yaml
+title_original: "ベルセルク"
+```
+
+**tradition** — носитель/традиция (origin). Допустимые значения — `enums.yaml::note_kinds.manga.tradition`. `manga`-kind зонтичный для всех рисованных носителей: `manga` (JP), `manhwa` (KR), `manhua` (CN), `rumanga` (RU), `comic` (западные/прочее). Origin-ось, не формат (постранично/вебтун-скролл не различаем).
+
+```yaml
+tradition: manga
+```
+
+**status** — статус публикации. Допустимые значения — `enums.yaml::note_kinds.manga.status`.
+
+Семантика: `publishing` (выходит), `finished` (завершена), `on-hiatus` (на паузе), `discontinued` (заброшена/прекращена), `upcoming` (анонсирована).
+
+```yaml
+status: publishing
+```
+
+**volumes** — число выпущенных томов. `0`, если онгоинг и финальное число неизвестно.
+
+```yaml
+volumes: 41
+```
+
+**chapters** — число глав. `0`, если неизвестно/не считается.
+
+```yaml
+chapters: 0
+```
+
+**year** — год начала публикации.
+
+```yaml
+year: 1989
+```
+
+**demographic** — демографическая категория журнала-публикатора. Допустимые значения — `enums.yaml::note_kinds.manga.demographic`. Manga-специфика, у `anime` поля нет.
+
+Семантика: `shounen` (юноши), `seinen` (взрослые мужчины), `shoujo` (девушки), `josei` (взрослые женщины), `kodomo` (дети), `none` (додзинси/веб-манга вне журнальной демографики).
+
+```yaml
+demographic: seinen
+```
+
+**genres** — список жанров. Допустимые значения — `enums.yaml::note_kinds.manga.genres` (общий набор с `anime`).
+
+```yaml
+genres:
+  - action
+  - fantasy
+  - horror
+```
+
+**personal_status** — личный статус чтения. Допустимые значения — `enums.yaml::note_kinds.manga.personal_status`. **USER-ONLY** — заполняет владелец волта, не модель.
+
+Семантика: `reading`, `completed`, `on-hold`, `dropped`, `plan-to-read`, `favorite` (взаимоисключает `completed`, как у `anime`).
+
+```yaml
+personal_status: reading
+```
+
+### Рекомендуемые поля
+
+**title_english** — английский официальный заголовок.
+
+```yaml
+title_english: "Berserk"
+```
+
+**authors** — авторы произведения; список словарей `{person, role}`, где `person` — имя файла карточки в `PERSONS/` (роль `mangaka`/`novelist`), `role` — из `enums.yaml::note_kinds.manga.author_role` (`story` / `art` / `story-and-art`). Раздельные сценарист (原作) и художник (作画) — две записи. Один автор и пишет, и рисует — одна запись `story-and-art`. **Реципрокно с `person.works[]`** (зеркало `anime.staff[]↔person.works[]`): автор с карточкой в `PERSONS/` получает обратную запись `{title: <манга>, roles: [mangaka|novelist]}` + строку в своей секции `## Ключевые работы`. Пары `[manga, person]`/`[person, manga]` в `reciprocity_pairs` (ERROR).
+
+```yaml
+authors:
+  - person: "Kentaro_Miura"
+    role: story-and-art
+```
+
+**serialized_in** — журнал-публикатор (свободная строка — журналы редко имеют карточки).
+
+```yaml
+serialized_in: "Young Animal"
+```
+
+**related_titles** — связанные манги франшизы (сиквелы/приквелы/спиноффы); имена файлов карточек в `MANGA/`.
+
+```yaml
+related_titles: []
+```
+
+**anime_adaptation** — аниме-экранизации этой манги; имена файлов карточек в `ANIME/`. Реверс к `anime.manga_source`. Реципрокно (пара в `reciprocity_pairs`, ERROR).
+
+```yaml
+anime_adaptation:
+  - "Berserk_1997"
+```
+
+**mal_score** — средняя оценка MyAnimeList (0.00–10.00).
+
+```yaml
+mal_score: 9.46
+```
+
+**mal_url**, **anilist_url** — ссылки на внешние источники.
+
+```yaml
+mal_url: "https://myanimelist.net/manga/2"
+anilist_url: "https://anilist.co/manga/30002"
+```
+
+**personal_score** — личная оценка (1–10). **USER-ONLY**.
+
+**times_read** — сколько раз прочитана. **USER-ONLY**.
+
+**last_chapter_read** — номер последней прочитанной главы (прогресс чтения). **USER-ONLY**.
+
+**art_score**, **story_score**, **originality_score** — персональные оси оценки (1–10, always-present `null`, **USER-ONLY**): рисовка, сюжет, оригинальность/экспериментальность. Независимы от `personal_score` (холистическая общая) и друг от друга. Общие с `anime`. Модель не заполняет. Тип проперти в Obsidian — number.
+
+```yaml
+art_score: 9
+story_score: 8
+originality_score: 7
+```
+
+**translation_status** — статус **перевода** (НЕ оригинала — тот в `status`). Допустимые значения — `enums.yaml::note_kinds.manga.translation_status` (`complete`/`ongoing`/`abandoned`/`on-hold`/`none`). **User-filled** — модель не знает состояние перевода/скана на читательском сайте; default `null`, из веба не выводить.
+
+```yaml
+translation_status: ongoing
+```
+
+**coloring** — цветность. Допустимые значения — `enums.yaml::note_kinds.manga.coloring` (`black-and-white`/`full-color`/`partial`). Модель best-effort: webtoon/манхва/маньхуа обычно `full-color`, манга обычно `black-and-white`; сверять с источником.
+
+```yaml
+coloring: black-and-white
+```
+
+**content_rating** — возрастной рейтинг. Допустимые значения — `enums.yaml::note_kinds.manga.content_rating` (`sfw`/`nsfw`/`explicit`). Always-present, default `sfw`, модель-заполняемое (AniList isAdult + жанры). Ось фильтра adult-контента.
+
+```yaml
+content_rating: sfw
+```
+
+**images** — словарь изображений. Минимум — `cover` (обложка 1-го тома / ключевой арт). Конвенция как у всех kind: `<File_Name>_cover.<ext>`.
+
+```yaml
+images:
+  cover: "attachments/Berserk_cover.jpg"
 ```
