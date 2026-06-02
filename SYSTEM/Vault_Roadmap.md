@@ -56,4 +56,4 @@ tags:
 
 **Затрагивает:** `enums.yaml`, `Metadata_schema`, `Linking_guidelines`, `Tag_taxonomy`, манифест (reciprocity_pairs), скиллы `/new-manga`,`/new-anime`,`/new-character`,`/new-person`,`/audit-review`, `.obsidian/types.json` (number для осей) + свипы (anime: +оси+content_rating; characters: +personal_score). Managed-слой не трогаем.
 
-**Этапы:** ☐ A (схема+enums+манифест+типы) ☐ B (скиллы) ☐ C (свипы) ☐ Верификация (E2E `/new-manga`, adult-кейс, lint).
+**Этапы:** ✅ A (e841722 — схема+enums+манифест+типы) ✅ B (2ffd790 — скиллы) ✅ C (5270052 — свипы: 6 anime +оси/content_rating, 17 characters +personal_score) ✅ Верификация механическая (vault_lint 0 issues, dup-basenames 0). ☐ Живой E2E `/new-manga` + adult-кейс — за пользователем (создание реального контента, не авто).
