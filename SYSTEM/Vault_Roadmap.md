@@ -57,3 +57,25 @@ tags:
 **Затрагивает:** `enums.yaml`, `Metadata_schema`, `Linking_guidelines`, `Tag_taxonomy`, манифест (reciprocity_pairs), скиллы `/new-manga`,`/new-anime`,`/new-character`,`/new-person`,`/audit-review`, `.obsidian/types.json` (number для осей) + свипы (anime: +оси+content_rating; characters: +personal_score). Managed-слой не трогаем.
 
 **Этапы:** ✅ A (e841722 — схема+enums+манифест+типы) ✅ B (2ffd790 — скиллы) ✅ C (5270052 — свипы: 6 anime +оси/content_rating, 17 characters +personal_score) ✅ Верификация механическая (vault_lint 0 issues, dup-basenames 0). ☐ Живой E2E `/new-manga` + adult-кейс — за пользователем (создание реального контента, не авто).
+
+## 4. Light-novel / ранобэ — отдельный kind или `tradition` манги?
+
+**Контекст.** Папка `MANGA/` в манифесте описана как «манга, **ранобэ, light novel**», но kind `manga` спроектирован под рисованные носители (`volumes`/`chapters`/`demographic`/`serialized_in`, авторы story/art). Ранобэ — иной объект: автор + иллюстратор (не story/art), тома без «глав/серилизации» в манговском смысле, текст а не рисунок. При проектировании manga осознанно отложили — LN не вошёл в `tradition` (manga/manhwa/manhua/rumanga/comic — все рисованные).
+
+**Развилка.**
+- (а) Отдельный `note_kind: light-novel` со своими полями (`illustrator`, том-центричность, нет `coloring`/журнальной `demographic`). Чище семантически, но +1 kind +1 скилл.
+- (б) Влить в `manga` через `tradition: light-novel` + сделать рисованные поля опциональными (`demographic`/`coloring` → n/a). Меньше сущностей, но «manga» с нерисованным членом — смысловой смелл.
+
+**Зачем на радаре.** Как только добавишь первое ранобэ — упрёшься. MariMite (оригинал — ранобэ Оюки Конно) уже в волте как anime, есть карточка `Oyuki_Konno` → ранобэ-первоисточник попросится первым.
+
+## 5. Потребление `content_rating` и оценочных осей (изоляция adult + «что люблю»-вью)
+
+**Контекст.** В этой сессии добавили `content_rating` (sfw/nsfw/explicit) и оси `art_score`/`story_score`/`originality_score` — но пока они только **хранятся**, потребителя-фильтра нет.
+
+**Идеи.**
+- **Изоляция adult:** исключать `content_rating: explicit` (опц. + nsfw) из семантического индекса `vault-semantic` (RAG) и из дефолтных выборок, чтобы adult не всплывал в обычном поиске.
+- **«Что люблю»-вью:** оси оценки заводились ради выборок. Dataview-представление (ложится на пункт 2 «здоровье волта»): топ по каждой оси, пересечения, «высокая рисовка но средний сюжет» и т.п.
+
+**Открытые вопросы.**
+- Порог изоляции — только `explicit` или `nsfw`+`explicit`? Конфигом (манифест) или хардкод во вью?
+- vault-semantic: фильтр на этапе **индексации** (не индексировать — приватнее) или **выдачи** (индексировать, прятать в результатах — гибче)?
