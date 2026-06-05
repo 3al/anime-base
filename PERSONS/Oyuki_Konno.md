@@ -14,7 +14,7 @@ aliases:
   - 今野緒雪
   - Оюки Конно
 created: 2026-05-30
-updated: 2026-05-30
+updated: 2026-06-02
 name_primary: "Oyuki Konno"
 name_native: "今野緒雪"
 roles:
@@ -36,6 +36,8 @@ works:
   - title: "Maria-sama_ga_Miteru_3rd"
     roles: [novelist]
   - title: "Maria-sama_ga_Miteru_4th"
+    roles: [novelist]
+  - title: "Maria-sama_ga_Miteru_(manga)"
     roles: [novelist]
 images:
   cover: "attachments/Oyuki_Konno_cover.jpg"
@@ -67,6 +69,7 @@ images:
 - ![[Maria-sama_ga_Miteru_Haru_cover.jpg|80]] **[[Maria-sama_ga_Miteru_Haru|Maria-sama ga Miteru: Haru]]** (2004) — автор первоисточника второго сезона; также автор текста опенинга.
 - ![[Maria-sama_ga_Miteru_3rd_cover.jpg|80]] **[[Maria-sama_ga_Miteru_3rd|Maria-sama ga Miteru 3rd]]** (2006) — автор первоисточника OVA-сезона; также автор текста эндинга.
 - ![[Maria-sama_ga_Miteru_4th_cover.jpg|80]] **[[Maria-sama_ga_Miteru_4th|Maria-sama ga Miteru 4th]]** (2009) — автор первоисточника четвёртого сезона; финал арки Юми в аниме.
+- ![[Maria-sama_ga_Miteru_(manga)_cover.jpg|80]] **[[Maria-sama_ga_Miteru_(manga)|Maria-sama ga Miteru (манга)]]** (2003–2007) — автор оригинальных лайт-новелл, по которым сделана манга-адаптация Сатору Нагасавы.
 
 ## Ссылки
 

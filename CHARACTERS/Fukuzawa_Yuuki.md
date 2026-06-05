@@ -4,7 +4,7 @@ domain: anime
 stability: stable
 priority: medium
 quality: draft
-co_authored: zai-coding-plan/glm-5.1
+co_authored: glm-5.1
 note_kind: character
 tags:
   - coming-of-age
@@ -16,7 +16,7 @@ aliases:
   - Юкити
   - Yukichi
 created: 2026-05-31
-updated: 2026-05-31
+updated: 2026-06-02
 name_romaji: "Yuuki Fukuzawa"
 name_native: "福沢 祐麒"
 name_english: "Yuuki Fukuzawa"
@@ -25,6 +25,7 @@ featured_in:
   - Maria-sama_ga_Miteru_Haru
   - Maria-sama_ga_Miteru_3rd
   - Maria-sama_ga_Miteru_4th
+  - Maria-sama_ga_Miteru_(manga)
 character_role: supporting
 gender: male
 status: alive
@@ -70,6 +71,7 @@ personal_score: null
 - ![[Maria-sama_ga_Miteru_Haru_cover.jpg|80]] **[[Maria-sama_ga_Miteru_Haru|Maria-sama ga Miteru: Haru]]** — 2004, второй сезон; второстепенная роль.
 - ![[Maria-sama_ga_Miteru_3rd_cover.jpg|80]] **[[Maria-sama_ga_Miteru_3rd|Maria-sama ga Miteru 3rd]]** — 2006, третий сезон (OVA); второстепенная роль.
 - ![[Maria-sama_ga_Miteru_4th_cover.jpg|80]] **[[Maria-sama_ga_Miteru_4th|Maria-sama ga Miteru 4th]]** — 2009, финальный сезон; второстепенная роль.
+- ![[Maria-sama_ga_Miteru_(manga)_cover.jpg|80]] **[[Maria-sama_ga_Miteru_(manga)|Maria-sama ga Miteru (манга)]]** — 2003–2007, манга-адаптация Сатору Нагасавы; младший брат Юми, ученик Ханадэры.
 
 ## Связи
 

@@ -1,8 +1,15 @@
 name: vault-index
-version: 0.5.0
+version: 0.6.0
 description: |
   Структурный MCP-сервер волта: индекс frontmatter, граф ссылок, lint, query.
   Подробности — SYSTEM/MCP_Server_Design.md.
+
+  v0.6.0: +tool `vault_spec_drift` — детерминированный backstop changelog-
+  дисциплины (ledger-protocol §4.1). Сверяет spec-requirements манифесты
+  create-скиллов (.claude/skills/new-*/SKILL.md) с SYSTEM/spec_changelog.yaml,
+  флагает рассинхрон (requirement без changelog-записи / без манифеста).
+  Логика — src/spec-drift.ts; читает файлы с диска, независим от note-индекса.
+  16 tools total.
 
   Source в .claude/modules/vault-index/mcp/ (canonical layout). Install
   собирает dist/ через npm install && npm run build, если dist отсутствует

@@ -1,6 +1,7 @@
-**Harness: Claude Code** (модуль `harness-claude-code` v0.2.0):
+**Harness: Claude Code** (модуль `harness-claude-code` v0.5.0):
 - Регистрирует MCP-серверы из всех модулей манифеста, у которых `module.yaml` объявляет `provides.mcp_server`. Шаблонные переменные (`{vault_root}`, `{module_dir}`, `{module_dist}`, `{module_bin}`) резолвятся при патче.
 - Записи живут под project-scope: `projects["<абс_путь_волта>"].mcpServers["<имя_сервера>"]` в `~/.claude.json`. Имена серверов — без vault-slug суффикса (изоляция через project key).
 - Backup при изменении конфига — `~/.claude.json.bak.<ISO-timestamp>` (последние 5 хранятся, ротация автоматическая).
+- **spec-changelog enforcement (v0.5.0):** install также патчит `<vault>/.claude/settings.json` → `hooks.PostToolUse` (matcher `Edit|Write|MultiEdit`, command → `hooks/spec-reminder.mjs`) — аддитивный merge с backup, пользовательские хуки сохраняются, идемпотентно. Хук при правке spec-requirements блока в `.claude/skills/new-*/SKILL.md` впрыскивает reminder синхронизировать `SYSTEM/spec_changelog.yaml` (ledger-protocol §4.1). Детерминированный backstop в обеих harness — tool `vault_spec_drift`.
 - Reconcile-семантика — add/update only. Удаление модуля из манифеста НЕ вычищает регистрацию из `~/.claude.json` автоматически — нужно вручную.
 - Управляется через `/init-vault`. Ручные правки соответствующих ключей будут перезаписаны при следующем install.

@@ -49,6 +49,9 @@
     "content_rating": "text",
     "tradition": "text",
     "translation_status": "text",
-    "coloring": "text"
+    "coloring": "text",
+    "times_read": "number",
+    "publisher": "text",
+    "online_url": "text"
   }
 }

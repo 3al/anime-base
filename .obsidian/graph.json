@@ -34,6 +34,13 @@
         "a": 1,
         "rgb": 16734039
       }
+    },
+    {
+      "query": "[\"note_kind\":\"manga\"",
+      "color": {
+        "a": 1,
+        "rgb": 6868784
+      }
     }
   ],
   "collapse-display": false,
@@ -46,6 +53,6 @@
   "repelStrength": 10,
   "linkStrength": 1,
   "linkDistance": 250,
-  "scale": 0.999999999999991,
+  "scale": 0.9999999999999768,
   "close": true
 }

@@ -290,3 +290,12 @@ Studio без тегов — норма (kind не требует обязате
 - `status: defunct` без заполненного `successor` — допустимо (не все закрытые студии имели прямого преемника). Но если есть очевидный преемник (Topcraft → Studio Ghibli) — заполнить.
 - `parent_company` ≠ `successor`. Parent — нынешний холдинг; successor — кто фактически продолжил традицию после ликвидации. Для активной студии `successor: ""`.
 - Карточка студии без `vault_backlinks` (ни одного аниме в волте с этой студией) — допустимый временный случай. Секция `## Ключевые работы` пустая до появления первого тайтла; `/new-anime` cross-update её заполнит.
+
+<!-- BEGIN: spec-requirements (managed contract — sync with SYSTEM/spec_changelog.yaml) -->
+```yaml
+kind: studio
+requirements:
+  - requirement: cover_ext_matches_content
+    kind_of: format
+```
+<!-- END: spec-requirements -->

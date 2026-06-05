@@ -13,7 +13,7 @@ aliases:
   - Юми Фукудзава
   - Yumi Fukuzawa
 created: 2026-05-24
-updated: 2026-05-31
+updated: 2026-06-02
 name_romaji: Fukuzawa Yumi
 name_native: 福沢祐巳
 featured_in:
@@ -21,6 +21,7 @@ featured_in:
   - Maria-sama_ga_Miteru_Haru
   - Maria-sama_ga_Miteru_3rd
   - Maria-sama_ga_Miteru_4th
+  - Maria-sama_ga_Miteru_(manga)
 character_role: protagonist
 gender: female
 status: alive
@@ -73,12 +74,13 @@ personal_score: null
 - ![[Maria-sama_ga_Miteru_Haru_cover.jpg|80]] **[[Maria-sama_ga_Miteru_Haru|Maria-sama ga Miteru: Haru]]** — 2004, второй сезон; вторая роль протагониста, противостояние с Тоуко Мацудайрой.
 - ![[Maria-sama_ga_Miteru_3rd_cover.jpg|80]] **[[Maria-sama_ga_Miteru_3rd|Maria-sama ga Miteru 3rd]]** — 2006, третий сезон (OVA); второкурсница в центре арки Канако Хосокавы и подвешенной линии с Тоуко.
 - ![[Maria-sama_ga_Miteru_4th_cover.jpg|80]] **[[Maria-sama_ga_Miteru_4th|Maria-sama ga Miteru 4th]]** — 2009, четвёртый (финальный) сезон; центральная арка взросления — Юми впервые сама выбирает младшую сестру и предлагает чётки Тоуко Мацудайре.
+- ![[Maria-sama_ga_Miteru_(manga)_cover.jpg|80]] **[[Maria-sama_ga_Miteru_(manga)|Maria-sama ga Miteru (манга)]]** — 2003–2007, манга-адаптация Сатору Нагасавы; протагонист, petite sœur Сатико.
 
 ## Связи
 
 - ![[Ogasawara_Sachiko_cover.jpg|60]] **[[Ogasawara_Sachiko|Сатико Огасавара]]** — старшая сестра Юми; школьная идолка из совета Ямаюрикай, центральная фигура её эмоциональной жизни.
 - ![[Fukuzawa_Yuuki_cover.jpg|60]] **[[Fukuzawa_Yuuki|Юки Фукудзава]]** — младший брат, родившийся в один год с Юми (не близнецы); семейная константа за пределами школы.
-- ![[Takeshima_Tsutako_cover.jpg|60]] **[[Takeshima_Tsutako|Цутако Такэсима]]** — одноклассница и подруга, фотограф школьной газеты; косвенно сводит Юми с советом через фотоинцидент.
+- ![[Takeshima_Tsutako_cover.webp|60]] **[[Takeshima_Tsutako|Цутако Такэсима]]** — одноклассница и подруга, фотограф школьной газеты; косвенно сводит Юми с советом через фотоинцидент.
 - ![[Sato_Sei_cover.jpg|60]] **[[Sato_Sei|Сэй Сато]]** — Rosa Gigantea, ироничная старшая, регулярно подтрунивает над Юми и обнимает её, чем вызывает ревность Сатико.
 - ![[Mizuno_Yoko_cover.jpg|60]] **[[Mizuno_Yoko|Ёко Мидзуно]]** — Rosa Chinensis, «бабушка» Юми по линии Роз; перед выпуском попросила Юми присматривать за Сатико.
 - ![[Hasekura_Rei_cover.jpg|60]] **[[Hasekura_Rei|Рэй Хасэкура]]** — Rosa Foetida en bouton, старшая коллега по Совету; «Мистер Лилиан», держится мягко со всеми младшими.

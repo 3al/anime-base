@@ -156,6 +156,7 @@ content_rating: <sfw|nsfw|explicit> # always-present, default sfw; model-fillabl
 times_watched: <число или null>     # общее число просмотров: 1 = смотрел один раз, 3 = трижды. null для plan-to-watch / dropped
 last_episode_watched: <число или null>  # для completed/favorite = episodes; для watching/on-hold = текущий прогресс; для plan-to-watch = null
 watched_with: []                    # list[enum] из enums.yaml::note_kinds.anime.watched_with. [] если смотрел один или ещё не смотрел
+online_url:                         # опционально, USER-ONLY — ссылка где смотришь онлайн (стриминг); модель НЕ заполняет
 mal_score: <0.00-10.00 или null>
 shikimori_score: <0.00-10.00 или null>
 related_titles: []                  # список foreign-keys, [] если связей нет
@@ -483,9 +484,29 @@ images:
 - При обнаружении новых тегов, которых нет в `SYSTEM/Tag_taxonomy.md` — автоматически добавить их туда. Не оставлять заметку без семантически необходимого тега.
 - Web research — обязательная часть фазы 2. Не выдумывать факты, не додумывать данные. Для непопулярных тайтлов — сверять минимум два источника.
 - **Оценочные оси `art_score`/`story_score`/`originality_score`** — USER-ONLY, always-present `null`, модель НЕ заполняет (как `personal_score`). Извлечение из «## Личный отзыв» — задача `/audit-review`.
+- **`online_url`** — USER-ONLY: персональная ссылка, где смотришь тайтл онлайн (стриминг). Модель НЕ заполняет (оставить пустым), это не каталожная ссылка как `mal_url`. Общее поле с `manga`.
 - **`content_rating`** (sfw/nsfw/explicit) — модель-заполняемое из AniList `isAdult` + жанров (hentai→explicit, ecchi→nsfw, иначе sfw), default sfw. Для adult-тайтлов: основной источник **AniList** (MAL прячет), синопсис **неграфичный**, **жёсткий предел** — никакого сексуального контента с несовершеннолетними; adult-теги — из категории `Tag_taxonomy` «Контент-рейтинг / adult», только при nsfw/explicit; обложка не прошла визуальную политику → пометка в отчёте, пользователь добавит руками.
 - При наличии связанных заметок в волте (которые попадают в обязательные WikiLinks по правилам Linking_guidelines) — обязательно проставить ссылки.
 - Поле `personal_status` и тег статуса (`watching`/`completed`/...) должны быть синхронны. Изменение одного без другого = непоследовательная карточка.
 - `mal_score` и `shikimori_score` фиксируются на момент создания. Не нужно автоматически обновлять при каждом аудите — только когда пользователь явно попросит «обновить оценки».
 - **Секция `## Персонажи` — 2-колоночная таблица `Персонаж | Сэйю` + двунаправленный flow для обеих gallery-колонок.** Col 1 (персонаж) и col 2 (сэйю) заполняются forward-check'ом (шаг 2): если соответствующая карточка `CHARACTERS/<имя>.md` / `PERSONS/<имя>.md` уже есть — сразу gallery-формат (миниатюра 60 + WikiLink при наличии `images.cover`; WikiLink без миниатюры иначе). Если карточки нет — plain bold-text, ячейку апгрейдит соответствующий create-скилл: col 1 — `/new-character` шаг 7.5a, col 2 — `/new-person` шаг 7.5c. Описание роли в таблицу не выносится (cast-list only; контекст по персонажу — на его character-карточке). Pipe-escaping `[[X\|Y]]` обязателен.
 - **Reverse-нога для уже существующих карточек — обязательна (шаг 7.5, пп. 4–5).** Когда аниме создаётся, а карточки персонажа/сэйю из таблицы `## Персонажи` уже есть, `/new-anime` сам достраивает обратные рёбра: персонажу — `featured_in` + `## Тайтлы`, сэйю — `works[]` + `## Ключевые работы`. Без этого forward-ячейка таблицы есть, а обратной связи нет → односторонняя связь (FK-класс, см. память `feedback_character_anime_not_a_reciprocity_pair`). `staff[]` имел это всегда (7.5.3); персонажи и сэйю — нет, отсюда инциденты MariMite 4th (Yumi/Sachiko) и Kana_Ueda. Backstop в конце 7.5 (`vault_asymmetric_links` по новому тайтлу) детерминированно ловит пропуски итерации.
+
+<!-- BEGIN: spec-requirements (managed contract — sync with SYSTEM/spec_changelog.yaml) -->
+```yaml
+kind: anime
+requirements:
+  - requirement: online_url
+    kind_of: field
+  - requirement: art_score
+    kind_of: field
+  - requirement: story_score
+    kind_of: field
+  - requirement: originality_score
+    kind_of: field
+  - requirement: content_rating
+    kind_of: field
+  - requirement: cover_ext_matches_content
+    kind_of: format
+```
+<!-- END: spec-requirements -->

@@ -24,7 +24,7 @@
 -->
 <!-- BEGIN: module:skills-common -->
 **Тема-нейтральные скиллы** (модуль `skills-common`):
-- Установлено в `.claude/skills/`: `fix-links`, `audit-note`, `new-note`, `rename-note`, `verify`, `expand-stub`, `add-note-kind`, `harness-agnostic-audit`, `vision-gate-audit`.
+- Установлено в `.claude/skills/`: `fix-links`, `audit-note`, `new-note`, `rename-note`, `verify`, `expand-stub`, `add-note-kind`, `harness-agnostic-audit`, `vision-gate-audit`, `audit-by-creator`.
 - Каждый скилл управляется фреймворком через `.managed` маркер. Пользовательские правки в SKILL.md = переход в статус `unmanaged` (повторный `/init-vault` не перезаписывает).
 - `/add-note-kind` создаёт пользовательский `/new-<kind>` скилл без `.managed` маркера — он живёт независимо от фреймворка, переустановки `skills-common` его не трогают.
 
@@ -35,11 +35,12 @@ Skill `/new-note` использует секцию `folders` в `.claude/vault-
 **Не создавайте заметки руками вне зарегистрированных папок** — сначала зарегистрируйте новую папку через `/new-note` или ручной правкой манифеста.
 <!-- END: module:skills-common -->
 <!-- BEGIN: module:vault-index -->
-**MCP-сервер `vault-index`** (модуль `vault-index` v0.5.0):
+**MCP-сервер `vault-index`** (модуль `vault-index` v0.6.0):
 - Структурный индекс волта — frontmatter, граф ссылок, lint, query.
-- 15 MCP tools: `vault_lint`, `vault_broken_links`, `vault_orphans`, `vault_duplicate_links`, `vault_duplicate_basenames`, `vault_query`, `vault_backlinks`, `vault_note_profile`, `vault_stats`, `vault_reindex`, `vault_image_status`, `vault_add_image`, `vault_lookalike_peers`, `vault_text_mentions`, `vault_asymmetric_links`.
+- 16 MCP tools: `vault_lint`, `vault_broken_links`, `vault_orphans`, `vault_duplicate_links`, `vault_duplicate_basenames`, `vault_query`, `vault_backlinks`, `vault_note_profile`, `vault_stats`, `vault_reindex`, `vault_image_status`, `vault_add_image`, `vault_lookalike_peers`, `vault_text_mentions`, `vault_asymmetric_links`, `vault_spec_drift`.
 - `vault_lint` принимает опциональные `reciprocityPairs` (из `vault-manifest.yaml::reciprocity_pairs`) + `asymmetricSeverity` (из `asymmetry_severity`, дефолт WARN) → асимметрия всплывает `asymmetric-link` issue. Та же engine-логика, что у `vault_asymmetric_links` (`src/asymmetric.ts`). Также `linkCap` (из `link_cap`, дефолт 15; `null` → отключить) — порог проверки `too-many-links`.
 - `vault_duplicate_basenames` — детект заметок с одинаковым basename в разных папках (Obsidian резолвит WikiLinks по basename без учёта папки → коллизия молча ломает граф). Lint-backstop к create-time страж-проверке в `/new-<kind>`.
+- `vault_spec_drift` — детерминированный backstop changelog-дисциплины (ledger-protocol §4.1): сверяет spec-requirements манифест каждого `/new-<kind>/SKILL.md` с `SYSTEM/spec_changelog.yaml`, флагает `manifest-requirement-without-changelog` (требование объявлено, но не залогировано → аудит ложно штрафует старые карточки), `missing-manifest` (скилл без блока — кандидат на бэкфилл), `changelog-entry-without-manifest`. Harness-нейтрален. В CC дополняется live-reminder PostToolUse-hook'ом (harness-claude-code); в Opencode — backstop-only (upstream #13574).
 - Source: `.claude/modules/vault-index/mcp/` (canonical layout). Полная архитектура: `SYSTEM/MCP_Server_Design.md`.
 - Регистрация в `~/.claude.json` / `opencode.json` — через harness-* модули (см. `.claude/vault-manifest.yaml`).
 <!-- END: module:vault-index -->
@@ -54,10 +55,11 @@ Skill `/new-note` использует секцию `folders` в `.claude/vault-
 - Регистрация в `~/.claude.json` / `opencode.json` — через harness-* модули.
 <!-- END: module:vault-semantic -->
 <!-- BEGIN: module:harness-claude-code -->
-**Harness: Claude Code** (модуль `harness-claude-code` v0.2.0):
+**Harness: Claude Code** (модуль `harness-claude-code` v0.5.0):
 - Регистрирует MCP-серверы из всех модулей манифеста, у которых `module.yaml` объявляет `provides.mcp_server`. Шаблонные переменные (`{vault_root}`, `{module_dir}`, `{module_dist}`, `{module_bin}`) резолвятся при патче.
 - Записи живут под project-scope: `projects["<абс_путь_волта>"].mcpServers["<имя_сервера>"]` в `~/.claude.json`. Имена серверов — без vault-slug суффикса (изоляция через project key).
 - Backup при изменении конфига — `~/.claude.json.bak.<ISO-timestamp>` (последние 5 хранятся, ротация автоматическая).
+- **spec-changelog enforcement (v0.5.0):** install также патчит `<vault>/.claude/settings.json` → `hooks.PostToolUse` (matcher `Edit|Write|MultiEdit`, command → `hooks/spec-reminder.mjs`) — аддитивный merge с backup, пользовательские хуки сохраняются, идемпотентно. Хук при правке spec-requirements блока в `.claude/skills/new-*/SKILL.md` впрыскивает reminder синхронизировать `SYSTEM/spec_changelog.yaml` (ledger-protocol §4.1). Детерминированный backstop в обеих harness — tool `vault_spec_drift`.
 - Reconcile-семантика — add/update only. Удаление модуля из манифеста НЕ вычищает регистрацию из `~/.claude.json` автоматически — нужно вручную.
 - Управляется через `/init-vault`. Ручные правки соответствующих ключей будут перезаписаны при следующем install.
 <!-- END: module:harness-claude-code -->

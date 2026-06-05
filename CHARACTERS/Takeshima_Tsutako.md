@@ -4,7 +4,7 @@ domain: anime
 stability: stable
 priority: medium
 quality: draft
-co_authored: zai-coding-plan/glm-5.1
+co_authored: glm-5.1
 note_kind: character
 tags:
   - photographer
@@ -14,7 +14,7 @@ aliases:
   - Takeshima Tsutako
   - 武嶋 蔦子
 created: 2026-05-31
-updated: 2026-05-31
+updated: 2026-06-04
 name_romaji: "Takeshima Tsutako"
 name_native: "武嶋 蔦子"
 featured_in:
@@ -35,13 +35,13 @@ voice_actors: []
 mal_url: "https://myanimelist.net/character/1642/Tsutako_Takeshima"
 anilist_url: "https://anilist.co/character/1642/Tsutako-Takeshima"
 images:
-  cover: "attachments/Takeshima_Tsutako_cover.jpg"
+  cover: "attachments/Takeshima_Tsutako_cover.webp"
 personal_score: null
 ---
 
 # Takeshima Tsutako (武嶋 蔦子)
 
-![[Takeshima_Tsutako_cover.jpg|300]]
+![[Takeshima_Tsutako_cover.webp|300]]
 
 **Цутако Такэсима** — подруга Юми Фукудзавы и «ace» фотоклуба академии Лилиан, всегда носящая с собой камеру и стремящаяся запечатлеть самые интимные моменты школьной жизни.
 
@@ -66,14 +66,8 @@ personal_score: null
 
 ## Связи
 
-### В каноне
-
 - ![[Fukuzawa_Yumi_cover.jpg|60]] **[[Fukuzawa_Yumi|Юми Фукудзава]]** — близкая подруга и одноклассница; Цутако — тот человек, который случайно свёл Юми с советом Ямаюрикай через свой фотографический инцидент.
 - **Канако Хосокава** — первокурсница из фотоклуба, чья арка в третьем сезоне пересекается с деятельностью Цутако.
-
-### За кулисами
-
-- **Rina Satou** — японская сэйю, озвучившая Цутако во всех сезонах франшизы.
 
 ## Сэйю
 

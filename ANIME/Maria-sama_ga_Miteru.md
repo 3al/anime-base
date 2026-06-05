@@ -98,7 +98,7 @@ images:
 | ![[Yoshino_Shimazu_cover.jpg\|60]] **[[Yoshino_Shimazu\|Ёсино Симадзу]]**        | Haruna Ikezawa                                            |
 | ![[Toudou_Shimako_cover.jpg\|60]] **[[Toudou_Shimako\|Симако Тодо]]**            | Mamiko Noto                                               |
 | ![[Fukuzawa_Yuuki_cover.jpg\|60]] **[[Fukuzawa_Yuuki\|Юки Фукудзава]]**          | Mitsuhiro Ichiki                                          |
-| ![[Takeshima_Tsutako_cover.jpg\|60]] **[[Takeshima_Tsutako\|Цутако Такэсима]]**  | Rina Satō                                                 |
+| ![[Takeshima_Tsutako_cover.webp\|60]] **[[Takeshima_Tsutako\|Цутако Такэсима]]**  | Rina Satō                                                 |
 | ![[Kubo_Shiori_cover.jpg\|60]] **[[Kubo_Shiori\|Шиори Кубо]]** | Akiko Nakagawa |
 | ![[Kashiwagi_Suguru_cover.jpg\|60]] **[[Kashiwagi_Suguru\|Сугуру Касиваги]]**    | Nobuyuki Hiyama                                           |
 |                                                                                  |                                                           |

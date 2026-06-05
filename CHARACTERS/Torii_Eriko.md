@@ -12,7 +12,7 @@ aliases:
   - 鳥居 江利子
   - Эрико Тории
 created: 2026-05-30
-updated: 2026-05-31
+updated: 2026-06-02
 co_authored: claude-opus-4.8
 name_romaji: "Torii Eriko"
 name_native: "鳥居 江利子"
@@ -21,6 +21,7 @@ featured_in:
   - Maria-sama_ga_Miteru
   - Maria-sama_ga_Miteru_Haru
   - Maria-sama_ga_Miteru_4th
+  - Maria-sama_ga_Miteru_(manga)
 character_role: supporting
 gender: female
 status: alive
@@ -60,6 +61,7 @@ personal_score: null
 - ![[Maria-sama_ga_Miteru_cover.jpg|80]] **[[Maria-sama_ga_Miteru|Maria-sama ga Miteru]]** (2004) — первый сезон; дебют персонажа как старшей розы Rosa Foetida.
 - ![[Maria-sama_ga_Miteru_Haru_cover.jpg|80]] **[[Maria-sama_ga_Miteru_Haru|Maria-sama ga Miteru: Haru]]** (2004) — второй сезон; арка выпуска и передачи титула.
 - ![[Maria-sama_ga_Miteru_4th_cover.jpg|80]] **[[Maria-sama_ga_Miteru_4th|Maria-sama ga Miteru 4th]]** (2009) — четвёртый сезон; выпускница Rosa Foetida, появляется эпизодически.
+- ![[Maria-sama_ga_Miteru_(manga)_cover.jpg|80]] **[[Maria-sama_ga_Miteru_(manga)|Maria-sama ga Miteru (манга)]]** — 2003–2007, манга-адаптация Сатору Нагасавы; Rosa Foetida, старшая Роза Жёлтой линии.
 
 ## Связи
 

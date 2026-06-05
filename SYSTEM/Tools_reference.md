@@ -40,9 +40,10 @@ updated: 2026-05-23
 
 ### Изображения
 
-| Скилл           | Аргументы                                 | Описание |
-|-----------------|-------------------------------------------|----------|
-| `/add-images`   | `<note> <poster\|gallery> <file-or-folder>` | Добавить постер или элементы галереи к существующей заметке. Cross-update embeds в волте (`vault_backlinks`) при смене расширения постера. Универсальный для любого `note_kind`. Модель: opus |
+| Скилл                   | Аргументы                  | Описание |
+|-------------------------|----------------------------|----------|
+| `/add-images`           | `<note> <poster\|gallery> <file-or-folder>` | Добавить постер или элементы галереи к существующей заметке. Cross-update embeds в волте (`vault_backlinks`) при смене расширения постера. W=300 для постера, `W=150` для галереи (фиксированные ширины, `\|` escape pipe внутри таблиц). Универсальный для любого `note_kind`. Модель: opus |
+| `/remove-gallery-image` | `<note> <index\|all>`      | Удалить одно фото из `## Галерея` по row-major индексу, либо все сразу (`all`). Детектит external embeds через Grep, предлагает multi-choice (delete everywhere / unlink only / cancel) для каждого затронутого файла. Чистая механика, без LLM. Модель: haiku |
 
 ### Ревью и качество
 
@@ -189,6 +190,12 @@ MCP-tools выполняют **механические** проверки и и
 /add-images      →  vault_backlinks(old_filename)  ← только при смене расширения постера
                     vault_lint(target=note)
                     + LLM: ничего, чистая механика
+
+/remove-gallery-image →  Grep (![file)  ← external-embed detection по filename
+                         vault_lint(target=note)  ← post-validation
+                         + LLM: ничего, чистая механика
+                         (одна multi-choice question на файл с external embeds;
+                          в режиме `all` — один вопрос на агрегат всех файлов)
 
 /new-character   →  Glob (existence check)
                     web fetch (MAL/AniList — постер + данные)

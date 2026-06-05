@@ -98,7 +98,7 @@ images:
 | ![[Sato_Sei_cover.jpg\|60]] **[[Sato_Sei\|Сэй Сато]]**                           | Megumi Toyoguchi                                          |
 | ![[Kashiwagi_Suguru_cover.jpg\|60]] **[[Kashiwagi_Suguru\|Сугуру Касиваги]]** | Nobuyuki Hiyama                                           |
 | ![[Fukuzawa_Yuuki_cover.jpg\|60]] **[[Fukuzawa_Yuuki\|Юки Фукудзава]]**            | Mitsuhiro Ichiki                                          |
-| ![[Takeshima_Tsutako_cover.jpg\|60]] **[[Takeshima_Tsutako\|Цутако Такэсима]]**  | Rina Satō                                                 |
+| ![[Takeshima_Tsutako_cover.webp\|60]] **[[Takeshima_Tsutako\|Цутако Такэсима]]**  | Rina Satō                                                 |
 | **Кинтаро Арисугава**                                                            | Junko Minagawa                                            |
 | **Сидзука Канина**                                                               | rino                                                      |
 | **Кикуё Аянокодзи**                                                              | Yuu Kobayashi                                             |

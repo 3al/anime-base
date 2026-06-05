@@ -1,10 +1,18 @@
 name: harness-claude-code
-version: 0.4.0
+version: 0.5.0
 description: |
   Регистрирует MCP-серверы из всех модулей манифеста в ~/.claude.json
   (Claude Code harness) под project-scoped ключом
   projects[<vault_root>].mcpServers. Делает резервные копии перед патчем
   с ротацией (последние 5).
+
+  v0.5.0: +spec-changelog enforcement. install патчит
+  <vault>/.claude/settings.json → hooks.PostToolUse (matcher Edit|Write|
+  MultiEdit, command → hooks/spec-reminder.mjs), аддитивный merge с backup
+  (пользовательские хуки не трогаются, идемпотентно). Хук при правке
+  spec-requirements блока в /new-*/SKILL.md напоминает синхронизировать
+  SYSTEM/spec_changelog.yaml (ledger-protocol §4.1). Детект — общий
+  core/lib/spec_requirements.mjs. Backstop в обеих harness — vault_spec_drift.
 
   v0.4.0 (Этап 1B opencode-support — shared harness libs):
   - lib/config_patch.mjs, lib/mcp_registry.mjs, lib/template_vars.mjs

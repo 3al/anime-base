@@ -1,8 +1,6 @@
 ---
 description: >
-  Create a new manga card note (manga). Use when the user says
-  /new-manga, "создай карточку манги", "новая манга",
-  "добавь мангу", or wants to add a manga entry to the vault.
+  Create a new manga card note (manga). Use when the user says /new-manga, "создай карточку манги", "новая манга", "добавь мангу", or wants to add a manga entry to the vault.
 ---
 Invoke the `new-manga` skill via the skill tool NOW.
 

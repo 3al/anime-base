@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"D:/Anime_Base/.claude/modules/harness-claude-code/hooks/spec-reminder.mjs\""
+          }
+        ]
+      }
+    ]
+  }
+}

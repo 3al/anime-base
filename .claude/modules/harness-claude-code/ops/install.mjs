@@ -71,6 +71,39 @@ function composeEntry(resolved) {
   return entry;
 }
 
+/**
+ * Register the spec-changelog reminder as a PostToolUse hook in
+ * <vault>/.claude/settings.json (committed project settings, so it travels with
+ * the vault and works out of the box). Additive merge: our entry is identified
+ * by the spec-reminder.mjs command substring; user hooks are preserved.
+ * Idempotent — re-running updates only the command/matcher of our own entry.
+ */
+function ensureSettingsHook(vault_root, hookCommand) {
+  const settingsPath = join(vault_root, '.claude', 'settings.json');
+  const current = readJson(settingsPath);
+  const next = { ...current };
+  next.hooks = { ...(next.hooks || {}) };
+  const post = Array.isArray(next.hooks.PostToolUse)
+    ? next.hooks.PostToolUse.map((e) => ({ ...e }))
+    : [];
+
+  const entry = {
+    matcher: 'Edit|Write|MultiEdit',
+    hooks: [{ type: 'command', command: hookCommand }],
+  };
+  const idx = post.findIndex(
+    (e) =>
+      e && Array.isArray(e.hooks) &&
+      e.hooks.some((h) => typeof h.command === 'string' && h.command.includes('spec-reminder.mjs')),
+  );
+  if (idx >= 0) post[idx] = entry;
+  else post.push(entry);
+
+  next.hooks.PostToolUse = post;
+  const res = writeJsonWithBackup(settingsPath, next);
+  return { settingsPath, ...res };
+}
+
 function main() {
   const raw = readStdin();
   if (!raw.trim()) fail('Empty stdin — install handler expects JSON input.');
@@ -194,6 +227,24 @@ function main() {
   const sbResult = ensureSubBlock(claudeMdPath, MODULE_NAME, fragment);
   if (sbResult.changed) {
     actions.push({ type: 'sub_block', target: SUB_BLOCK_TARGET, action: sbResult.action });
+  }
+
+  // 4.5. Register the spec-changelog reminder PostToolUse hook.
+  const hookScript = join(module_dir, 'hooks', 'spec-reminder.mjs').replace(/\\/g, '/');
+  const hookCommand = `node "${hookScript}"`;
+  const hookRes = ensureSettingsHook(vault_root, hookCommand);
+  if (hookRes.changed) {
+    actions.push({
+      type: 'settings_hook',
+      target: '.claude/settings.json',
+      key: 'hooks.PostToolUse',
+      backup: hookRes.backup_path,
+    });
+    next_steps.push(
+      'Перезапустите Claude Code, чтобы PostToolUse-hook spec-changelog reminder вступил в силу (правка spec-requirements блока в /new-*/SKILL.md → напоминание про spec_changelog.yaml).',
+    );
+  } else {
+    actions.push({ type: 'settings_hook_unchanged', target: '.claude/settings.json' });
   }
 
   // 5. Write .installed marker.

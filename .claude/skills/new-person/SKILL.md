@@ -276,3 +276,12 @@ Person без обязательных тегов — норма (kind не тр
 - При добавлении тайтлов в `works[]` — сразу запускать cross-update (шаг 7.5), чтобы граф не съезжал.
 - **Сэйю и production-роли смешивать в одной записи `works[]` нельзя.** Если человек — и режиссёр, и VA одного тайтла, это две отдельные записи: одна `roles: [director]` без `character`, другая `roles: [voice-actor], character: X`. Запись с `roles: [voice-actor]` без `character` — невалидна.
 - Cross-update для VA-роли ходит в две локации: `CHARACTERS/<character>.md` (шаг 7.5b: `voice_actors[]` + `## Сэйю`) и `ANIME/<title>.md` (шаг 7.5c: только col 2 таблицы `## Персонажи`, frontmatter не трогается). **`anime.staff[]` не апдейтится** — voice-actor туда не входит (см. `enums.yaml::staff_role`).
+
+<!-- BEGIN: spec-requirements (managed contract — sync with SYSTEM/spec_changelog.yaml) -->
+```yaml
+kind: person
+requirements:
+  - requirement: cover_ext_matches_content
+    kind_of: format
+```
+<!-- END: spec-requirements -->

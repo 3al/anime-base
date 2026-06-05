@@ -4,7 +4,7 @@ domain: anime
 stability: stable
 priority: medium
 quality: draft
-co_authored: zai-coding-plan/glm-5.1
+co_authored: glm-5.1
 note_kind: person
 tags:
   - japanese-animation

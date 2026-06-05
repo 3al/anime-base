@@ -13,7 +13,7 @@ aliases:
   - Рэй Хасэкура
   - Rei Hasekura
 created: 2026-05-30
-updated: 2026-05-31
+updated: 2026-06-02
 name_romaji: "Hasekura Rei"
 name_native: "支倉令"
 name_english: "Rei Hasekura"
@@ -22,6 +22,7 @@ featured_in:
   - Maria-sama_ga_Miteru_Haru
   - Maria-sama_ga_Miteru_3rd
   - Maria-sama_ga_Miteru_4th
+  - Maria-sama_ga_Miteru_(manga)
 character_role: supporting
 gender: female
 status: alive
@@ -65,6 +66,7 @@ personal_score: null
 - ![[Maria-sama_ga_Miteru_Haru_cover.jpg|80]] **[[Maria-sama_ga_Miteru_Haru|Maria-sama ga Miteru: Haru]]** — 2004, второй сезон; выпуск из Лилиан и передача титула Rosa Foetida.
 - ![[Maria-sama_ga_Miteru_3rd_cover.jpg|80]] **[[Maria-sama_ga_Miteru_3rd|Maria-sama ga Miteru 3rd]]** — 2006, третий сезон (OVA); реакция на выборную кампанию Ёсино.
 - ![[Maria-sama_ga_Miteru_4th_cover.jpg|80]] **[[Maria-sama_ga_Miteru_4th|Maria-sama ga Miteru 4th]]** — 2009, четвёртый сезон; отпускает повзрослевшую Ёсино, ставшую Rosa Foetida en bouton.
+- ![[Maria-sama_ga_Miteru_(manga)_cover.jpg|80]] **[[Maria-sama_ga_Miteru_(manga)|Maria-sama ga Miteru (манга)]]** — 2003–2007, манга-адаптация Сатору Нагасавы; Rosa Foetida en bouton, опекунша Ёсино.
 
 ## Связи
 

@@ -12,7 +12,7 @@ aliases:
   - Вайолет Эвергарден
   - Violet Evergarden
 created: 2026-05-26
-updated: 2026-06-02
+updated: 2026-06-04
 title_romaji: Violet Evergarden
 title_original: ヴァイオレット・エヴァーガーデン
 format: tv
@@ -84,37 +84,37 @@ images:
 
 ## Персонажи
 
-| Персонаж                                                                            | Сэйю             |
-| ----------------------------------------------------------------------------------- | ---------------- |
-| ![[Evergarden_Violet_cover.webp\|60]] **[[Evergarden_Violet\|Вайолет Эвергарден]]** | Yui Ishikawa     |
-| ![[Gilbert_Bougainvillea_cover.jpg\|60]] **[[Gilbert_Bougainvillea\|Гилберт Бугенвиллея]]** | Daisuke Namikawa |
-| **Клаудия Ходжинс**                                                                 | Takehito Koyasu  |
-| **Дитфрид Бугенвиллея**                                                             | Hidenobu Kiuchi  |
-| **Каттлея Бодлер**                                                                  | Aya Endou        |
-| **Бенедикт Блю**                                                                    | Kouki Uchiyama   |
-| **Эрика Браун**                                                                     | Minori Chihara   |
-| **Айрис Каннари**                                                                   | Haruka Tomatsu   |
-| **Лукулия Марльборо**                                                               | Azusa Tadokoro   |
-| **Леон Стефанотис**                                                                 | Yuuto Uemura     |
-| **Анна Магнолия**                                                                   | Sumire Morohoshi |
-| **Клара Магнолия**                                                                  | Ayako Kawasumi   |
-| **Шарлотта Абельфрейя Дроссель**                                                    | Megumi Nakajima  |
-| **Дамиан Балдур Флюгель**                                                           | Kenjirou Tsuda   |
-| **Оскар Вебстер**                                                                   | Satoshi Taki     |
-| **Оливия Вебстер**                                                                  | Sayaka Senbongi  |
-| **Расселл Бейли**                                                                   | Kengo Tsujii     |
-| **Альберта**                                                                        | Mami Koyama      |
+| Персонаж | Сэйю |
+| --- | --- |
+| ![[Evergarden_Violet_cover.webp\|60]] **[[Evergarden_Violet\|Вайолет Эвергарден]]**         | Yui Ishikawa          |
+| ![[Gilbert_Bougainvillea_cover.jpg\|60]] **[[Gilbert_Bougainvillea\|Гилберт Бугенвиллея]]** | Daisuke Namikawa      |
+| ![[Hodgins_Claudia_cover.jpg\|60]] **[[Hodgins_Claudia\|Клаудия Ходжинс]]**   | Takehito Koyasu |
+| **Дитфрид Бугенвиллея**                                                                     | Hidenobu Kiuchi       |
+| ![[Cattleya_Baudelaire_cover.jpg\|60]] **[[Cattleya_Baudelaire\|Каттлея Бодлер]]**          | Aya Endou             |
+| **Бенедикт Блю**                                                                            | Kouki Uchiyama        |
+| **Эрика Браун**                                                                             | Minori Chihara        |
+| **Айрис Каннари**                                                                           | Haruka Tomatsu        |
+| ![[Marlborough_Luculia_cover.webp\|60]] **[[Marlborough_Luculia\|Лукулия Марльборо]]** | Azusa Tadokoro  |
+| **Леон Стефанотис**                                                                         | Yuuto Uemura          |
+| ![[Magnolia_Ann_cover.webp\|60]] **[[Magnolia_Ann\|Анна Магнолия]]**                        | Sumire Morohoshi      |
+| ![[Magnolia_Clara_cover.webp\|60]] **[[Magnolia_Clara\|Клара Магнолия]]**                   | Ayako Kawasumi        |
+| **Шарлотта Абельфрейя Дроссель**                                                            | Megumi Nakajima       |
+| **Дамиан Балдур Флюгель**                                                                   | Kenjirou Tsuda        |
+| ![[Oscar_Webster_cover.webp\|60]] **[[Oscar_Webster\|Оскар Вебстер]]**                      | Satoshi Taki          |
+| **Оливия Вебстер**                                                                          | Sayaka Senbongi       |
+| **Расселл Бейли**                                                                           | Kengo Tsujii          |
+| **Альберта**                                                                                | Mami Koyama           |
 
 ## Студия и команда
 
 Сериал выпущен Kyoto Animation зимой 2018 года под режиссурой Тайчи Исидате по серии лайт-новелл Каны Акацуки (победитель Kyoto Animation Award 2014, первый и единственный обладатель Grand Prix). Сценарий состава поручен Рэйко Ёсиде (известна по K-On!, Girls und Panzer, MariMite), музыку написал Эван Колл — это его первая крупная работа в аниме, ставшая визитной карточкой саундтреков KyoAni. Character design — Акико Такасэ, выводившая фирменный почти-фотореалистичный стиль студии на новый уровень детализации; именно качество анимации (особенно рук и глаз Вайолет) сделало сериал референсом для индустрии.
 
 - **Kyoto Animation** — студия-производитель.
-- **Taichi Ishidate** — режиссёр.
+- ![[Taichi_Ishidate_cover.jpg|60]] **[[Taichi_Ishidate|Taichi Ishidate]]** — режиссёр.
 - **Reiko Yoshida** — сценарист, series composition.
 - **Evan Call** — композитор.
 - **Akiko Takase** — character designer.
-- **Kana Akatsuki** — автор оригинальных лайт-новелл.
+- **[[Kana_Akatsuki|Kana Akatsuki]]** — автор оригинальных лайт-новелл.
 
 ## Резонанс
 

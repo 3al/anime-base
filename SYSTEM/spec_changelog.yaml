@@ -1,0 +1,78 @@
+# SYSTEM/spec_changelog.yaml — когда введено каждое требование create-спеки.
+# Контент — vault-side; схему задаёт фреймворк (audit-by-creator/references/ledger-protocol.md §4.1).
+#
+# Назначение: epoch-conformance. audit-by-creator / audit-note реклассифицируют находку
+# MISSING/WRONG_FORMAT в SCHEMA_DRIFT (из score исключается), если требование введено в спеку
+# ПОЗЖЕ даты `created` карточки — автор не мог реализовать несуществовавшее. Нет записи =
+# требование пред-существовало → штрафуется как author-defect. Логировать нужно только
+# ПОСТ-авторские добавления (то, что введено после самых старых карточек). Базовую спеку
+# (поля с рождения волта) логировать не обязательно.
+#
+# Ретро-сев (2026-06-03): старейшие карточки волта созданы 2026-05-23 (Nausicaa) … 05-31.
+# Батч планов A/B/C + §8 (online_url) внесён 2026-06-02 → предшествующие карточки его лишены
+# → дрейф. Источник дат — git (e841722 / 2ffd790 / 5270052, все 2026-06-02) + Roadmap §3/§8/§16.
+
+v: 1
+kinds:
+  anime:
+    # §8 + план C: USER-ONLY и оценочные always-present поля, добавленные после первых 6 карточек.
+    - requirement: online_url
+      introduced: 2026-06-02
+      kind_of: field
+    - requirement: art_score
+      introduced: 2026-06-02
+      kind_of: field
+    - requirement: story_score
+      introduced: 2026-06-02
+      kind_of: field
+    - requirement: originality_score
+      introduced: 2026-06-02
+      kind_of: field
+    - requirement: content_rating
+      introduced: 2026-06-02
+      kind_of: field
+    # B-012 (2026-06-01): расширение вложения должно соответствовать реальному типу содержимого
+    # (WebP→.webp, JPEG→.jpg). До B-012 — хардкод .jpg/.png в скиллах. Кросс-kind правило,
+    # дублируется в каждый kind с обложкой. Дата: git -S 'реальный тип содержимого' → 9178660 (06-01).
+    - requirement: cover_ext_matches_content
+      introduced: 2026-06-01
+      kind_of: format
+  character:
+    # План C, п.4: character.personal_score промоут в always-present + бэкафилл 17 карточек.
+    - requirement: personal_score
+      introduced: 2026-06-02
+      kind_of: field
+    - requirement: cover_ext_matches_content   # B-012 (2026-06-01), см. anime
+      introduced: 2026-06-01
+      kind_of: format
+    # 2026-06-04: одна персона — ровно одна секция карточки. Сэйю только в `## Сэйю`,
+    # не дублировать в `### За кулисами`. Правка new-character этой сессии (раньше скилл
+    # допускал сэйю в «За кулисами» → дубль). Пре-06-04 карточки с дублем → SCHEMA_DRIFT.
+    - requirement: persona_single_section
+      introduced: 2026-06-04
+      kind_of: format
+    # 2026-06-05: ## Сэйю — только японские сэйю; иностранный дубляж (en/ru) не вносить.
+    # Правка new-character этой сессии (раньше dub-актёры были опционально разрешены).
+    # Слабые модели систематически добавляли несколько foreign-dub строк.
+    - requirement: seiyu_japanese_only
+      introduced: 2026-06-05
+      kind_of: format
+    # 2026-06-05: ## Личный отзыв — USER-ONLY, модель НЕ фабрикует (опускает секцию).
+    # Формализация this session: создатель new-character раньше приглашал «почему персонаж
+    # зашёл/чем зацепил» абзац (разлад с governance Metadata_schema «модель не заполняет»),
+    # слабые модели лепили сюда филлер. Пре-06-05 карточки с модель-написанным отзывом →
+    # SCHEMA_DRIFT (vault-долг, удалить). Семья personal_score USER-ONLY.
+    - requirement: personal_review_user_only
+      introduced: 2026-06-05
+      kind_of: section
+  person:
+    # B-012 (2026-06-01): кросс-kind attachment ext-правило (см. anime::cover_ext_matches_content).
+    - requirement: cover_ext_matches_content
+      introduced: 2026-06-01
+      kind_of: format
+  studio:
+    - requirement: cover_ext_matches_content   # B-012 (2026-06-01)
+      introduced: 2026-06-01
+      kind_of: format
+  # manga: записей нет. Manga-kind и все его поля введены 2026-06-02; единственная manga-карточка
+  # создана после → ни одна manga-карточка не предшествует своим требованиям → дрейфа нет.

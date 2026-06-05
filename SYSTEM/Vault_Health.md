@@ -1,0 +1,96 @@
+---
+type: reference
+domain: meta
+tags:
+  - dashboard
+  - health
+aliases:
+  - Здоровье волта
+---
+
+# Здоровье волта
+
+> Живые срезы состояния волта. 
+
+## Покрытие аудита
+
+> Источник — `SYSTEM/model_quality.jsonl` (леджер качества моделей, append-only). Контракт записи: `.claude/skills/audit-by-creator/references/ledger-protocol.md`.
+>
+> `structural` = `/audit-by-creator`, `content` = `/audit-note`. `✓` pristine (чистая работа автора), `⚠` non-pristine (состояние частично исправлено до замера → из чистого сравнения моделей исключается).
+
+```dataviewjs
+const LEDGER = "SYSTEM/model_quality.jsonl";
+let raw = null;
+try { raw = await dv.io.load(LEDGER); } catch (e) { raw = null; }
+if (!raw) { dv.paragraph(`⚠ Леджер не найден или пуст: \`${LEDGER}\``); return; }
+
+let malformed = 0;
+const rows = raw.split("\n").filter(l => l.trim())
+  .map(l => { try { return JSON.parse(l); } catch { malformed++; return null; } })
+  .filter(Boolean);
+if (malformed > 0) dv.paragraph(`⚠ **${malformed} строк(и) леджера не распарсились** (битый JSON) — пропущены и НЕ учтены ниже. Проверь \`SYSTEM/model_quality.jsonl\`.`);
+
+// последняя запись по (note, audit_type)
+const latest = {};
+for (const r of rows) {
+  const k = r.note + "|" + r.audit_type;
+  if (!latest[k] || r.ts > latest[k].ts) latest[k] = r;
+}
+const byNote = {};
+for (const k in latest) {
+  const r = latest[k];
+  (byNote[r.note] = byNote[r.note] || {})[r.audit_type] = r;
+}
+
+const cell = e => e ? `${e.score}/10 ${e.pristine ? "✓" : "⚠"}` : "—";
+const lastTs = p => {
+  const n = byNote[p.file.path];
+  if (!n) return null;
+  return [n.structural, n.content].filter(Boolean).map(e => e.ts).sort().slice(-1)[0] || null;
+};
+
+// аудированные сверху → по свежести последнего аудита убыв.; непроаудированные ниже → по пути
+const cards = dv.pages().where(p => p.note_kind).array();
+cards.sort((a, b) => {
+  const ta = lastTs(a), tb = lastTs(b);
+  if (ta && tb) return tb.localeCompare(ta);
+  if (ta) return -1;
+  if (tb) return 1;
+  // оба непроаудированы → по created (новые выше), при равенстве — по пути
+  const ca = String(a.created ?? ""), cb = String(b.created ?? "");
+  return cb.localeCompare(ca) || a.file.path.localeCompare(b.file.path);
+});
+
+dv.header(3, "Покрытие по карточкам");
+dv.table(
+  ["Карточка", "kind", "structural", "content", "автор", "судья", "посл. аудит"],
+  cards.map(p => {
+    const n = byNote[p.file.path] || {};
+    const s = n.structural, c = n.content, any = s || c;
+    const lt = lastTs(p);
+    const last = lt ? lt.slice(0, 10) : "—";
+    return [
+      p.file.link, p.note_kind, cell(s), cell(c),
+      any ? any.authored_model : (p.co_authored ?? "—"),
+      any ? any.judge_model : "—", last
+    ];
+  })
+);
+
+const total = cards.length, audited = Object.keys(byNote).length;
+const nS = Object.values(latest).filter(e => e.audit_type === "structural").length;
+const nC = Object.values(latest).filter(e => e.audit_type === "content").length;
+dv.paragraph(`**Покрытие:** ${audited}/${total} карточек с ≥1 аудитом · structural ${nS} · content ${nC} · всего записей ${rows.length}. Легенда: \`✓\` pristine, \`⚠\` non-pristine.`);
+
+dv.header(3, "История леджера (новые сверху)");
+dv.table(
+  ["ts (UTC)", "карточка", "ось", "score", "судья", "pristine", "причины"],
+  rows.slice().sort((a, b) => b.ts.localeCompare(a.ts)).map(r => [
+    r.ts.slice(0, 16).replace("T", " "),
+    r.note.split("/").pop().replace(".md", ""),
+    r.audit_type, `${r.score}/10`, r.judge_model,
+    r.pristine ? "✓" : "⚠",
+    (r.reasons && r.reasons.length) ? r.reasons.join("; ") : "—"
+  ])
+);
+```

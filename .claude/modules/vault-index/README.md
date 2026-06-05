@@ -18,7 +18,7 @@
 ## Что предоставляет
 
 - Mcp_server `vault-index` — будет зарегистрирован в `~/.claude.json` и `opencode.json` модулями `harness-*` (когда они появятся).
-- 11 MCP tools (lint, broken-links, orphans, duplicate-links, query, backlinks, note-profile, stats, reindex, lookalike-peers, ...).
+- 16 MCP tools (lint, broken-links, orphans, duplicate-links, duplicate-basenames, query, backlinks, note-profile, stats, reindex, image-status, add-image, lookalike-peers, text-mentions, asymmetric-links, spec-drift). Актуальный список + версия — `templates/claude-md.fragment`.
 
 ## Запланировано
 

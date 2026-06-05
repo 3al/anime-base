@@ -13,7 +13,7 @@ aliases:
   - Ёсино Симадзу
   - Yoshino Shimazu
 created: 2026-05-31
-updated: 2026-05-31
+updated: 2026-06-02
 name_romaji: "Shimazu Yoshino"
 name_native: "島津 由乃"
 name_english: "Yoshino Shimazu"
@@ -22,6 +22,7 @@ featured_in:
   - Maria-sama_ga_Miteru_Haru
   - Maria-sama_ga_Miteru_3rd
   - Maria-sama_ga_Miteru_4th
+  - Maria-sama_ga_Miteru_(manga)
 character_role: supporting
 gender: female
 status: alive
@@ -65,6 +66,7 @@ personal_score: null
 - ![[Maria-sama_ga_Miteru_Haru_cover.jpg|80]] **[[Maria-sama_ga_Miteru_Haru|Maria-sama ga Miteru: Haru]]** — 2004, второй сезон; борьба за независимость от Рэй.
 - ![[Maria-sama_ga_Miteru_3rd_cover.jpg|80]] **[[Maria-sama_ga_Miteru_3rd|Maria-sama ga Miteru 3rd]]** — 2006, третий сезон (OVA); выборная кампания в Совет.
 - ![[Maria-sama_ga_Miteru_4th_cover.jpg|80]] **[[Maria-sama_ga_Miteru_4th|Maria-sama ga Miteru 4th]]** (2009) — четвёртый сезон; становится Rosa Foetida en bouton и выбирает младшей сестрой Нану Ариму.
+- ![[Maria-sama_ga_Miteru_(manga)_cover.jpg|80]] **[[Maria-sama_ga_Miteru_(manga)|Maria-sama ga Miteru (манга)]]** — 2003–2007, манга-адаптация Сатору Нагасавы; младшая сестра Рэй, член Ямаюрикай.
 
 ## Связи
 

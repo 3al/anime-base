@@ -1,11 +1,85 @@
 name: skills-common
-version: 0.4.10
+version: 0.7.0
 description: |
   Тема-нейтральные скиллы, общие для любого волта: fix-links, audit-note,
   new-note, rename-note, verify, expand-stub, add-note-kind,
-  harness-agnostic-audit. Устанавливаются в .claude/skills/ под `.managed`
-  маркерами — фреймворк может синхронизировать обновления, не затирая
-  пользовательские правки.
+  harness-agnostic-audit, vision-gate-audit, audit-by-creator.
+  Устанавливаются в .claude/skills/ под `.managed` маркерами — фреймворк может
+  синхронизировать обновления, не затирая пользовательские правки.
+
+  v0.7.0: add-note-kind генерирует managed spec-requirements блок в порождённом
+  /new-<kind> (шаблон new-kind-skill.template.md, placeholder
+  {{spec_requirements_list}}) из того же списка требований, что и записи
+  spec_changelog.yaml (шаг 4.5c) — 1:1 by construction. Закрывает молчаливый
+  пропуск changelog при ручной правке create-скиллов (ledger-protocol §4.1);
+  детерминированный backstop — vault_spec_drift. +КРИТИЧНО #16.
+
+  v0.6.0 (epoch-conformance + audit-note флаги — рефайнменты после приёмки):
+  - Epoch-conformance (главное): `audit-by-creator` судил карточку ТЕКУЩЕЙ
+    спекой создателя, но score приписывается автору-на-момент-создания → штраф
+    за пост-авторскую эволюцию схемы (поле введено после `created`), не за
+    качество. Смещение системное: старые карточки = сильные модели (baseline),
+    свежие = слабые → schema-drift занижает baseline, ломая цель леджера. Фикс:
+    новый класс находки `SCHEMA_DRIFT` + epoch-реклассификация в `ledger-
+    protocol.md §4.1` — требование с `introduced > created` не штрафуется (vault-
+    долг, репортится отдельно, может backfill'иться). Двусторонне: пред-
+    существовавшее отсутствующее требование = честный author-defect. Источник
+    дат — `SYSTEM/spec_changelog.yaml` (vault-owned контент, framework-defined
+    схема, как `enums.yaml`); нет файла/записи → пред-существование (штраф); нет
+    `created` → epoch unverifiable. `findings.schema_drift` добавлен аддитивно
+    (леджер держался на паузе → миграции нет). На новом волте корректно сразу
+    (пустой changelog = нет дрейфа).
+  - `add-note-kind` шаг 4.5c: при создании kind авто-аппендит требования
+    (обязательные поля + секции) в `spec_changelog.yaml` на сегодня —
+    enforcement-at-source, чтобы будущий дрейф логировался в момент ввода.
+  - `audit-note` получил флаги `--report-only` + `--no-ledger` (симметрично
+    `audit-by-creator`). До 0.6.0 он всегда мутировал карточку и всегда писал в
+    леджер — нельзя было ни dry-run, ни пауза леджера. Флаги композируются.
+  - НЕ входит (backstop, отдельной итерацией): vault-index детектор «белой
+    вороны» (поле у 95% карточек kind, у этой нет) для ловли незалогированного
+    дрейфа; per-axis `pristine` (предложение 3 заказчика — после опыта
+    эксплуатации). Контент `spec_changelog.yaml` + ретро-сев базы — vault-side.
+  Version bump (minor): новый класс находки + новая governance-конвенция
+  (`spec_changelog.yaml`) + флаги/поведение managed-скиллов.
+
+  v0.5.0 (audit-by-creator + автоматический леджер качества моделей):
+  - Новый managed-скилл `audit-by-creator` (kind-agnostic, audit-aspect): сверяет
+    готовую карточку с её СОЗДАЮЩИМ скиллом (`note_kind` → `/new-<kind>`) как с
+    источником истины. Читает текст создателя, выводит артефактные инварианты
+    (секции/формат/постер/миниатюры/реципрокность), отличая их от процессных
+    шагов создателя (web search / скачивание / интерактив — НЕ ре-ранит,
+    извлекает конечное состояние). Ловит недореализацию слабых моделей. Vision-
+    gate узкий — только визуальный под-чек постера (pre-flight probe), механика
+    постера и структурный аудит от зрения не зависят. Использует vault-index
+    MCP-tools вместо Grep (`vault_asymmetric_links`, `vault_image_status`,
+    `vault_duplicate_basenames`, …). Opencode-wrapper генерится автоматически.
+  - Леджер качества моделей (побочный эффект аудита, НЕ background/hooks/cron):
+    единый SSOT `audit-by-creator/references/ledger-protocol.md` — JSONL-схема
+    (`SYSTEM/model_quality.jsonl`, `v:1`), формула score (штраф от базы: −2 за
+    MISSING, −1 за WRONG_FORMAT, NEEDS_EXTERNAL без штрафа, пол 1), нормализация
+    ID модели (strip provider-префикс + access-tier суффикс — `glm-5.1` ≡
+    `zai-coding-plan/glm-5.1`, `minimax-m3-free` ≡ `minimax-m3.free`; сырое в
+    `authored_model_raw`), дедуп точных дублей по `content_hash`, флаги
+    `fixes_applied`/`pristine` против контаминации, дисциплина `judge_model`/
+    `audit_type`. `structural` (audit-by-creator) vs `content` (audit-note) —
+    оси не смешиваются в агрегатах.
+  - Принцип «аудит НЕ авторствует» (фикс §6.4 ТЗ): скиллы, ПРОИЗВОДЯЩИЕ контент
+    (`/new-*`, `/expand-stub`, `/vault-rag`), ставят `co_authored`; скиллы,
+    РЕВЬЮЯЩИЕ/оценивающие (`/audit-note`, `/audit-by-creator`), — НЕ трогают
+    `co_authored` вовсе. Перезапись `co_authored` на судью уничтожала origin-
+    автора как субъект оценки для последующих аудитов (capture-at-entry живёт
+    один прогон) → структурные косяки слабой модели писались на судью. След
+    судьи теперь только в `ledger.judge_model`. Кросс-осевая контаминация
+    (judge починил карточку до замера другой оси) гасится флагом `pristine`
+    (запись не теряется, вью сравнения фильтрует `pristine=true`).
+  - `audit-note` обновлён (§6.5): оценивает автора и аппендит в леджер
+    (`audit_type: content`); читает origin-автора на входе; **`co_authored` не
+    перезаписывает никогда** (override устаревшего `Audit_checklist §4.8`),
+    только `quality:draft`+`updated` при правках. Носитель правила — managed
+    SKILL.md (чеклист seed-once, апдейт его не достигает; core 0.8.1 правит
+    шаблон §4.8 forward-only для новых волтов).
+  Version bump (minor): новый скилл + изменение поведения managed `audit-note`.
+  Marker version bump триггерит re-sync managed копий при следующем /init-vault.
 
   v0.4.8 (B-009 + B-010 — vision-gate pre-flight probe + capability-ось):
   - B-009: `vision-gate-audit` и `add-note-kind` переведены на pre-flight
@@ -165,6 +239,7 @@ provides:
     - add-note-kind
     - harness-agnostic-audit
     - vision-gate-audit
+    - audit-by-creator
 config_schema: {}
 ops:
   install: ops/install.mjs

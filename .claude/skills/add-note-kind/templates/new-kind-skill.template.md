@@ -161,3 +161,15 @@ updated: <сегодня в YYYY-MM-DD>
 - При обнаружении новых тегов, которых нет в `SYSTEM/Tag_taxonomy.md` — автоматически добавить их туда. Не оставлять заметку без семантически необходимого тега.
 - Web research — обязательная часть фазы 2. Не выдумывать факты, не додумывать данные.
 - При наличии связанных заметок в волте (которые попадают в обязательные WikiLinks по правилам Linking_guidelines) — обязательно проставить ссылки.
+
+## Контракт требований (managed — не удалять, не рефакторить руками)
+
+Машиночитаемый список требований этого скилла. Синхронизирован с `SYSTEM/spec_changelog.yaml` (ledger-protocol §4.1): **каждое требование здесь обязано иметь запись в changelog с датой ввода**, иначе аудиты ложно штрафуют карточки, созданные до требования. При **вводе нового требования** (обязательное поле / обязательная секция / format-правило) в этот скилл — добавь его в блок ниже И запись в `spec_changelog.yaml` тем же изменением. Проверка рассинхрона — tool `vault_spec_drift` (vault-index MCP). В Claude Code правка блока ниже триггерит PostToolUse-reminder.
+
+<!-- BEGIN: spec-requirements (managed contract — sync with SYSTEM/spec_changelog.yaml) -->
+```yaml
+kind: {{kind_slug}}
+requirements:
+{{spec_requirements_list}}
+```
+<!-- END: spec-requirements -->

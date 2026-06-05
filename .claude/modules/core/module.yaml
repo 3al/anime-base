@@ -1,10 +1,31 @@
 name: core
-version: 0.8.0
+version: 0.8.2
 description: |
   Core module — обязательная база для любого волта в bootstrap-фреймворке.
   Управляет: outer managed-блоками в CLAUDE.md и .gitignore, governance-шаблонами
   в SYSTEM/ (skip-if-exists), vision-gate probe-ассетом, маркером .installed.
   Sub-block helpers через lib/managed_block.mjs.
+
+  v0.8.2: +lib/spec_requirements.mjs — shared детектор spec-requirements блока
+  в /new-*/SKILL.md (extractRequirementsBlock, editTouchedBlock, buildReminderText)
+  для changelog-enforcement хуков (harness-claude-code PostToolUse; контракт готов
+  и для Opencode-плагина, когда upstream #13574 будет исправлен). Чистая строковая
+  логика, паттерн как mcp_registry.mjs / opencode_wrappers.mjs.
+
+  v0.8.1 (audit-by-creator + леджер качества моделей — template-only):
+  - `templates/SYSTEM/Audit_checklist.md §4.8` переписан под принцип «аудит НЕ
+    авторствует» (forward-only, для НОВЫХ волтов): сначала прочитать origin-
+    автора на входе, аудит, score + запись в `SYSTEM/model_quality.jsonl`
+    (`audit_type:content`, флаги `fixes_applied`/`pristine`), затем — при
+    наличии правок — только `quality:draft`+`updated`. **`co_authored` аудит не
+    трогает вовсе** (ни в середине, ни в конце): перезапись на судью уничтожала
+    origin-автора как субъект оценки для последующих аудитов. След судьи — в
+    `ledger.judge_model`. Авторитетный носитель правила для УЖЕ-развёрнутых
+    волтов — managed `/audit-note` (чеклист seed-once vault-owned, апдейт его не
+    достигает); §4.8 уступает скиллу при расхождении. Контракт — `skills-common`
+    `audit-by-creator/references/ledger-protocol.md`.
+  - Изменение касается только seed-шаблона: существующие волты сохраняют свой
+    `Audit_checklist.md` (skip-if-exists), поведение туда несёт managed-скилл.
 
   v0.8.0 (B-009 — vision-gate probe расцеплён от боевого скачивания):
   - `lib/vision_probe.mjs` — генератор крошечного детерминированного PNG

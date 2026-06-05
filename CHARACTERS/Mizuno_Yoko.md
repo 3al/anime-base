@@ -15,13 +15,14 @@ aliases:
   - Mizuno Yōko
   - Rosa Chinensis
 created: 2026-05-30
-updated: 2026-05-31
+updated: 2026-06-02
 name_romaji: Mizuno Yoko
 name_native: 水野蓉子
 featured_in:
   - Maria-sama_ga_Miteru
   - Maria-sama_ga_Miteru_Haru
   - Maria-sama_ga_Miteru_4th
+  - Maria-sama_ga_Miteru_(manga)
 character_role: supporting
 gender: female
 status: alive
@@ -67,6 +68,7 @@ personal_score: null
 - ![[Maria-sama_ga_Miteru_cover.jpg|80]] **[[Maria-sama_ga_Miteru|Maria-sama ga Miteru]]** (2004) — первый сезон; Ёко — действующая Роза Киненсис, наставница Сатико и неформальный лидер Совета Ямаюрикай.
 - ![[Maria-sama_ga_Miteru_Haru_cover.jpg|80]] **[[Maria-sama_ga_Miteru_Haru|Maria-sama ga Miteru: Haru]]** (2004) — второй сезон; выпускной год Ёко, прощание с Лиллиан и передача титула Сатико.
 - ![[Maria-sama_ga_Miteru_4th_cover.jpg|80]] **[[Maria-sama_ga_Miteru_4th|Maria-sama ga Miteru 4th]]** (2009) — четвёртый сезон; выпускница, появляется эпизодически как голос опыта.
+- ![[Maria-sama_ga_Miteru_(manga)_cover.jpg|80]] **[[Maria-sama_ga_Miteru_(manga)|Maria-sama ga Miteru (манга)]]** — 2003–2007, манга-адаптация Сатору Нагасавы; Rosa Chinensis, старшая сестра Сатико.
 
 ## Связи
 

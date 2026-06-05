@@ -94,16 +94,16 @@ images:
 | ![[Fukuzawa_Yumi_cover.jpg\|60]] **[[Fukuzawa_Yumi\|Юми Фукудзава]]**            | ![[Kana_Ueda_cover.png\|60]] **[[Kana_Ueda\|Kana Ueda]]** |
 | ![[Ogasawara_Sachiko_cover.jpg\|60]] **[[Ogasawara_Sachiko\|Сатико Огасавара]]** | ![[Miki_Itou_cover.jpg\|60]] **[[Miki_Itou\|Miki Itou]]** |
 | ![[Sato_Sei_cover.jpg\|60]] **[[Sato_Sei\|Сэй Сато]]**                           | Megumi Toyoguchi                                          |
-| ![[Toudou_Shimako_cover.jpg\|60]] **[[Toudou_Shimako\|Симако Тодо]]**              | Mamiko Noto                                               |
+| ![[Toudou_Shimako_cover.jpg\|60]] **[[Toudou_Shimako\|Симако Тодо]]**            | Mamiko Noto                                               |
 | **Норико Нидзё**                                                                 | Kaori Shimizu                                             |
-| ![[Touko_Matsudaira_cover.jpg\|60]] **[[Touko_Matsudaira\|Тоуко Мацудайра]]**              | Rie Kugimiya                                              |
-| ![[Yoshino_Shimazu_cover.jpg\|60]] **[[Yoshino_Shimazu\|Ёсино Симадзу]]**            | Haruna Ikezawa                                            |
-| ![[Hasekura_Rei_cover.jpg\|60]] **[[Hasekura_Rei\|Рэй Хасэкура]]**                                                | Shizuka Itō                                               |
-| ![[Torii_Eriko_cover.jpg\|60]] **[[Torii_Eriko\|Эрико Тории]]**                                                      | Hitomi Nabatame                                           |
-| ![[Mizuno_Yoko_cover.jpg\|60]] **[[Mizuno_Yoko\|Ёко Мидзуно]]**                     | Emi Shinohara                                             |
-| ![[Kashiwagi_Suguru_cover.jpg\|60]] **[[Kashiwagi_Suguru\|Сугуру Касиваги]]** | Nobuyuki Hiyama                                           |
-| ![[Fukuzawa_Yuuki_cover.jpg\|60]] **[[Fukuzawa_Yuuki\|Юки Фукудзава]]**            | Mitsuhiro Ichiki                                          |
-| ![[Takeshima_Tsutako_cover.jpg\|60]] **[[Takeshima_Tsutako\|Цутако Такэсима]]**  | Rina Satō                                                 |
+| ![[Touko_Matsudaira_cover.jpg\|60]] **[[Touko_Matsudaira\|Тоуко Мацудайра]]**    | Rie Kugimiya                                              |
+| ![[Yoshino_Shimazu_cover.jpg\|60]] **[[Yoshino_Shimazu\|Ёсино Симадзу]]**        | Haruna Ikezawa                                            |
+| ![[Hasekura_Rei_cover.jpg\|60]] **[[Hasekura_Rei\|Рэй Хасэкура]]**               | Shizuka Itō                                               |
+| ![[Torii_Eriko_cover.jpg\|60]] **[[Torii_Eriko\|Эрико Тории]]**                  | Hitomi Nabatame                                           |
+| ![[Mizuno_Yoko_cover.jpg\|60]] **[[Mizuno_Yoko\|Ёко Мидзуно]]**                  | Emi Shinohara                                             |
+| ![[Kashiwagi_Suguru_cover.jpg\|60]] **[[Kashiwagi_Suguru\|Сугуру Касиваги]]**    | Nobuyuki Hiyama                                           |
+| ![[Fukuzawa_Yuuki_cover.jpg\|60]] **[[Fukuzawa_Yuuki\|Юки Фукудзава]]**          | Mitsuhiro Ichiki                                          |
+| ![[Takeshima_Tsutako_cover.webp\|60]] **[[Takeshima_Tsutako\|Цутако Такэсима]]**  | Rina Satō                                                 |
 
 ## Связанные тайтлы
 

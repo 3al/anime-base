@@ -1,5 +1,5 @@
 **Тема-нейтральные скиллы** (модуль `skills-common`):
-- Установлено в `.claude/skills/`: `fix-links`, `audit-note`, `new-note`, `rename-note`, `verify`, `expand-stub`, `add-note-kind`, `harness-agnostic-audit`, `vision-gate-audit`.
+- Установлено в `.claude/skills/`: `fix-links`, `audit-note`, `new-note`, `rename-note`, `verify`, `expand-stub`, `add-note-kind`, `harness-agnostic-audit`, `vision-gate-audit`, `audit-by-creator`.
 - Каждый скилл управляется фреймворком через `.managed` маркер. Пользовательские правки в SKILL.md = переход в статус `unmanaged` (повторный `/init-vault` не перезаписывает).
 - `/add-note-kind` создаёт пользовательский `/new-<kind>` скилл без `.managed` маркера — он живёт независимо от фреймворка, переустановки `skills-common` его не трогают.
 

@@ -17,7 +17,7 @@ aliases:
   - Rosa Chinensis en bouton
   - Rosa Chinensis
 created: 2026-05-24
-updated: 2026-05-31
+updated: 2026-06-02
 name_romaji: Ogasawara Sachiko
 name_native: 小笠原祥子
 featured_in:
@@ -25,6 +25,7 @@ featured_in:
   - Maria-sama_ga_Miteru_Haru
   - Maria-sama_ga_Miteru_3rd
   - Maria-sama_ga_Miteru_4th
+  - Maria-sama_ga_Miteru_(manga)
 character_role: deuteragonist
 gender: female
 status: alive
@@ -80,6 +81,7 @@ personal_score: null
 - ![[Maria-sama_ga_Miteru_Haru_cover.jpg|80]] **[[Maria-sama_ga_Miteru_Haru|Maria-sama ga Miteru: Haru]]** — 2004, второй сезон; принимает титул Rosa Chinensis после выпуска Ёко.
 - ![[Maria-sama_ga_Miteru_3rd_cover.jpg|80]] **[[Maria-sama_ga_Miteru_3rd|Maria-sama ga Miteru 3rd]]** — 2006, третий сезон (OVA); Rosa Chinensis, арки с андрофобией и растущей близостью с Юми.
 - ![[Maria-sama_ga_Miteru_4th_cover.jpg|80]] **[[Maria-sama_ga_Miteru_4th|Maria-sama ga Miteru 4th]]** — 2009, четвёртый сезон; grande soeur Юми, борется с ревностью к кандидаткам и страхом перемен, поручая Юми самой найти младшую сестру.
+- ![[Maria-sama_ga_Miteru_(manga)_cover.jpg|80]] **[[Maria-sama_ga_Miteru_(manga)|Maria-sama ga Miteru (манга)]]** — 2003–2007, манга-адаптация Сатору Нагасавы; Rosa Chinensis en bouton, старшая сестра Юми.
 
 ## Связи
 
