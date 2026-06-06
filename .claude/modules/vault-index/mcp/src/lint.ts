@@ -33,6 +33,9 @@ export interface LintRuleConfig {
   userOnlySections?: string[];
   userOnlyStubWhitelist?: string[];
   proseScript?: string;
+  toolingVocabFieldNames?: string[];     // frontmatter field-names that leak into prose
+  toolingVocabStatePhrases?: string[];   // regex sources for vault-state phrases (language-specific)
+  toolingVocabFlagSkillCommands?: boolean; // flag /slash-command tokens in prose
 }
 
 export interface LintOptions {
@@ -127,6 +130,18 @@ export function lintNote(
   }
 
   // --- Tags ---
+  // Empty tags (§24 backstop): a deterministic, consistent signal so the audit
+  // judge no longer penalizes an empty `tags` on one card and misses it on
+  // another. WARN, not ERROR — does not gate structural_green (tags are not a
+  // hard requirement), but both audit axes consume the structural stream uniformly.
+  if (record.tags.length === 0) {
+    issues.push({
+      severity: 'WARN',
+      class: 'structural',
+      code: 'empty-tags',
+      message: 'Frontmatter has no tags',
+    });
+  }
   if (record.tags.length > 8) {
     issues.push({
       severity: 'ERROR',
@@ -247,7 +262,17 @@ export function lintNote(
       contentCfg.userOnly = { sections: rules.userOnlySections, stubWhitelist: rules.userOnlyStubWhitelist };
     }
     if (rules.proseScript) contentCfg.proseScript = rules.proseScript;
-    if (contentCfg.userOnly || contentCfg.proseScript) {
+    const hasFieldNames = !!rules.toolingVocabFieldNames && rules.toolingVocabFieldNames.length > 0;
+    const hasStatePhrases = !!rules.toolingVocabStatePhrases && rules.toolingVocabStatePhrases.length > 0;
+    if (hasFieldNames || hasStatePhrases || rules.toolingVocabFlagSkillCommands) {
+      contentCfg.toolingVocab = {
+        fieldNames: rules.toolingVocabFieldNames ?? [],
+        statePhrases: rules.toolingVocabStatePhrases ?? [],
+        flagSkillCommands: rules.toolingVocabFlagSkillCommands,
+        stubWhitelist: rules.userOnlyStubWhitelist,
+      };
+    }
+    if (contentCfg.userOnly || contentCfg.proseScript || contentCfg.toolingVocab) {
       issues.push(...lintContent(record, opts.body, contentCfg));
     }
   }

@@ -389,3 +389,21 @@ tags:
 **ЯВНОЕ ограничение (требование пользователя):** **НЕ вводить дополнительную ось оценок** и не новый score-dimension. Остаётся `audit_type: content`, findings-anchored score (`ledger-protocol §4`). Усиливается **процедура судьи** (managed audit-note framing: смысловой фактчек = ядро, не «если останется время»), а **не** схема леджера. Холистическое «написано стилистически слабо» по-прежнему выражается дискретными findings, отдельной оценки качества прозы не заводим.
 
 **Адресат:** мейнтейнер (managed `audit-note` — поднять смысловой фактчек в ядро `§4.2`). Vault-side: `Audit_checklist.md` type-conditional `character`/`anime`/`person` — добавлен пункт «фактчек описаний связей, не только существования» (сделано). Память: [[feedback_audit_checks_consistency_not_presence]].
+
+## 25. Предложение мейнтейнеру: внешние ссылки — проверка liveness + адекватности (ни одна ось не делает)
+
+**Контекст (2026-06-06, разбор `Marlborough_Luculia` после первого `/audit-card`).** Ни `audit-by-creator`, ни `audit-note` не проверяют внешние URL (`## Ссылки` + frontmatter `mal_url`/`anilist_url`): жив ли (HTTP-код) и ведёт ли на того субъекта (id-матч + страница про него). `audit-checklist §3.3` — только внутренние WikiLinks. Слепая зона; на Marlborough ссылки оказались валидны, но проверки не было.
+
+**Разведение (по [[feedback_separate_deterministic_from_heuristic_checks]]).** Liveness (HTTP-код) — детерминированно, НО сетезависимо/флапает (Fandom 403 даже валидному fetch) → **НЕ гейтить `structural_green`**; разместить как opt-in network-шаг `audit-note` или отдельный tool `vault_link_liveness`. Адекватность («та ли страница») — эвристика (fetch+суждение), шаг `§4.2`-класса.
+
+**Адресат:** мейнтейнер (managed `audit-note`) + vault-side checklist. Полное ТЗ: `D:\tmp\TZ_link_liveness_and_tooling_vocab.md`.
+
+## 26. Предложение мейнтейнеру: `tooling-vocab-in-prose` — heuristic lint против техшума в контенте
+
+**Контекст (2026-06-06, сквозная проблема волта, вскрыта на `Marlborough_Luculia` — 5+ вхождений).** Слабые модели протаскивают внутренний bookkeeping в читательскую прозу: имена полей («в `featured_in[]` зафиксирован только…», «попадёт в `voice_actors[]`»), состояние волта («карточк* в волте нет», «plain-text»), имена скиллов («Полировка — `/audit-review`»). Точечная ловля не масштабируется; `mixed-script-prose` ловит латиницу побочно, но не кириллические bookkeeping-фразы.
+
+**Предложение.** Новое HEURISTIC-правило `tooling-vocab-in-prose` (поток `heuristic`, opt-in, on-demand чтение тела — как `mixed-script-prose`): конфиг-паттерны из манифеста (field-names, skill-command `/[a-z-]+`, vault-state regex), маскирование FP (код/wikilinks/frontmatter/USER-ONLY-стаб-whitelist), WARN отдельным потоком, НЕ гейтит structural-green. Бэкстоп к `audit-note §4.0/§4.3` → self-heal сквозного шума.
+
+**Vault-side уже сделано (эта сессия):** `/new-character` стаб `## Личный отзыв` обезвкушен (убраны `в Obsidian`/`/audit-review`, whitelist-анкор «Заполните личный отзыв» сохранён); добавлена конвенция «связанные тайтлы без карточек → plain-text без bookkeeping-приписок». Правило — детерминированный страж против регресса.
+
+**Адресат:** мейнтейнер (движок `vault_lint`). Тема-нейтральность: паттерны из манифеста. Полное ТЗ: `D:\tmp\TZ_link_liveness_and_tooling_vocab.md`.

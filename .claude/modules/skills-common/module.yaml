@@ -1,11 +1,41 @@
 name: skills-common
-version: 0.8.0
+version: 0.9.1
 description: |
   Тема-нейтральные скиллы, общие для любого волта: fix-links, audit-note,
   new-note, rename-note, verify, expand-stub, add-note-kind,
   harness-agnostic-audit, vision-gate-audit, audit-by-creator.
   Устанавливаются в .claude/skills/ под `.managed` маркерами — фреймворк может
   синхронизировать обновления, не затирая пользовательские правки.
+
+  v0.9.1 (фидбек эксплуатации Anime_Base — 2 фикса; ledger-контракт остаётся v:1):
+  - **empty-tags cross-axis fix.** v0.9.0 audit-note (Шаг 1) велел content-оси
+    «консистентно штрафовать empty-tags» — но empty-tags это structural-класс,
+    его уже скорит structural-ось (audit-by-creator) → cross-axis double-jeopardy
+    за один root-cause. Вердикт: **structural-only**. audit-note Шаг 1 переписан
+    (разрешить как улучшение, в content-score НЕ включать). Новый принцип
+    `ledger-protocol §4.2` (cross-axis: дефект скорится один раз на оси своего
+    класса) — durable-носитель для обеих осей.
+  - **§21 prose-bypass конвенция.** Требование, введённое в ПРОЗУ /new-* скилла
+    (не в spec-requirements блок), обходит vault_spec_drift + reminder (оба
+    анкерятся на блоке) → changelog молча расходится (инцидент titles_noncarded_
+    entries, new-character). Детерминированно не ловится. Фикс — конвенция «блок —
+    единственный носитель требования; проза поясняет, не объявляет»: codified в
+    `ledger-protocol §4.1` + add-note-kind (шаблон «Контракт требований» в каждом
+    генерируемом /new-<kind> + инструкция {{spec_requirements_list}}). Опциональный
+    эвристик-скан прозы — отложен в backlog (нечёткий, конвенция первична).
+
+  v0.9.0 (заказ Anime_Base §25 + §24): audit-note усилен по двум осям.
+  - §25 внешние ссылки — новый Шаг 4.6 (network, opt-in): liveness (web fetch →
+    HTTP-код; сетезависим/флапает — не штамповать мёртвой по одному ответу, НЕ
+    гейтит structural_green, НЕ пишется в леджер) + адекватность (id в URL совпадает
+    с frontmatter, страница про того субъекта — §4.2-эвристика, несовпадение =
+    контентный дефект). Новый флаг `--no-network` для явного offline-прогона.
+  - §24 prose-clarity — Шаг 4.5 поднят в обязательный форсинг-пасс (мутные/
+    невнятные формулировки, которые однопроходный судья пропускает; «не блокер»,
+    но durable-фикс = чеклист-форсинг). Без новой оси, остаётся audit_type: content.
+  - Шаг 1 прокидывает новые manifest-ключи `tooling_vocab.*` в vault_lint
+    (`tooling-vocab-in-prose`); `empty-tags` (structural WARN) разрешается на Шаге 3
+    и консистентно штрафуется в оценке.
 
   v0.8.0 (audit lint-backstops P2, Roadmap §22–§24): managed-скиллы используют
   новые vault-index lint-бэкстопы и ужесточают процедуру судьи.

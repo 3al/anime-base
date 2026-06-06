@@ -1,8 +1,24 @@
 name: vault-index
-version: 0.7.1
+version: 0.8.0
 description: |
   Структурный MCP-сервер волта: индекс frontmatter, граф ссылок, таблицы,
   инвентарь вложений, lint, query. Подробности — SYSTEM/MCP_Server_Design.md.
+
+  v0.8.0 (заказ Anime_Base §26 + §24-backstop): два lint-правила.
+  - `tooling-vocab-in-prose` (HEURISTIC, opt-in, on-demand тело, src/content-lint.ts):
+    ловит внутренний bookkeeping волта, протащенный слабой моделью в читательскую
+    прозу — имена frontmatter-полей (`featured_in`), vault-state фразы («карточек
+    нет»), имена скиллов (`/audit-review`). `mixed-script-prose` ловил латиницу как
+    побочку, но не кириллические state-фразы. Theme-neutral: field_names/state_phrases
+    (regex-источники)/flag_skill_commands — caller-параметры из `tooling_vocab`
+    манифеста. FP-маскирование переиспользует `maskExempt` (код-спаны/wikilinks/
+    callout/bold/URL) + USER-ONLY-стаб-whitelist. WARN, отдельный heuristic-поток,
+    НЕ гейтит `structural_green`. Бэкстоп к audit-note §4.0/§4.3.
+  - `empty-tags` (STRUCTURAL, always-on, src/lint.ts): пустой `tags` → WARN. §24-
+    бэкстоп — детерминированный консистентный сигнал вместо «тщательности судьи»
+    (судья штрафовал пустой tags на одной карточке, пропускал на другой). WARN,
+    не ERROR → не гейтит `structural_green`, но обе аудит-оси видят его одинаково.
+  Юнит-тесты node:test 27→38 (pos/neg на оба правила). Tool-count без изменений (16).
 
   v0.7.1 (приёмка Anime_Base — FP-hardening + perf): (F2) `mixed-script-prose`
   `maskExempt` маскирует Obsidian callout-маркеры `[!type]` (без этого слово-тип

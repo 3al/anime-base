@@ -14,7 +14,7 @@ aliases:
   - Навсикая из Долины ветров
   - Kaze no Tani no Nausicaä
 created: 2026-05-23
-updated: 2026-06-05
+updated: 2026-06-06
 title_romaji: Kaze no Tani no Nausicaa
 title_original: 風の谷のナウシカ
 title_english: Nausicaä of the Valley of the Wind
@@ -85,12 +85,12 @@ images:
 | ------------------------------------------------------------ | ------------------ |
 | ![[Nausicaa_cover.png\|60]] **[[Nausicaa\|Навсикая]]**       | Sumi Shimamoto     |
 | ![[Kushana_cover.jpg\|60]] **[[Kushana\|Кушана]]**           | Yoshiko Sakakibara |
-| ![[Yupa_Miralda_cover.webp\|60]] **[[Yupa_Miralda\|Юпа]]**     | Gorou Naya         |
-| **Асбель**                                                   | Yōji Matsuda       |
-| **Куротова**                                                 | Iemasa Kayumi      |
+| ![[Yupa_Miralda_cover.webp\|60]] **[[Yupa_Miralda\|Юпа]]**   | Gorou Naya         |
+| **[[Asbel\|Асбель]]**                                        | Yōji Matsuda       |
+| **[[Kurotowa\|Куротова]]**                                     | Iemasa Kayumi      |
 | **Мито**                                                     | Ichirō Nagai       |
 | **Тето**                                                     | Rihoko Yoshida     |
-| **Ластэль**                                                  | Miina Tominaga     |
+| **[[Lastelle\|Ластэль]]**                                    | Miina Tominaga     |
 | **Оба-ба**                                                   | Hisako Kyōda       |
 | ![[King_Jihl_cover.jpeg\|60]] **[[King_Jihl\|Король Джил]]** | Mahito Tsujimura   |
 

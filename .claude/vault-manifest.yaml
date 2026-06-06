@@ -121,6 +121,16 @@ name_surface_pairs:
 # не гейтит structural_green; остаточные латинские термины (petite/sœur/bouton) — verify-by-eye.
 prose_script: cyrillic
 
+# tooling-vocab-in-prose (HEURISTIC, opt-in, vault-index 0.8.0 / §26): техшум — имена
+# frontmatter-полей, vault-state фразы, имена скиллов — протёкшие в читательскую прозу.
+# Бэкстоп к audit-note §4.0/§4.3. Heuristic-поток, не гейтит structural_green; маскирование
+# переиспользует user_only_stub_whitelist (легитимный /audit-review в засеянном стабе щадится).
+# state_phrases — regex-источники (компилируются gi); \w ASCII-only → для кириллицы [а-яё].
+tooling_vocab:
+  field_names: [featured_in, voice_actors, images.cover, co_authored]
+  state_phrases: ['карточк[а-яё]* .{0,12}нет', 'в волте', 'plain-text', 'зафиксирован[а-яё]* только']
+  flag_skill_commands: true
+
 # Per-module configuration overrides (advanced).
 config:
   vault-semantic:

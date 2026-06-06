@@ -13,9 +13,17 @@ export interface UserOnlyConfig {
   stubWhitelist?: string[];  // canonical stub phrases the creator seeds
 }
 
+export interface ToolingVocabConfig {
+  fieldNames: string[];        // frontmatter field names that leak into prose (e.g. "featured_in")
+  statePhrases: string[];      // regex SOURCES for vault-state phrases (caller-supplied, language-specific)
+  flagSkillCommands?: boolean; // flag /slash-command tokens (e.g. "/audit-review") in prose
+  stubWhitelist?: string[];    // USER-ONLY stub phrases to spare (a legit "/audit-review" in a seeded stub)
+}
+
 export interface ContentRuleConfig {
   userOnly?: UserOnlyConfig;
   proseScript?: string;      // dominant script of vault prose, e.g. "cyrillic"
+  toolingVocab?: ToolingVocabConfig;
 }
 
 /** Strip the YAML frontmatter block so body rules never scan metadata. */
@@ -45,6 +53,9 @@ export function lintContent(
   }
   if (config.proseScript) {
     issues.push(...mixedScriptProse(prose, config.proseScript));
+  }
+  if (config.toolingVocab) {
+    issues.push(...toolingVocabInProse(prose, config.toolingVocab));
   }
   return issues;
 }
@@ -198,4 +209,79 @@ function maskExempt(prose: string): string {
     // bold / italic emphasis spans (names/titles deliberately styled)
     .replace(/\*\*[^*]+\*\*/g, ' ')
     .replace(/__[^_]+__/g, ' ');
+}
+
+// --- tooling-vocab-in-prose -----------------------------------------------
+
+/**
+ * Internal vault/tooling bookkeeping leaking into reader-facing prose. Weak
+ * models drag frontmatter field-names (`featured_in[]`), vault-state phrases
+ * («карточек нет»), and skill-command names (`/audit-review`) into card prose;
+ * `mixed-script-prose` only catches the Latin spill as a side effect, never the
+ * Cyrillic state phrases. Theme-neutral: every token/pattern is caller-supplied
+ * from the manifest (`tooling_vocab`), nothing about anime or any theme is baked
+ * in. Heuristic WARN — a backstop to the manual noise pass (audit-note §4.0/§4.3),
+ * not a structural gate; verify by perception, do not rubber-stamp.
+ *
+ * FP control mirrors mixed-script-prose: `maskExempt` removes code spans,
+ * wikilinks, callout markers, bold and URLs first (a field name inside a
+ * `code`-span or `[[link]]` is legitimate), then the USER-ONLY stub whitelist
+ * spares a canonical seeded stub that may legitimately name a skill.
+ */
+function toolingVocabInProse(prose: string, cfg: ToolingVocabConfig): LintIssue[] {
+  let scan = maskExempt(prose);
+  // Spare whitelisted canonical stub phrases (e.g. a seeded `## Личный отзыв`
+  // stub that legitimately references a skill) by removing them before the scan.
+  for (const w of cfg.stubWhitelist ?? []) {
+    if (w.trim() === '') continue;
+    scan = scan.split(w).join(' ');
+  }
+
+  const flagged = new Set<string>();
+
+  // (a) frontmatter field-names mentioned in prose. Bounded by non-word chars so
+  // a field is only flagged as a standalone token (dots in `images.cover` are
+  // escaped). `_` is a word char, so multi-part names like `featured_in` match whole.
+  for (const f of cfg.fieldNames) {
+    if (f.trim() === '') continue;
+    const re = new RegExp(`(?<![\\w.])${escapeRegex(f)}(?![\\w])`);
+    if (re.test(scan)) flagged.add(f);
+  }
+
+  // (b) skill-command tokens like `/audit-review` (opt-in toggle).
+  if (cfg.flagSkillCommands) {
+    for (const m of scan.matchAll(/(?<![^\s(>"'`])\/[a-z][a-z-]{2,}/g)) {
+      flagged.add(m[0]);
+    }
+  }
+
+  // (c) vault-state phrases — caller-supplied regex SOURCES, compiled
+  // case-insensitively. Cyrillic literals work as-is; `\w` stays ASCII-only, so
+  // manifest authors use explicit classes (e.g. `[а-яё]`) for Cyrillic word runs.
+  // A malformed pattern is skipped, never throws.
+  for (const src of cfg.statePhrases) {
+    if (src.trim() === '') continue;
+    let re: RegExp;
+    try {
+      re = new RegExp(src, 'gi');
+    } catch {
+      continue;
+    }
+    const hits = scan.match(re);
+    if (hits) for (const h of hits) flagged.add(h.replace(/\s+/g, ' ').trim());
+  }
+
+  if (flagged.size === 0) return [];
+  const sample = [...flagged].slice(0, 12);
+  return [{
+    severity: 'WARN',
+    class: 'heuristic',
+    code: 'tooling-vocab-in-prose',
+    message: `Internal vault/tooling vocabulary leaked into prose: ${sample.join(', ')}${flagged.size > sample.length ? ` (+${flagged.size - sample.length} more)` : ''}`,
+  }];
+}
+
+/** Escape a literal string for use inside a RegExp (field names carry dots). */
+function escapeRegex(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

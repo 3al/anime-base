@@ -91,9 +91,9 @@ images:
 | ![[Hodgins_Claudia_cover.jpg\|60]] **[[Hodgins_Claudia\|Клаудия Ходжинс]]**                     | Takehito Koyasu  |
 | ![[Dietfried_Bougainvillea_cover.jpg\|60]] **[[Dietfried_Bougainvillea\|Дитфрид Бугенвиллея]]** | Hidenobu Kiuchi  |
 | ![[Cattleya_Baudelaire_cover.jpg\|60]] **[[Cattleya_Baudelaire\|Каттлея Бодлер]]**              | Aya Endou        |
-| **Бенедикт Блю**                                                                                | Kouki Uchiyama   |
+| **[[Benedict_Blue\|Бенедикт Блю]]**                                                                           | Kouki Uchiyama   |
 | **Эрика Браун**                                                                                 | Minori Chihara   |
-| ![[Iris_Cannary_cover.jpg\|60]] **[[Iris_Cannary\|Айрис Каннари]]** | Haruka Tomatsu   |
+| ![[Iris_Cannary_cover.jpg\|60]] **[[Iris_Cannary\|Айрис Каннари]]**                             | Haruka Tomatsu   |
 | ![[Marlborough_Luculia_cover.webp\|60]] **[[Marlborough_Luculia\|Лукулия Марльборо]]**          | Azusa Tadokoro   |
 | **Леон Стефанотис**                                                                             | Yuuto Uemura     |
 | ![[Magnolia_Ann_cover.webp\|60]] **[[Magnolia_Ann\|Анна Магнолия]]**                            | Sumire Morohoshi |

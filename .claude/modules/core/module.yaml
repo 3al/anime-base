@@ -1,10 +1,18 @@
 name: core
-version: 0.8.2
+version: 0.8.3
 description: |
   Core module — обязательная база для любого волта в bootstrap-фреймворке.
   Управляет: outer managed-блоками в CLAUDE.md и .gitignore, governance-шаблонами
   в SYSTEM/ (skip-if-exists), vision-gate probe-ассетом, маркером .installed.
   Sub-block helpers через lib/managed_block.mjs.
+
+  v0.8.3 (заказ Anime_Base §25 + §24 — template-only, forward-only для НОВЫХ волтов):
+  `templates/SYSTEM/Audit_checklist.md` — §3.3 дополнен внешними URL (liveness +
+  адекватность, network/opt-in: ТЗ называл §3.3 слепой зоной — покрывал только
+  внутренние WikiLinks); §4.5 «Качество текста» поднят в обязательный prose-clarity
+  форсинг-пасс (мутные формулировки + вынос внутреннего bookkeeping из прозы, бэкстоп
+  к heuristic `tooling-vocab-in-prose`). Авторитетный носитель для уже-развёрнутых
+  волтов — managed `/audit-note` (skills-common 0.9.0); seed-чеклист уступает скиллу.
 
   v0.8.2: +lib/spec_requirements.mjs — shared детектор spec-requirements блока
   в /new-*/SKILL.md (extractRequirementsBlock, editTouchedBlock, buildReminderText)

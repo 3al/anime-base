@@ -264,6 +264,92 @@ test('mixed-script-prose: homoglyph typo flagged even if part-cyrillic (F2)', ()
   assert.equal(hit.length, 1);
 });
 
+// --- tooling-vocab-in-prose (heuristic, opt-in, content) ------------------
+
+const TV_CFG = {
+  toolingVocab: {
+    fieldNames: ['featured_in', 'voice_actors', 'images.cover'],
+    statePhrases: ['в волте', 'карточк[а-яё]* .{0,12}нет'],
+    flagSkillCommands: true,
+    stubWhitelist: ['Заполняется пользователем (см. /audit-review)'],
+  },
+};
+
+test('tooling-vocab-in-prose: frontmatter field-name leaked into prose', () => {
+  const rec = makeRecord();
+  const body = 'В featured_in зафиксирован только один тайтл, а в voice_actors пусто.';
+  const hit = byCode(lintContent(rec, body, TV_CFG), 'tooling-vocab-in-prose');
+  assert.equal(hit.length, 1);
+  assert.equal(hit[0].class, 'heuristic');
+  assert.match(hit[0].message, /featured_in/);
+});
+
+test('tooling-vocab-in-prose: vault-state phrase flagged', () => {
+  const rec = makeRecord();
+  const body = 'Похожих карточек в волте пока нет.';
+  assert.equal(byCode(lintContent(rec, body, TV_CFG), 'tooling-vocab-in-prose').length, 1);
+});
+
+test('tooling-vocab-in-prose: skill-command token flagged', () => {
+  const rec = makeRecord();
+  const body = 'Финальная полировка делается через /audit-review вручную.';
+  const hit = byCode(lintContent(rec, body, TV_CFG), 'tooling-vocab-in-prose');
+  assert.equal(hit.length, 1);
+  assert.match(hit[0].message, /\/audit-review/);
+});
+
+test('tooling-vocab-in-prose: field name in code span / wikilink is masked', () => {
+  const rec = makeRecord();
+  const body = 'Поле `featured_in` и ссылка [[featured_in]] не считаются техшумом.';
+  assert.equal(byCode(lintContent(rec, body, { toolingVocab: { fieldNames: ['featured_in'], statePhrases: [] } }), 'tooling-vocab-in-prose').length, 0);
+});
+
+test('tooling-vocab-in-prose: whitelisted stub phrase spares its skill ref', () => {
+  const rec = makeRecord();
+  const body = '## Личный отзыв\n\nЗаполняется пользователем (см. /audit-review).';
+  assert.equal(byCode(lintContent(rec, body, TV_CFG), 'tooling-vocab-in-prose').length, 0);
+});
+
+test('tooling-vocab-in-prose: clean reader prose → 0', () => {
+  const rec = makeRecord();
+  const body = 'Этот персонаж — генерал армии и старый друг героини, погибший в финале.';
+  assert.equal(byCode(lintContent(rec, body, TV_CFG), 'tooling-vocab-in-prose').length, 0);
+});
+
+test('tooling-vocab-in-prose: off without config (opt-in)', () => {
+  const rec = makeRecord();
+  const body = 'В featured_in только один тайтл, карточек в волте нет, см. /audit-review.';
+  assert.equal(byCode(lintContent(rec, body, {}), 'tooling-vocab-in-prose').length, 0);
+});
+
+test('tooling-vocab-in-prose: malformed state-phrase regex is skipped, not thrown', () => {
+  const rec = makeRecord();
+  const body = 'Обычная проза без техшума.';
+  assert.doesNotThrow(() =>
+    lintContent(rec, body, { toolingVocab: { fieldNames: [], statePhrases: ['('] } }));
+});
+
+// --- empty-tags (structural, §24 backstop) --------------------------------
+
+test('empty-tags: a note with no tags is flagged WARN structural', () => {
+  const rec = makeRecord({ tags: [] });
+  const hit = byCode(lintNote(rec, makeIndex()), 'empty-tags');
+  assert.equal(hit.length, 1);
+  assert.equal(hit[0].class, 'structural');
+  assert.equal(hit[0].severity, 'WARN');
+});
+
+test('empty-tags: a note with tags is clean', () => {
+  const rec = makeRecord({ tags: ['mushroom'] });
+  assert.equal(byCode(lintNote(rec, makeIndex()), 'empty-tags').length, 0);
+});
+
+test('empty-tags: WARN does not break structural_green semantics (not an ERROR)', () => {
+  const rec = makeRecord({ tags: [] });
+  const errs = lintNote(rec, makeIndex()).filter((i) => i.class === 'structural' && i.severity === 'ERROR' && i.code === 'empty-tags');
+  assert.equal(errs.length, 0);
+});
+
 // --- class tagging invariant ----------------------------------------------
 
 test('every issue carries a structural|heuristic class', () => {

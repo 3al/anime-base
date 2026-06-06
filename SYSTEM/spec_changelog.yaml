@@ -65,6 +65,15 @@ kinds:
     - requirement: personal_review_user_only
       introduced: 2026-06-05
       kind_of: section
+    # 2026-06-06: ## Тайтлы — non-carded работы (вкл. первоисточник ЛН/манга, если персонаж
+    # в нём появляется) перечисляются per-entry plain-bold bullet'ами в общем списке тайтлов:
+    # не лумпленным прозовым абзацем, не блоквоутом, и не отсутствуют (## В манге/ранобэ под
+    # Биографией держит различия, но НЕ заменяет запись в списке произведений). Формализация
+    # this session (раньше спека молчала про не-карточные тайтлы → модели импровизировали
+    # блоквоут/лумпинг/пропуск). Пре-06-06 карточки → SCHEMA_DRIFT (vault-долг, не вина автора).
+    - requirement: titles_noncarded_entries
+      introduced: 2026-06-06
+      kind_of: format
   person:
     # B-012 (2026-06-01): кросс-kind attachment ext-правило (см. anime::cover_ext_matches_content).
     - requirement: cover_ext_matches_content

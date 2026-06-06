@@ -28,7 +28,7 @@ interface LintFileResult {
 export function registerLintTool(server: McpServer, index: VaultIndex): void {
   server.tool(
     'vault_lint',
-    'Validate frontmatter, tags, links, tables, and cover refs. Replaces lint-vault.sh. Issues are tagged structural (deterministic, ~0 FP — the green-by-structure signal) or heuristic (fuzzy, opt-in). All theme-specific policy (kind-pairs, link cap, cover field, name-surface pairs, required tags, USER-ONLY sections, prose script) is passed in from vault-manifest.yaml, never hardcoded. Heuristic content rules (user-only-fabricated, mixed-script-prose) read each file on-demand and run ONLY when their config is supplied.',
+    'Validate frontmatter, tags, links, tables, and cover refs. Replaces lint-vault.sh. Issues are tagged structural (deterministic, ~0 FP — the green-by-structure signal) or heuristic (fuzzy, opt-in). All theme-specific policy (kind-pairs, link cap, cover field, name-surface pairs, required tags, USER-ONLY sections, prose script, tooling vocabulary) is passed in from vault-manifest.yaml, never hardcoded. Heuristic content rules (user-only-fabricated, mixed-script-prose, tooling-vocab-in-prose) read each file on-demand and run ONLY when their config is supplied.',
     {
       target: z.string().optional().describe('File name, relative path, or folder. Omit for entire vault.'),
       showAll: z.boolean().optional().describe('Return all files (true) or only files with issues (false, default).'),
@@ -72,6 +72,18 @@ export function registerLintTool(server: McpServer, index: VaultIndex): void {
         .string()
         .optional()
         .describe('HEURISTIC opt-in (vault-manifest::prose_script): dominant script of vault prose, e.g. "cyrillic". Enables mixed-script-prose (foreign-script intrusions). Absent → rule stays silent. Triggers on-demand file reads.'),
+      toolingVocabFieldNames: z
+        .array(z.string())
+        .optional()
+        .describe('HEURISTIC opt-in (vault-manifest::tooling_vocab.field_names): frontmatter field-names (e.g. "featured_in", "images.cover") that leak into reader prose. Flagged as tooling-vocab-in-prose. Triggers on-demand file reads.'),
+      toolingVocabStatePhrases: z
+        .array(z.string())
+        .optional()
+        .describe('HEURISTIC opt-in (vault-manifest::tooling_vocab.state_phrases): regex SOURCES for vault-state phrases (language-specific, e.g. "в волте"). Compiled case-insensitively; `\\w` is ASCII-only so use explicit classes like [а-яё] for Cyrillic. Malformed pattern skipped.'),
+      toolingVocabFlagSkillCommands: z
+        .boolean()
+        .optional()
+        .describe('HEURISTIC opt-in (vault-manifest::tooling_vocab.flag_skill_commands): flag /slash-command tokens (e.g. "/audit-review") in prose as tooling-vocab-in-prose.'),
     },
     async (params) => {
       await index.ensureFresh();
@@ -99,12 +111,18 @@ export function registerLintTool(server: McpServer, index: VaultIndex): void {
         userOnlySections: params.userOnlySections,
         userOnlyStubWhitelist: params.userOnlyStubWhitelist,
         proseScript: params.proseScript,
+        toolingVocabFieldNames: params.toolingVocabFieldNames,
+        toolingVocabStatePhrases: params.toolingVocabStatePhrases,
+        toolingVocabFlagSkillCommands: params.toolingVocabFlagSkillCommands,
       };
       // Heuristic content rules need the raw body. Read on-demand only when one
       // of them is actually configured — otherwise lint stays index-only.
       const heuristicActive =
         (params.userOnlySections != null && params.userOnlySections.length > 0) ||
-        (params.proseScript != null && params.proseScript !== '');
+        (params.proseScript != null && params.proseScript !== '') ||
+        (params.toolingVocabFieldNames != null && params.toolingVocabFieldNames.length > 0) ||
+        (params.toolingVocabStatePhrases != null && params.toolingVocabStatePhrases.length > 0) ||
+        params.toolingVocabFlagSkillCommands === true;
 
       const records = getTargetRecords(index, params.target);
       const isSingleFile = records.length === 1;
