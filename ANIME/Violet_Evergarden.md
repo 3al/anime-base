@@ -12,7 +12,7 @@ aliases:
   - Вайолет Эвергарден
   - Violet Evergarden
 created: 2026-05-26
-updated: 2026-06-04
+updated: 2026-06-06
 title_romaji: Violet Evergarden
 title_original: ヴァイオレット・エヴァーガーデン
 format: tv
@@ -84,26 +84,26 @@ images:
 
 ## Персонажи
 
-| Персонаж | Сэйю |
-| --- | --- |
-| ![[Evergarden_Violet_cover.webp\|60]] **[[Evergarden_Violet\|Вайолет Эвергарден]]**         | Yui Ishikawa          |
-| ![[Gilbert_Bougainvillea_cover.jpg\|60]] **[[Gilbert_Bougainvillea\|Гилберт Бугенвиллея]]** | Daisuke Namikawa      |
-| ![[Hodgins_Claudia_cover.jpg\|60]] **[[Hodgins_Claudia\|Клаудия Ходжинс]]**   | Takehito Koyasu |
-| **Дитфрид Бугенвиллея**                                                                     | Hidenobu Kiuchi       |
-| ![[Cattleya_Baudelaire_cover.jpg\|60]] **[[Cattleya_Baudelaire\|Каттлея Бодлер]]**          | Aya Endou             |
-| **Бенедикт Блю**                                                                            | Kouki Uchiyama        |
-| **Эрика Браун**                                                                             | Minori Chihara        |
-| **Айрис Каннари**                                                                           | Haruka Tomatsu        |
-| ![[Marlborough_Luculia_cover.webp\|60]] **[[Marlborough_Luculia\|Лукулия Марльборо]]** | Azusa Tadokoro  |
-| **Леон Стефанотис**                                                                         | Yuuto Uemura          |
-| ![[Magnolia_Ann_cover.webp\|60]] **[[Magnolia_Ann\|Анна Магнолия]]**                        | Sumire Morohoshi      |
-| ![[Magnolia_Clara_cover.webp\|60]] **[[Magnolia_Clara\|Клара Магнолия]]**                   | Ayako Kawasumi        |
-| **Шарлотта Абельфрейя Дроссель**                                                            | Megumi Nakajima       |
-| **Дамиан Балдур Флюгель**                                                                   | Kenjirou Tsuda        |
-| ![[Oscar_Webster_cover.webp\|60]] **[[Oscar_Webster\|Оскар Вебстер]]**                      | Satoshi Taki          |
-| **Оливия Вебстер**                                                                          | Sayaka Senbongi       |
-| **Расселл Бейли**                                                                           | Kengo Tsujii          |
-| **Альберта**                                                                                | Mami Koyama           |
+| Персонаж                                                                                        | Сэйю             |
+| ----------------------------------------------------------------------------------------------- | ---------------- |
+| ![[Evergarden_Violet_cover.webp\|60]] **[[Evergarden_Violet\|Вайолет Эвергарден]]**             | Yui Ishikawa     |
+| ![[Gilbert_Bougainvillea_cover.jpg\|60]] **[[Gilbert_Bougainvillea\|Гилберт Бугенвиллея]]**     | Daisuke Namikawa |
+| ![[Hodgins_Claudia_cover.jpg\|60]] **[[Hodgins_Claudia\|Клаудия Ходжинс]]**                     | Takehito Koyasu  |
+| ![[Dietfried_Bougainvillea_cover.jpg\|60]] **[[Dietfried_Bougainvillea\|Дитфрид Бугенвиллея]]** | Hidenobu Kiuchi  |
+| ![[Cattleya_Baudelaire_cover.jpg\|60]] **[[Cattleya_Baudelaire\|Каттлея Бодлер]]**              | Aya Endou        |
+| **Бенедикт Блю**                                                                                | Kouki Uchiyama   |
+| **Эрика Браун**                                                                                 | Minori Chihara   |
+| ![[Iris_Cannary_cover.jpg\|60]] **[[Iris_Cannary\|Айрис Каннари]]** | Haruka Tomatsu   |
+| ![[Marlborough_Luculia_cover.webp\|60]] **[[Marlborough_Luculia\|Лукулия Марльборо]]**          | Azusa Tadokoro   |
+| **Леон Стефанотис**                                                                             | Yuuto Uemura     |
+| ![[Magnolia_Ann_cover.webp\|60]] **[[Magnolia_Ann\|Анна Магнолия]]**                            | Sumire Morohoshi |
+| ![[Magnolia_Clara_cover.webp\|60]] **[[Magnolia_Clara\|Клара Магнолия]]**                       | Ayako Kawasumi   |
+| **Шарлотта Абельфрейя Дроссель**                                                                | Megumi Nakajima  |
+| **Дамиан Балдур Флюгель**                                                                       | Kenjirou Tsuda   |
+| ![[Oscar_Webster_cover.webp\|60]] **[[Oscar_Webster\|Оскар Вебстер]]**                          | Satoshi Taki     |
+| **Оливия Вебстер**                                                                              | Sayaka Senbongi  |
+| **Расселл Бейли**                                                                               | Kengo Tsujii     |
+| **Альберта**                                                                                    | Mami Koyama      |
 
 ## Студия и команда
 
