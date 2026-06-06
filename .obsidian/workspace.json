@@ -21,14 +21,14 @@
             "id": "670e34c1f0988066",
             "type": "leaf",
             "state": {
-              "type": "split-diff-view",
+              "type": "markdown",
               "state": {
-                "aFile": ".claude/skills/add-note-kind/.managed",
-                "bFile": ".claude/skills/add-note-kind/.managed",
-                "aRef": ""
+                "file": "SYSTEM/Metadata_schema.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "diff",
-              "title": "Diff: .managed  (Working Tree)"
+              "icon": "lucide-file",
+              "title": "Metadata_schema"
             }
           }
         ],
@@ -204,6 +204,7 @@
   },
   "active": "670e34c1f0988066",
   "lastOpenFiles": [
+    "STUDIOS/Topcraft.md",
     "CHARACTERS/King_Vai.md",
     "CHARACTERS/Kurotowa.md",
     "CHARACTERS/Evergarden_Violet.md",
@@ -241,7 +242,6 @@
     "attachments/Dietfried_Bougainvillea_cover.jpg",
     "MANGA/Maria-sama_ga_Miteru_(manga).md",
     "ANIME/Maria-sama_ga_Miteru_3rd.md",
-    "ANIME/Maria-sama_ga_Miteru.md",
     "attachments/Yupa_Miralda_cover.webp",
     "attachments/Cattleya_Baudelaire_cover.jpg",
     "attachments/Katteya_Bodler_cover.jpg",
