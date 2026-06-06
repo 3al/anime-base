@@ -34,6 +34,12 @@ model: sonnet
 1. **`SYSTEM/Linking_guidelines.md`** — правила линковки
 2. **`.claude/vault-manifest.yaml` → `reciprocity_pairs`** — только для под-режима `asymmetric`: список kind-пар `[sourceKind, targetKind]`, реципрокность которых держится на конвенции (а не на frontmatter-FK). Поле опциональное, дефолт `[]` (opt-in). Пусто или отсутствует → под-режим `asymmetric` пропускается.
 3. **`.claude/vault-manifest.yaml` → `link_cap`** — для под-режима `lint`: потолок исходящих WikiLinks для проверки `too-many-links`. Поле опциональное: отсутствует → дефолт 15; число → переопределить порог; `null` → отключить проверку (для формализованных волтов, где карточки by design материализуют десятки структурных gallery/cast-ссылок). Прокидывается в `vault_lint` параметром `linkCap`.
+4. **`.claude/vault-manifest.yaml` → lint-backstop ключи** — для под-режима `lint`, опциональные, прокидываются в `vault_lint` (все следуют контракту `reciprocity_pairs`: отсутствует → правило молчит):
+   - `cover_field` (default `images.cover`; `null` отключает) + `cover_embed_suffix` (default `_cover`) → `coverField`/`coverEmbedSuffix` для `cover-ref-mismatch` (structural).
+   - `name_surface_pairs` (список `{kind, basenameField}`) → `nameSurfacePairs` для `name-surface-mismatch` (structural, opt-in).
+   - `required_tags_by_kind` (список `{kind, tags}`) → `requiredTagsByKind` для `missing-required-tag` (structural, opt-in; заменяет прежний хардкод).
+   - `user_only_sections` + `user_only_stub_whitelist` → `userOnlySections`/`userOnlyStubWhitelist` для `user-only-fabricated` (**heuristic**, opt-in, on-demand чтение тела).
+   - `prose_script` (напр. `cyrillic`) → `proseScript` для `mixed-script-prose` (**heuristic**, opt-in, on-demand). Отсутствует → правило молчит.
 
 ## MCP-инструменты (vault-index)
 
@@ -46,7 +52,7 @@ model: sonnet
 | `vault_duplicate_basenames` | `{ folder? }` | `{ duplicates: [{ basename, files: [...] }], count }` |
 | `vault_orphans` | `{ folder? }` | `{ orphans: [{ file, type, domain }], count }` |
 | `vault_asymmetric_links` | `{ sourceKind, targetKind, folder? }` | `{ pairs: [{ source, sourcePath, line, target, targetPath, missingReverse }], count }` |
-| `vault_lint` | `{ target?, showAll?, reciprocityPairs?, asymmetricSeverity?, linkCap? }` | `{ files: [...], summary }` |
+| `vault_lint` | `{ target?, showAll?, reciprocityPairs?, asymmetricSeverity?, linkCap?, coverField?, coverEmbedSuffix?, nameSurfacePairs?, requiredTagsByKind?, userOnlySections?, userOnlyStubWhitelist?, proseScript? }` | `{ files: [...], summary }` (summary несёт `structural`/`heuristic` разбивку + `structural_green`) |
 
 Все tools принимают опциональный параметр `folder`. Передавать папку из `$ARGUMENTS` если указана.
 
@@ -59,6 +65,8 @@ model: sonnet
 При вызове `vault_lint` (тип `lint`, либо в составе `all`): если `reciprocity_pairs` в манифесте непуст — передать его как `reciprocityPairs`, чтобы асимметрия всплыла `asymmetric-link` прямо в lint-выводе (на стороне карточки, которой не хватает обратной ссылки). Severity — из `vault-manifest.yaml::asymmetry_severity` (дефолт `WARN`; передать как `asymmetricSeverity`, если поле задано). Это слой непрерывной видимости; фактический ремонт — под-режим `asymmetric` (шаг 4.5).
 
 Если в манифесте задан `link_cap` — передать его как `linkCap` (число → порог; `null` → отключить `too-many-links`). Поле отсутствует → параметр не передавать, движок применит дефолт 15.
+
+Прокинуть и lint-backstop ключи манифеста (см. «Источники правил» #4), если заданы: `cover_field`/`cover_embed_suffix`, `name_surface_pairs`, `required_tags_by_kind`, `user_only_sections`/`user_only_stub_whitelist`, `prose_script` → одноимённые camelCase-параметры `vault_lint`. Отсутствующие — не передавать. В выводе различать классы: `summary.structural_green` (нет structural-ERROR) — главный сигнал; `heuristic`-поток (`user-only-fabricated`, `mixed-script-prose`) — нечёткие WARN, показывать отдельно, не смешивать со structural.
 
 Если все tools вернули пустые массивы (count: 0) — сообщить «Проблем не найдено» и завершить.
 

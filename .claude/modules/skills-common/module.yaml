@@ -1,11 +1,27 @@
 name: skills-common
-version: 0.7.0
+version: 0.8.0
 description: |
   Тема-нейтральные скиллы, общие для любого волта: fix-links, audit-note,
   new-note, rename-note, verify, expand-stub, add-note-kind,
   harness-agnostic-audit, vision-gate-audit, audit-by-creator.
   Устанавливаются в .claude/skills/ под `.managed` маркерами — фреймворк может
   синхронизировать обновления, не затирая пользовательские правки.
+
+  v0.8.0 (audit lint-backstops P2, Roadmap §22–§24): managed-скиллы используют
+  новые vault-index lint-бэкстопы и ужесточают процедуру судьи.
+  - fix-links + audit-note: прокидывают новые manifest-ключи (cover_field,
+    name_surface_pairs, required_tags_by_kind, user_only_sections/
+    user_only_stub_whitelist, prose_script) в vault_lint; различают
+    structural_green vs heuristic-поток (контракт reciprocity_pairs/link_cap).
+  - audit-by-creator (§22+§23): марк-ап reverse-leg — артефакт автора (не процесс,
+    детерминируется broken-table-row); fix-scoping (чинить только артефакты
+    субъекта, чужие → VAULT-DEBT-флаг); пас консистентность/USER-ONLY-авторство/
+    разлад создатель↔governance (CREATOR↔GOVERNANCE DISCORD, conformant-автор не
+    штрафуется); дисциплина fix-time (vault_backlinks перед мутацией cover).
+  - audit-note (§24): смысловой фактчек СОДЕРЖАНИЯ поднят в ядро §4.2 (фактчек
+    описаний связей против карточек цели/источника + substance-grounding) —
+    приоритетный, не опциональный. Жёстко: НИКАКОЙ новой оси, остаётся
+    audit_type: content, усиливается процедура, не схема леджера.
 
   v0.7.0: add-note-kind генерирует managed spec-requirements блок в порождённом
   /new-<kind> (шаблон new-kind-skill.template.md, placeholder

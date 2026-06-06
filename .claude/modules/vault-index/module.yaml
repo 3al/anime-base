@@ -1,8 +1,42 @@
 name: vault-index
-version: 0.6.0
+version: 0.7.1
 description: |
-  Структурный MCP-сервер волта: индекс frontmatter, граф ссылок, lint, query.
-  Подробности — SYSTEM/MCP_Server_Design.md.
+  Структурный MCP-сервер волта: индекс frontmatter, граф ссылок, таблицы,
+  инвентарь вложений, lint, query. Подробности — SYSTEM/MCP_Server_Design.md.
+
+  v0.7.1 (приёмка Anime_Base — FP-hardening + perf): (F2) `mixed-script-prose`
+  `maskExempt` маскирует Obsidian callout-маркеры `[!type]` (без этого слово-тип
+  «warning» из спойлер-callout'ов флагалось на 43/45 карточек); capitalized-
+  щажение перенесено ПЕРЕД диакритик-ветку → макрон-имена (Itō/Satō/Yōji) не
+  ложно-флагаются, homoglyph-токены (`idол`) ловятся всегда. (F1) `name-surface-
+  mismatch` сменил семантику с slug-равенства на order/diacritic-нечувствительный
+  token-subset: basename должен СОДЕРЖАТЬ каждый токен поля-имени (лишние токены —
+  титулы вроде `King_` — допустимы), снимая 9 FP конвенции Surname_Given vs
+  natural-order romaji, но всё ещё ловя `Katteya_Bodler` (нет токенов cattleya/
+  baudelaire). (F3, perf) `indexPath` указывал на legacy `.claude/mcp-server/
+  index.json` (отсутствует на canonical-волтах → persist ENOENT → full-rebuild на
+  каждом ensureFresh); переведён на канонический `.claude/modules/vault-index/mcp/
+  index.json` (gitignore.fragment его уже покрывает) + `persist()` mkdir-recursive
+  для legacy-волтов. node:test 21→27.
+
+  v0.7.0 (audit lint-backstops, Roadmap §22–§24 + §20): детерминированные
+  lint-бэкстопы вместо «внимательности судьи». LintIssue получил `class` —
+  `structural` (детерминированный, ~0 FP; `summary.structural_green`) vs
+  `heuristic` (нечёткий WARN, отдельный поток, не влияет на green) — чтобы шум
+  эвристик не эродировал доверие к структурному сигналу.
+  Structural: `broken-table-row` (always-on; ячейка-счёт строки ≠ шапке /
+  неэкранированный `|` в `[[...]]` — ловит разорванный рендер таблицы, который
+  граф-проверки не видят; парсер несёт policy-free table-скелет в индексе),
+  `cover-ref-mismatch` (default-on; ext-mismatch обложки против нового инвентаря
+  вложений), `name-surface-mismatch` (opt-in; basename ≠ slug поля),
+  `missing-required-tag` (opt-in `requiredTagsByKind` — заменил захардкоженные
+  model-card/benchmark/coding-assistant kind-правила, theme-leak из Knowledge_Base).
+  Heuristic (opt-in, on-demand чтение тела, src/content-lint.ts):
+  `user-only-fabricated`, `mixed-script-prose`. Всё theme-neutral — скрипт/
+  секции/поля/теги приходят caller-параметрами из манифеста (контракт
+  reciprocity_pairs). §20: `vault_query` generic where (fieldEquals/fieldGte/
+  fieldIn, dot-path) + `extra`-проекция. INDEX_VERSION 3→4 (форс-rebuild).
+  Юнит-тесты node:test pos/neg на каждое правило (test/rules.test.mjs). 16 tools.
 
   v0.6.0: +tool `vault_spec_drift` — детерминированный backstop changelog-
   дисциплины (ledger-protocol §4.1). Сверяет spec-requirements манифесты

@@ -1,18 +1,41 @@
-import { readFile, writeFile, stat, readdir } from 'node:fs/promises';
-import { join, relative, extname } from 'node:path';
+import { readFile, writeFile, stat, readdir, mkdir } from 'node:fs/promises';
+import { join, relative, extname, basename, dirname } from 'node:path';
 import { parseNote } from './parser.js';
 import { getCanonicalTags } from './taxonomy.js';
-import type { NoteRecord, IndexData } from './types.js';
+import type { NoteRecord, IndexData, AttachmentInventory } from './types.js';
 
-// v3: NoteRecord gained `frontmatterError`; bump forces a full rebuild so the
-// field is populated rather than left undefined from a stale v2 cache.
-const INDEX_VERSION = 3;
+// v4: NoteRecord gained `tableBlocks` and IndexData gained the attachment
+// inventory; bump forces a full rebuild so both are populated rather than left
+// undefined from a stale v3 cache.
+// v3: NoteRecord gained `frontmatterError`.
+const INDEX_VERSION = 4;
 
 // Directories to skip entirely during scanning
 const SKIP_DIRS = new Set(['.claude', '.opencode', '.obsidian', '.git', 'node_modules']);
 
 // Files to skip
 const SKIP_FILES = new Set(['CLAUDE.md', 'MEMORY.md']);
+
+// Media extensions collected into the attachment inventory (cover-ref-mismatch).
+// Theme-neutral: matched by extension, not by any folder name.
+const MEDIA_EXTS = new Set(['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg', '.bmp', '.avif']);
+
+const EMPTY_INVENTORY: AttachmentInventory = { paths: [], byBasename: {}, byStem: {} };
+
+/** Build the attachment lookup maps from a flat list of relative media paths. */
+function buildInventory(paths: string[]): AttachmentInventory {
+  const byBasename: Record<string, string> = {};
+  const byStem: Record<string, string[]> = {};
+  for (const p of paths) {
+    const base = basename(p);
+    const lower = base.toLowerCase();
+    byBasename[lower] = p;
+    const ext = extname(base).slice(1).toLowerCase();
+    const stem = lower.slice(0, lower.length - (ext ? ext.length + 1 : 0));
+    (byStem[stem] ??= []).push(ext);
+  }
+  return { paths, byBasename, byStem };
+}
 
 export class VaultIndex {
   readonly vaultRoot: string;
@@ -34,11 +57,19 @@ export class VaultIndex {
   // Canonical tags from Tag_taxonomy.md
   canonicalTags = new Set<string>();
 
+  // Attachment inventory: every media file in the vault (cover-ref-mismatch).
+  attachments: AttachmentInventory = EMPTY_INVENTORY;
+
   private initialized = false;
 
   constructor(vaultRoot: string) {
     this.vaultRoot = vaultRoot;
-    this.indexPath = join(vaultRoot, '.claude', 'mcp-server', 'index.json');
+    // Canonical cache location (matches gitignore.fragment `.claude/modules/*/mcp/
+    // index.json`). The former legacy path `.claude/mcp-server/index.json` did not
+    // exist on canonical-layout vaults → persist() threw ENOENT and the cache was
+    // never written, forcing a full rebuild on every ensureFresh(). persist() now
+    // also mkdir's the parent so legacy-layout vaults (no canonical dir) still cache.
+    this.indexPath = join(vaultRoot, '.claude', 'modules', 'vault-index', 'mcp', 'index.json');
     this.taxonomyPath = join(vaultRoot, 'SYSTEM', 'Tag_taxonomy.md');
   }
 
@@ -66,8 +97,8 @@ export class VaultIndex {
     this.backlinks.clear();
     this.aliasToName.clear();
 
-    const files = await this.walkVault();
-    for (const { absolutePath, relativePath } of files) {
+    const { notes, media } = await this.walkVault();
+    for (const { absolutePath, relativePath } of notes) {
       try {
         const st = await stat(absolutePath);
         const record = await parseNote(absolutePath, relativePath, st.mtimeMs);
@@ -76,6 +107,7 @@ export class VaultIndex {
         // Skip unparseable files
       }
     }
+    this.attachments = buildInventory(media);
 
     this.rebuildDerivedMaps();
     this.canonicalTags = await getCanonicalTags(this.taxonomyPath);
@@ -185,6 +217,7 @@ export class VaultIndex {
       for (const record of data.notes) {
         this.addRecord(record);
       }
+      this.attachments = data.attachments ?? EMPTY_INVENTORY;
       this.rebuildDerivedMaps();
       this.canonicalTags = await getCanonicalTags(this.taxonomyPath);
       return true;
@@ -198,9 +231,11 @@ export class VaultIndex {
       version: INDEX_VERSION,
       builtAt: new Date().toISOString(),
       notes: Array.from(this.notesByPath.values()),
+      attachments: this.attachments,
     };
 
     try {
+      await mkdir(dirname(this.indexPath), { recursive: true });
       await writeFile(this.indexPath, JSON.stringify(data), 'utf-8');
     } catch (err) {
       console.error('Failed to persist index:', err);
@@ -208,11 +243,20 @@ export class VaultIndex {
   }
 
   private async refresh(): Promise<void> {
-    const files = await this.walkVault();
+    const { notes, media } = await this.walkVault();
     const currentPaths = new Set<string>();
     let changed = false;
 
-    for (const { absolutePath, relativePath } of files) {
+    // Inventory is cheap to rebuild (paths only, no reads); refresh it whenever
+    // the media set differs so cover-ref-mismatch sees renames/added files.
+    const mediaKey = media.slice().sort().join('\n');
+    const prevKey = this.attachments.paths.slice().sort().join('\n');
+    if (mediaKey !== prevKey) {
+      this.attachments = buildInventory(media);
+      changed = true;
+    }
+
+    for (const { absolutePath, relativePath } of notes) {
       currentPaths.add(relativePath);
 
       try {
@@ -293,15 +337,20 @@ export class VaultIndex {
     }
   }
 
-  private async walkVault(): Promise<Array<{ absolutePath: string; relativePath: string }>> {
-    const results: Array<{ absolutePath: string; relativePath: string }> = [];
-    await this.walkDir(this.vaultRoot, results);
-    return results;
+  private async walkVault(): Promise<{
+    notes: Array<{ absolutePath: string; relativePath: string }>;
+    media: string[];
+  }> {
+    const notes: Array<{ absolutePath: string; relativePath: string }> = [];
+    const media: string[] = [];
+    await this.walkDir(this.vaultRoot, notes, media);
+    return { notes, media };
   }
 
   private async walkDir(
     dir: string,
-    results: Array<{ absolutePath: string; relativePath: string }>,
+    notes: Array<{ absolutePath: string; relativePath: string }>,
+    media: string[],
   ): Promise<void> {
     let entries;
     try {
@@ -313,12 +362,17 @@ export class VaultIndex {
     for (const entry of entries) {
       if (entry.isDirectory()) {
         if (SKIP_DIRS.has(entry.name)) continue;
-        await this.walkDir(join(dir, entry.name), results);
-      } else if (entry.isFile() && extname(entry.name) === '.md') {
-        if (SKIP_FILES.has(entry.name)) continue;
+        await this.walkDir(join(dir, entry.name), notes, media);
+      } else if (entry.isFile()) {
+        const ext = extname(entry.name).toLowerCase();
         const absolutePath = join(dir, entry.name);
         const relativePath = relative(this.vaultRoot, absolutePath).replace(/\\/g, '/');
-        results.push({ absolutePath, relativePath });
+        if (ext === '.md') {
+          if (SKIP_FILES.has(entry.name)) continue;
+          notes.push({ absolutePath, relativePath });
+        } else if (MEDIA_EXTS.has(ext)) {
+          media.push(relativePath);
+        }
       }
     }
   }

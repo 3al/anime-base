@@ -91,6 +91,36 @@ asymmetry_severity: ERROR
 # хардкод-порог ложно срабатывал. «Чистый lint = доверяю» восстановлен.
 link_cap: null
 
+# --- Lint-бэкстопы v0.7.0 (Roadmap §22–§23). Полный каталог: docs/Vault_Bootstrap_Architecture.md ---
+
+# user-only-fabricated (HEURISTIC, opt-in): USER-ONLY-секция, заполненная не-стабом
+# на model-authored (co_authored=модель) + quality≠verified карточке → WARN (вероятная
+# фабрикация). Стаб-фразы создателей — в whitelist (подавляют легитимный плейсхолдер).
+# Включено: ловит кейс Cattleya (фабрикованный отзыв). Сейчас 2 FP на anime-карточках
+# с реальными пользовательскими отзывами (model-co_authored draft) — снимутся при verify.
+user_only_sections:
+  - "## Личный отзыв"
+user_only_stub_whitelist:
+  - "Заполните личный отзыв"                       # стаб /new-character
+  - "Эту секцию можно дополнять по мере просмотра"  # плейсхолдер /new-anime
+
+# cover-ref-mismatch (structural, default-on) — НЕ требует ключа, активен по дефолту
+# (images.cover / _cover). На приёмке поймал реальный дефект Iris_Cannary (.jpg при .png).
+
+# name-surface-mismatch (structural, opt-in): basename должен СОДЕРЖАТЬ все токены name_romaji
+# (order/diacritic-нечувствительно, лишние токены вроде титулов допустимы — vault-index 0.7.1).
+# Включено после фикса F1: 9 прежних FP (Hodgins_Claudia↔Claudia Hodgins, King_Jihl,
+# Nausicaa↔Nausicaä и др.) сняты, кейс Katteya_Bodler по-прежнему ловится.
+name_surface_pairs:
+  - { kind: character, basenameField: name_romaji }
+
+# mixed-script-prose (HEURISTIC, opt-in): инородный скрипт в кириллической прозе. Включено
+# после фикса F2 (vault-index 0.7.1: maskExempt маскирует callout-маркеры [!warning];
+# capitalized-щажение перед диакритик-веткой → макрон-имена Itō/Satō не флагаются). Ловит
+# homoglyph-опечатки (кириллица+латиница в токене: idол/аркy/манёвpирование). Heuristic-поток,
+# не гейтит structural_green; остаточные латинские термины (petite/sœur/bouton) — verify-by-eye.
+prose_script: cyrillic
+
 # Per-module configuration overrides (advanced).
 config:
   vault-semantic:

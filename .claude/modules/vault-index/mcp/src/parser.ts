@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { basename } from 'node:path';
 import { parse as parseYaml } from 'yaml';
-import type { NoteRecord, WikiLink } from './types.js';
+import type { NoteRecord, WikiLink, TableBlock, TableRow } from './types.js';
 
 const CORE_FIELDS = new Set([
   'type', 'domain', 'stability', 'priority', 'note_kind',
@@ -32,6 +32,9 @@ export async function parseNote(
 
   // Extract WikiLinks (skipping code blocks)
   const outgoingLinks = extractWikiLinks(content);
+
+  // Structural table skeleton (policy-free; lint decides what is "broken")
+  const tableBlocks = extractTableBlocks(content);
 
   // Separate core fields from extra
   const extra: Record<string, unknown> = {};
@@ -72,6 +75,7 @@ export async function parseNote(
     aliases: toStringArray(fm?.aliases),
     extra,
     outgoingLinks,
+    tableBlocks,
     frontmatterError,
   };
 }
@@ -114,6 +118,82 @@ function extractFrontmatter(content: string): FrontmatterResult {
   } catch (err) {
     return { kind: 'error', message: err instanceof Error ? err.message : String(err) };
   }
+}
+
+/**
+ * Split a markdown table row into its cells, respecting:
+ *  - inline code spans (`` `a|b` ``): pipes inside are literal, masked out first;
+ *  - escaped pipes (`\|`): not separators (so `[[A\|B]]` stays one cell);
+ *  - optional border pipes: a single leading/trailing empty segment from a
+ *    bordering `|` is dropped so bordered and unbordered rows count alike.
+ * Returns the trimmed cell strings. Used for both cell-counting and delimiter
+ * detection so header and body are measured identically.
+ */
+function splitTableRow(rawRow: string): string[] {
+  // Mask inline code spans: a `|` inside them is literal, not a separator.
+  const masked = rawRow.replace(/`[^`]*`/g, '');
+  // Split on pipes NOT preceded by a backslash (Node supports lookbehind).
+  const segments = masked.split(/(?<!\\)\|/);
+  let start = 0;
+  let end = segments.length;
+  if (segments[0]!.trim() === '') start = 1;            // leading border pipe
+  if (end > start && segments[end - 1]!.trim() === '') end -= 1; // trailing border pipe
+  return segments.slice(start, end).map((s) => s.trim());
+}
+
+/** A line is a table row candidate if it contains an unescaped, non-code pipe. */
+function hasUnescapedPipe(line: string): boolean {
+  const masked = line.replace(/`[^`]*`/g, '');
+  return /(?<!\\)\|/.test(masked);
+}
+
+/** GFM delimiter row: every cell is `:?-+:?` (e.g. `---`, `:--:`, `--:`). */
+function isDelimiterRow(line: string): boolean {
+  if (!hasUnescapedPipe(line) && !/^\s*:?-+:?\s*$/.test(line)) return false;
+  const cells = splitTableRow(line);
+  if (cells.length === 0) return false;
+  return cells.every((c) => /^:?-+:?$/.test(c));
+}
+
+/**
+ * Extract markdown table blocks (header + delimiter + body rows). A block is a
+ * pipe-bearing line immediately followed by a GFM delimiter row; body rows run
+ * until a non-pipe / blank line. Fenced code blocks are skipped. Purely
+ * structural — records each row's column count; the broken-table-row lint rule
+ * compares body rows to the header.
+ */
+function extractTableBlocks(content: string): TableBlock[] {
+  const lines = content.split('\n');
+  const blocks: TableBlock[] = [];
+  let inCodeBlock = false;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i]!;
+    if (line.trimStart().startsWith('```')) {
+      inCodeBlock = !inCodeBlock;
+      continue;
+    }
+    if (inCodeBlock) continue;
+
+    // Header candidate: a pipe-bearing line whose next line is a delimiter row.
+    const next = lines[i + 1];
+    if (!hasUnescapedPipe(line) || next === undefined || !isDelimiterRow(next)) continue;
+
+    const headerCells = splitTableRow(line).length;
+    const rows: TableRow[] = [];
+    let j = i + 2; // skip header (i) and delimiter (i+1)
+    for (; j < lines.length; j++) {
+      const bodyLine = lines[j]!;
+      if (bodyLine.trim() === '' || !hasUnescapedPipe(bodyLine)) break;
+      if (bodyLine.trimStart().startsWith('```')) break;
+      rows.push({ line: j + 1, cells: splitTableRow(bodyLine).length });
+    }
+
+    blocks.push({ headerLine: i + 1, headerCells, rows });
+    i = j - 1; // resume scanning after this block
+  }
+
+  return blocks;
 }
 
 function extractWikiLinks(content: string): WikiLink[] {

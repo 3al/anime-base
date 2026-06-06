@@ -1,6 +1,8 @@
-import type { NoteRecord, LintIssue } from './types.js';
+import { basename, extname } from 'node:path';
+import type { NoteRecord, LintIssue, AttachmentInventory } from './types.js';
 import type { VaultIndex } from './vault-index.js';
 import type { AsymmetricPair } from './asymmetric.js';
+import { lintContent, type ContentRuleConfig } from './content-lint.js';
 
 // Directories excluded from lint (same as lint-vault.sh)
 const LINT_SKIP_PREFIXES = ['SYSTEM/', 'ARTIFACTS/'];
@@ -16,40 +18,61 @@ export function isLintable(record: NoteRecord): boolean {
 }
 
 /**
+ * Per-vault lint policy. Everything theme-specific is a parameter here — lint
+ * itself knows no kinds, fields, sections or scripts. The caller (vault_lint)
+ * sources these from vault-manifest.yaml and passes them in, exactly like the
+ * existing reciprocity_pairs / link_cap contract.
+ */
+export interface LintRuleConfig {
+  // structural (deterministic, ~0 FP)
+  coverField?: string | null;      // dot-path to the cover frontmatter value; default 'images.cover', null disables
+  coverEmbedSuffix?: string;       // basename-stem suffix marking cover embeds; default '_cover'
+  nameSurfacePairs?: Array<{ kind: string; basenameField: string }>; // opt-in
+  requiredTagsByKind?: Array<{ kind: string; tags: string[] }>;      // opt-in (replaces former hardcode)
+  // heuristic (fuzzy, opt-in) — served on-demand via the body, see LintOptions.body
+  userOnlySections?: string[];
+  userOnlyStubWhitelist?: string[];
+  proseScript?: string;
+}
+
+export interface LintOptions {
+  asymByTargetPath?: Map<string, AsymmetricPair[]>;
+  asymmetricSeverity?: 'WARN' | 'ERROR';
+  linkCap?: number | null;         // undefined → default 15; null → disabled
+  rules?: LintRuleConfig;
+  body?: string | null;            // raw note text, supplied on-demand only when a heuristic rule is active
+}
+
+const DEFAULT_LINK_CAP = 15;
+const DEFAULT_COVER_FIELD = 'images.cover';
+const DEFAULT_COVER_SUFFIX = '_cover';
+
+/**
  * Lint a single note record against vault rules.
- * Reproduces all checks from lint-vault.sh.
  *
- * `asymByTargetPath` — optional precomputed map (path of note missing the
- * reverse link → asymmetric pairs). When provided, surfaces one-directional
- * reciprocal links on the note that should add the reverse link.
- * `asymmetricSeverity` — WARN (default) or ERROR; per-vault policy passed by
- * the caller (vault_lint via the asymmetricSeverity param, sourced from
- * vault-manifest.yaml::asymmetry_severity).
- * `linkCap` — outgoing-WikiLink ceiling for the too-many-links check; per-vault
- * policy passed by the caller (vault_lint via the linkCap param, sourced from
- * vault-manifest.yaml::link_cap). `null` disables the check entirely (for
- * formalized vaults whose cards materialize many structural gallery/cast links
- * by design); a number overrides the threshold. Default 15.
- * Theme-neutral: the caller decides which kind-pairs to check, at what
- * severity, and the link ceiling; lint itself knows no kinds or vault shape.
+ * The structural checks run over the index alone (no file I/O). The heuristic
+ * content checks (user-only-fabricated, mixed-script-prose) run only when the
+ * caller supplies both their opt-in config and the raw `body` — keeping fuzzy
+ * full-text scanning off the persisted index and out of the default path.
+ *
+ * Theme-neutral: the caller decides every kind/field/section/script and the
+ * link ceiling; lint knows no vault shape. Issues are tagged `structural` or
+ * `heuristic` so a noisy heuristic never breaks the "green by structure" signal.
  */
 export function lintNote(
   record: NoteRecord,
   index: VaultIndex,
-  asymByTargetPath?: Map<string, AsymmetricPair[]>,
-  asymmetricSeverity: 'WARN' | 'ERROR' = 'WARN',
-  linkCap: number | null = 15,
+  opts: LintOptions = {},
 ): LintIssue[] {
   const issues: LintIssue[] = [];
+  const rules = opts.rules ?? {};
+  const linkCap = opts.linkCap === undefined ? DEFAULT_LINK_CAP : opts.linkCap;
 
   // --- Malformed frontmatter (block present but YAML failed to parse) ---
-  // Distinct from no-frontmatter: the `---` block exists, so reporting it as
-  // "no frontmatter" would mislead and the note would silently drop out of
-  // kind-aware tools (its fields are all null). Surface the parser message so
-  // the author can locate the cause (e.g. a duplicate key line).
   if (record.frontmatterError) {
     issues.push({
       severity: 'ERROR',
+      class: 'structural',
       code: 'malformed-frontmatter',
       message: `Frontmatter present but failed to parse: ${record.frontmatterError}`,
     });
@@ -63,7 +86,7 @@ export function lintNote(
     record.stability === null &&
     record.priority === null
   ) {
-    issues.push({ severity: 'ERROR', code: 'no-frontmatter', message: 'File has no YAML frontmatter' });
+    issues.push({ severity: 'ERROR', class: 'structural', code: 'no-frontmatter', message: 'File has no YAML frontmatter' });
     return issues; // No further checks possible
   }
 
@@ -73,6 +96,7 @@ export function lintNote(
     if (!record[field]) {
       issues.push({
         severity: 'ERROR',
+        class: 'structural',
         code: 'missing-field',
         message: `Required field '${field}' is missing`,
       });
@@ -85,6 +109,7 @@ export function lintNote(
     if (!record[field]) {
       issues.push({
         severity: 'WARN',
+        class: 'structural',
         code: 'missing-field',
         message: `Recommended field '${field}' is missing`,
       });
@@ -95,6 +120,7 @@ export function lintNote(
   if (record.priority === 'middle') {
     issues.push({
       severity: 'ERROR',
+      class: 'structural',
       code: 'invalid-value',
       message: "priority: middle should be 'medium'",
     });
@@ -104,6 +130,7 @@ export function lintNote(
   if (record.tags.length > 8) {
     issues.push({
       severity: 'ERROR',
+      class: 'structural',
       code: 'too-many-tags',
       message: `Has ${record.tags.length} tags (max 8)`,
     });
@@ -114,58 +141,98 @@ export function lintNote(
     if (!index.canonicalTags.has(tag)) {
       issues.push({
         severity: 'WARN',
+        class: 'structural',
         code: 'non-canonical-tag',
         message: tag,
       });
     }
   }
 
-  // --- Required tags by note_kind ---
-  if (record.note_kind === 'model-card') {
-    if (!record.tags.includes('neural-model')) {
-      issues.push({ severity: 'ERROR', code: 'missing-required-tag', message: "model-card requires tag 'neural-model'" });
-    }
-    if (!record.tags.includes('llm')) {
-      issues.push({ severity: 'ERROR', code: 'missing-required-tag', message: "model-card requires tag 'llm'" });
-    }
-  }
-
-  if (record.note_kind === 'benchmark') {
-    if (!record.tags.includes('benchmark')) {
-      issues.push({ severity: 'ERROR', code: 'missing-required-tag', message: "benchmark requires tag 'benchmark'" });
-    }
-  }
-
-  if (record.note_kind === 'coding-assistant') {
-    if (!record.tags.includes('agent')) {
-      issues.push({ severity: 'ERROR', code: 'missing-required-tag', message: "coding-assistant requires tag 'agent'" });
-    }
-    if (!record.tags.includes('coding')) {
-      issues.push({ severity: 'ERROR', code: 'missing-required-tag', message: "coding-assistant requires tag 'coding'" });
-    }
-    if (!record.tags.includes('cli')) {
-      issues.push({ severity: 'ERROR', code: 'missing-required-tag', message: "coding-assistant requires tag 'cli'" });
+  // --- Required tags by note_kind (theme-neutral: caller-supplied) ---
+  // Replaces the former hardcoded model-card/benchmark/coding-assistant rules
+  // (a Knowledge_Base leak from before the framework existed). Vaults now
+  // declare required tags per kind in the manifest; absent → no check.
+  if (rules.requiredTagsByKind) {
+    for (const r of rules.requiredTagsByKind) {
+      if (record.note_kind !== r.kind) continue;
+      for (const tag of r.tags) {
+        if (!record.tags.includes(tag)) {
+          issues.push({ severity: 'ERROR', class: 'structural', code: 'missing-required-tag', message: `${r.kind} requires tag '${tag}'` });
+        }
+      }
     }
   }
 
   // --- Links ---
-  // Count only navigation WikiLinks `[[...]]`, not media embeds `![[...]]`.
   const linkCount = record.outgoingLinks.filter(l => !l.isEmbed).length;
   if (linkCount === 0) {
-    issues.push({ severity: 'WARN', code: 'no-outgoing-links', message: 'No outgoing WikiLinks' });
+    issues.push({ severity: 'WARN', class: 'structural', code: 'no-outgoing-links', message: 'No outgoing WikiLinks' });
   }
-  // linkCap === null → check disabled (per-vault policy); else threshold.
   if (linkCap !== null && linkCount > linkCap) {
-    issues.push({ severity: 'WARN', code: 'too-many-links', message: `Has ${linkCount} outgoing WikiLinks (max ${linkCap})` });
+    issues.push({ severity: 'WARN', class: 'structural', code: 'too-many-links', message: `Has ${linkCount} outgoing WikiLinks (max ${linkCap})` });
+  }
+
+  // --- broken-table-row (structural, always-on) ---
+  // A body row whose column count differs from the header renders misaligned —
+  // most often an unescaped `|` inside a `[[link]]` in a cast/comparison table
+  // (the link parses, so link tools stay green while the render is broken).
+  for (const tb of record.tableBlocks) {
+    for (const row of tb.rows) {
+      if (row.cells !== tb.headerCells) {
+        issues.push({
+          severity: 'ERROR',
+          class: 'structural',
+          code: 'broken-table-row',
+          message: `Table row at line ${row.line} has ${row.cells} cells but the header has ${tb.headerCells} (unescaped '|' inside a [[link]]? escape it as '\\|')`,
+        });
+      }
+    }
+  }
+
+  // --- cover-ref-mismatch (structural, default-on) ---
+  if (rules.coverField !== null) {
+    issues.push(...coverRefMismatch(
+      record,
+      index.attachments,
+      rules.coverField ?? DEFAULT_COVER_FIELD,
+      rules.coverEmbedSuffix ?? DEFAULT_COVER_SUFFIX,
+    ));
+  }
+
+  // --- name-surface-mismatch (a) (structural, opt-in) ---
+  // The basename must CONTAIN every token of the canonical name field, compared
+  // order- and diacritic-insensitively. This tolerates vault conventions the
+  // naive slug equality tripped on (Surname_Given vs natural-order name fields,
+  // title prefixes like `King_`, diacritics `Nausicaä`↔`Nausicaa`) while still
+  // catching genuine transliteration divergence (`Katteya_Bodler` lacks the
+  // `cattleya`/`baudelaire` tokens). Extra basename tokens are allowed.
+  if (rules.nameSurfacePairs) {
+    for (const pair of rules.nameSurfacePairs) {
+      if (record.note_kind !== pair.kind) continue;
+      const val = dotGet(record.extra, pair.basenameField);
+      if (typeof val !== 'string' || val.trim() === '') continue;
+      const baseTokens = new Set(record.name.split(/[_\s-]+/).map(normToken).filter(Boolean));
+      const fieldTokens = val.trim().split(/[\s-]+/).map(normToken).filter(Boolean);
+      const missing = fieldTokens.filter((t) => !baseTokens.has(t));
+      if (missing.length > 0) {
+        issues.push({
+          severity: 'WARN',
+          class: 'structural',
+          code: 'name-surface-mismatch',
+          message: `basename '${record.name}' is missing name token(s) [${missing.join(', ')}] from ${pair.basenameField}='${val}'`,
+        });
+      }
+    }
   }
 
   // --- Asymmetric reciprocal links (opt-in, only when caller passed pairs) ---
-  if (asymByTargetPath) {
-    const missing = asymByTargetPath.get(record.path);
+  if (opts.asymByTargetPath) {
+    const missing = opts.asymByTargetPath.get(record.path);
     if (missing) {
       for (const p of missing) {
         issues.push({
-          severity: asymmetricSeverity,
+          severity: opts.asymmetricSeverity ?? 'WARN',
+          class: 'structural',
           code: 'asymmetric-link',
           message: `Missing reverse WikiLink to ${p.source} (${p.source} links here, not reciprocated)`,
         });
@@ -173,5 +240,79 @@ export function lintNote(
     }
   }
 
+  // --- Heuristic content rules (opt-in, on-demand body) ---
+  if (opts.body != null) {
+    const contentCfg: ContentRuleConfig = {};
+    if (rules.userOnlySections && rules.userOnlySections.length > 0) {
+      contentCfg.userOnly = { sections: rules.userOnlySections, stubWhitelist: rules.userOnlyStubWhitelist };
+    }
+    if (rules.proseScript) contentCfg.proseScript = rules.proseScript;
+    if (contentCfg.userOnly || contentCfg.proseScript) {
+      issues.push(...lintContent(record, opts.body, contentCfg));
+    }
+  }
+
   return issues;
+}
+
+/** Normalize a name token: strip diacritics (NFD), lowercase. Used for the
+ * order-insensitive name-surface token comparison. */
+function normToken(s: string): string {
+  return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+}
+
+/** Resolve a dot-path (e.g. "images.cover") against a frontmatter object. */
+function dotGet(obj: Record<string, unknown>, path: string): unknown {
+  let cur: unknown = obj;
+  for (const key of path.split('.')) {
+    if (cur == null || typeof cur !== 'object') return undefined;
+    cur = (cur as Record<string, unknown>)[key];
+  }
+  return cur;
+}
+
+/**
+ * cover-ref-mismatch: a cover reference (frontmatter cover field + cover-suffixed
+ * body embeds) whose exact file is absent on disk while a same-stem sibling with
+ * a different extension exists — the classic `.jpg`↔`.jpeg` poster break. Only
+ * the ext-mismatch case is flagged; a wholly-missing file is broken-embed
+ * territory, left to a different check to avoid false alarms on drafts.
+ */
+function coverRefMismatch(
+  record: NoteRecord,
+  inv: AttachmentInventory,
+  coverField: string,
+  coverSuffix: string,
+): LintIssue[] {
+  const refs = new Set<string>();
+  const fmCover = dotGet(record.extra, coverField);
+  if (typeof fmCover === 'string' && fmCover.trim() !== '') refs.add(fmCover.trim());
+
+  const suffix = coverSuffix.toLowerCase();
+  for (const l of record.outgoingLinks) {
+    if (!l.isEmbed) continue;
+    const b = basename(l.target);
+    const ext = extname(b);
+    if (ext === '') continue;
+    const stem = b.slice(0, b.length - ext.length).toLowerCase();
+    if (stem.endsWith(suffix)) refs.add(l.target);
+  }
+
+  const out: LintIssue[] = [];
+  for (const ref of refs) {
+    const lower = basename(ref).toLowerCase();
+    if (inv.byBasename[lower]) continue; // exact file present — fine
+    const ext = extname(lower).slice(1);
+    const stem = lower.slice(0, lower.length - (ext ? ext.length + 1 : 0));
+    const present = inv.byStem[stem];
+    if (present && present.length > 0) {
+      out.push({
+        severity: 'ERROR',
+        class: 'structural',
+        code: 'cover-ref-mismatch',
+        message: `Cover reference '${ref}' has no file on disk, but a sibling '.${present[0]}' exists — fix the extension in the reference or rename the file`,
+      });
+    }
+  }
+  return out;
 }
