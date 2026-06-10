@@ -32,7 +32,7 @@ model: opus
 
 1. **`SYSTEM/Metadata_schema.md`** — обязательные поля frontmatter, поля по `note_kind`
 2. **`SYSTEM/Linking_guidelines.md`** — обязательные ссылки по `note_kind` и `type`
-3. **`SYSTEM/Tag_taxonomy.md`** — каноничный набор тегов
+3. **`SYSTEM/tag_taxonomy.yaml`** — канон тегов (SSOT); правила/критерий — `.claude/skills/audit-by-creator/references/tag-discipline.md`
 4. **`SYSTEM/Naming_conventions.md`** — правила именования
 
 ## Алгоритм
@@ -91,7 +91,7 @@ model: opus
 - Добавить `aliases` если имя файла отличается от естественного названия
 - Установить `co_authored: <ID текущей модели>` (expand — содержательный пас, не просто create)
 - Установить `quality: draft` (пользователь подтвердит через `/verify`)
-- **Таксономия тегов — auto-update**: для каждого тега, добавляемого в заметку, который отсутствует в `SYSTEM/Tag_taxonomy.md`: Read taxonomy, определить группу, Edit добавить строку `\| tag \| описание \|`. НЕ рекомендовать пользователю — делать самому. См. Audit_checklist Шаг 3.2 п.5.
+- **Канон тегов — auto-update**: для каждого тега, добавляемого в заметку, которого нет в `SYSTEM/tag_taxonomy.yaml`: провести через гейт критерия D (`.claude/skills/audit-by-creator/references/tag-discipline.md`), добавить **структурную запись** в yaml (`- name:`/`group:`/`description:`), перегенерировать `Tag_taxonomy.md` (`core/lib/tag_taxonomy_render.mjs`). **Не** править таблицы md руками (генерируются). НЕ рекомендовать пользователю — делать самому. См. Audit_checklist Шаг 3.2 п.5.
 - Обновить `updated` на сегодня
 
 ### 6. Добавить ссылки

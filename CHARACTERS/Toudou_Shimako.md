@@ -14,7 +14,7 @@ aliases:
   - Shimako Toudou
   - Шимако Тодо
 created: 2026-05-31
-updated: 2026-06-02
+updated: 2026-06-09
 name_romaji: "Toudou Shimako"
 name_native: "藤堂 志摩子"
 featured_in:
@@ -73,7 +73,7 @@ personal_score: null
 ### В каноне
 
 - ![[Sato_Sei_cover.jpg|60]] **[[Sato_Sei|Сэй Сато]]** — старшая сестра (grande soeur), Rosa Gigantea; единственный человек, перед кем Симако позволяет себе быть полностью открытой.
-- **Норико Нидзё** — младшая сестра (petite soeur), выбранная Симако во втором сезоне; дочь буддийского священника, прямая и искренняя.
+- ![[Nijou_Noriko_cover.jpg|60]] **[[Nijou_Noriko|Норико Нидзё]]** — младшая сестра (petite soeur), выбранная Симако во втором сезоне; дочь буддийского священника, прямая и искренняя.
 - ![[Fukuzawa_Yumi_cover.jpg|60]] **[[Fukuzawa_Yumi|Юми Фукудзава]]** — ровесница, подруга и коллега по Совету Ямаюрикай.
 - ![[Ogasawara_Sachiko_cover.jpg|60]] **[[Ogasawara_Sachiko|Сатико Огасавара]]** — Rosa Chinensis en bouton, затем Rosa Chinensis; коллега по совету.
 - ![[Hasekura_Rei_cover.jpg|60]] **[[Hasekura_Rei|Рэй Хасэкура]]** — Rosa Foetida en bouton, затем Rosa Foetida; коллега по совету.

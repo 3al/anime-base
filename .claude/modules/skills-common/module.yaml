@@ -1,11 +1,39 @@
 name: skills-common
-version: 0.9.1
+version: 0.10.0
 description: |
   Тема-нейтральные скиллы, общие для любого волта: fix-links, audit-note,
   new-note, rename-note, verify, expand-stub, add-note-kind,
   harness-agnostic-audit, vision-gate-audit, audit-by-creator.
   Устанавливаются в .claude/skills/ под `.managed` маркерами — фреймворк может
   синхронизировать обновления, не затирая пользовательские правки.
+
+  v0.10.0 (заказ Anime_Base §29 — дисциплина тегирования, governance + аудит):
+  - Промоут правил тегирования 1–9 + критерий приёма (D) из vault-owned
+    Tag_taxonomy.md в framework-governance: новый
+    `audit-by-creator/references/tag-discipline.md` (peer к ledger-protocol,
+    кросс-скилльная ссылка). Канон — машинный `SYSTEM/tag_taxonomy.yaml` (SSOT);
+    Tag_taxonomy.md генерируется; required-теги → manifest::required_tags_by_kind.
+  - `audit-by-creator`: пас консистентности (§23) +пункт (г) тег-консистентность
+    (structural-класс, ledger §4.2) — canon-membership (`non-canonical-tag`),
+    too-many-tags, facet-пропагация (`under_tag_discord`); ghost/singletons —
+    vault-гигиена, не author-defect.
+  - `audit-note`: §4.7 осмысленность тега (HEURISTIC-флаг по критерию D, БЕЗ
+    score/гейта/новой оси — vault-долг канона, не author-defect); проброс
+    `max_tags` в vault_lint.
+  - `new-note` шаг 6 / `add-note-kind` (+ template, system-touchpoints): запись
+    нового тега — структурной записью в yaml через гейт D + регенерация md (не
+    правка md-таблиц); обязательные теги kind → manifest. Фикс инстансов max 8→10.
+  Требует vault-index ≥ 0.9.0 (`vault_tag_health`, yaml-канон, maxTags) + core ≥ 0.9.0.
+
+  v0.9.2 (синхронизация fix-links с vault-index 0.8.1+0.8.2): две правки скилла
+  `fix-links` вслед за изменениями движка.
+  - **§30 folding.** Под-режим `lint` отмечает, что `vault_lint` сам несёт
+    `broken-link`/`duplicate-link` (structural-ERROR, always-on) — `lint`
+    покрывает целость внутренних ссылок наравне с `broken`/`duplicate`;
+    `structural_green=true` ⇒ нет битых/дублирующихся внутренних ссылок.
+  - **orphan_exempt wiring.** Под-режим `orphans` прокидывает
+    `vault-manifest::orphan_exempt` в `vault_orphans({exempt})` (vault-index
+    0.8.1 заменил захардкоженный exempt-список имён на caller-параметр).
 
   v0.9.1 (фидбек эксплуатации Anime_Base — 2 фикса; ledger-контракт остаётся v:1):
   - **empty-tags cross-axis fix.** v0.9.0 audit-note (Шаг 1) велел content-оси

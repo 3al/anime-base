@@ -15,11 +15,12 @@ aliases:
   - "Mamoru Fujisawa"
   - "藤澤守"
 created: 2026-05-23
-updated: 2026-05-26
+updated: 2026-06-10
 images:
   cover: "attachments/Joe_Hisaishi_cover.jpg"
 name_primary: "Joe Hisaishi"
 name_native: "久石譲"
+name_cyrillic: "Дзё Хисаиси"
 roles:
   - composer
 country: "Japan"

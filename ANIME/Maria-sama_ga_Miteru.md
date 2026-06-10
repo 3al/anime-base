@@ -15,9 +15,10 @@ aliases:
   - Дева Мария смотрит за вами
   - Мария-сама смотрит на нас
 created: 2026-05-24
-updated: 2026-06-01
+updated: 2026-06-10
 title_romaji: Maria-sama ga Miteru
 title_original: マリア様がみてる
+title_cyrillic: "Дева Мария смотрит за вами"
 format: tv
 status: finished
 episodes: 13

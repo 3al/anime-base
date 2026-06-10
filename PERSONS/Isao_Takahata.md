@@ -12,11 +12,12 @@ aliases:
   - "Исао Такахата"
   - "Takahata Isao"
 created: 2026-05-23
-updated: 2026-05-26
+updated: 2026-06-10
 images:
   cover: "attachments/Isao_Takahata_cover.jpg"
 name_primary: "Isao Takahata"
 name_native: "高畑勲"
+name_cyrillic: "Исао Такахата"
 roles:
   - director
   - screenwriter

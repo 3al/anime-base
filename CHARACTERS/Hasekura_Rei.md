@@ -13,9 +13,10 @@ aliases:
   - Рэй Хасэкура
   - Rei Hasekura
 created: 2026-05-30
-updated: 2026-06-02
+updated: 2026-06-10
 name_romaji: "Hasekura Rei"
 name_native: "支倉令"
+name_cyrillic: "Рэй Хасэкура"
 name_english: "Rei Hasekura"
 featured_in:
   - Maria-sama_ga_Miteru

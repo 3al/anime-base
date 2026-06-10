@@ -2,25 +2,30 @@ import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { VaultIndex } from '../vault-index.js';
 
-// Index/meta files exempt from orphan check
-const EXEMPT_NAMES = new Set(['LLM_Comparison', 'LLM_Benchmarks', 'Coding_Assistants_Comparison']);
+// Framework-managed infra dirs (mirror lint's LINT_SKIP_PREFIXES): never
+// knowledge notes, so never orphans. Theme-neutral — same in every vault.
 const EXEMPT_PREFIXES = ['SYSTEM/', 'ARTIFACTS/'];
 
 export function registerOrphansTool(server: McpServer, index: VaultIndex): void {
   server.tool(
     'vault_orphans',
-    'Find notes with zero incoming WikiLinks. Replaces find-orphans.sh.',
+    'Find notes with zero incoming WikiLinks. Replaces find-orphans.sh. Index/hub notes that legitimately have no backlinks are exempted per-vault via the `exempt` param (vault-manifest::orphan_exempt) — theme-neutral, no note names baked in.',
     {
       folder: z.string().optional().describe('Restrict scan to a subfolder.'),
+      exempt: z
+        .array(z.string())
+        .optional()
+        .describe('Note names (basename, no .md) exempt from the orphan check — index/hub pages that legitimately have zero incoming links (vault-manifest::orphan_exempt). Omit for none.'),
     },
-    async ({ folder }) => {
+    async ({ folder, exempt }) => {
       await index.ensureFresh();
 
+      const exemptNames = new Set(exempt ?? []);
       const orphans: Array<{ file: string; type: string | null; domain: string | null }> = [];
 
       for (const record of index.allNotes()) {
         // Skip exempt files
-        if (EXEMPT_NAMES.has(record.name)) continue;
+        if (exemptNames.has(record.name)) continue;
         if (EXEMPT_PREFIXES.some(p => record.path.startsWith(p))) continue;
 
         // Apply folder filter

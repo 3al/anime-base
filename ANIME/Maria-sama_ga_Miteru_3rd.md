@@ -15,9 +15,10 @@ aliases:
   - Дева Мария смотрит за вами 3rd
   - Мария-сама смотрит на нас 3rd
 created: 2026-05-30
-updated: 2026-05-31
+updated: 2026-06-10
 title_romaji: Maria-sama ga Miteru 3rd
 title_original: マリア様がみてる〜３rd〜
+title_cyrillic: "Дева Мария смотрит за вами 3rd"
 format: ova
 status: finished
 episodes: 5
@@ -85,23 +86,23 @@ images:
 
 ## Персонажи
 
-| Персонаж                                                                         | Сэйю                                                      |
-| -------------------------------------------------------------------------------- | --------------------------------------------------------- |
-| ![[Fukuzawa_Yumi_cover.jpg\|60]] **[[Fukuzawa_Yumi\|Юми Фукудзава]]**            | ![[Kana_Ueda_cover.png\|60]] **[[Kana_Ueda\|Kana Ueda]]** |
-| ![[Ogasawara_Sachiko_cover.jpg\|60]] **[[Ogasawara_Sachiko\|Сатико Огасавара]]** | ![[Miki_Itou_cover.jpg\|60]] **[[Miki_Itou\|Miki Itou]]** |
-| ![[Hasekura_Rei_cover.jpg\|60]] **[[Hasekura_Rei\|Рэй Хасэкура]]**                                                | Shizuka Itō                                               |
-| ![[Yoshino_Shimazu_cover.jpg\|60]] **[[Yoshino_Shimazu\|Ёсино Симадзу]]**            | Haruna Ikezawa                                            |
-| ![[Toudou_Shimako_cover.jpg\|60]] **[[Toudou_Shimako\|Симако Тодо]]**              | Mamiko Noto                                               |
-| ![[Touko_Matsudaira_cover.jpg\|60]] **[[Touko_Matsudaira\|Тоуко Мацудайра]]**              | Rie Kugimiya                                              |
-| **Норико Нидзё**                                                                 | Kaori Shimizu                                             |
-| **Канако Хосокава**                                                              | Ami Koshimizu                                             |
-| ![[Sato_Sei_cover.jpg\|60]] **[[Sato_Sei\|Сэй Сато]]**                           | Megumi Toyoguchi                                          |
-| ![[Kashiwagi_Suguru_cover.jpg\|60]] **[[Kashiwagi_Suguru\|Сугуру Касиваги]]** | Nobuyuki Hiyama                                           |
-| ![[Fukuzawa_Yuuki_cover.jpg\|60]] **[[Fukuzawa_Yuuki\|Юки Фукудзава]]**            | Mitsuhiro Ichiki                                          |
+| Персонаж                                                                          | Сэйю                                                      |
+| --------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| ![[Fukuzawa_Yumi_cover.jpg\|60]] **[[Fukuzawa_Yumi\|Юми Фукудзава]]**             | ![[Kana_Ueda_cover.png\|60]] **[[Kana_Ueda\|Kana Ueda]]** |
+| ![[Ogasawara_Sachiko_cover.jpg\|60]] **[[Ogasawara_Sachiko\|Сатико Огасавара]]**  | ![[Miki_Itou_cover.jpg\|60]] **[[Miki_Itou\|Miki Itou]]** |
+| ![[Hasekura_Rei_cover.jpg\|60]] **[[Hasekura_Rei\|Рэй Хасэкура]]**                | Shizuka Itō                                               |
+| ![[Yoshino_Shimazu_cover.jpg\|60]] **[[Yoshino_Shimazu\|Ёсино Симадзу]]**         | Haruna Ikezawa                                            |
+| ![[Toudou_Shimako_cover.jpg\|60]] **[[Toudou_Shimako\|Симако Тодо]]**             | Mamiko Noto                                               |
+| ![[Touko_Matsudaira_cover.jpg\|60]] **[[Touko_Matsudaira\|Тоуко Мацудайра]]**     | Rie Kugimiya                                              |
+| **Норико Нидзё**                                                                  | Kaori Shimizu                                             |
+| ![[Hosokawa_Kanako_cover.jpg\|60]] **[[Hosokawa_Kanako\|Канако Хосокава]]**       | Ami Koshimizu                                             |
+| ![[Sato_Sei_cover.jpg\|60]] **[[Sato_Sei\|Сэй Сато]]**                            | Megumi Toyoguchi                                          |
+| ![[Kashiwagi_Suguru_cover.jpg\|60]] **[[Kashiwagi_Suguru\|Сугуру Касиваги]]**     | Nobuyuki Hiyama                                           |
+| ![[Fukuzawa_Yuuki_cover.jpg\|60]] **[[Fukuzawa_Yuuki\|Юки Фукудзава]]**           | Mitsuhiro Ichiki                                          |
 | ![[Takeshima_Tsutako_cover.webp\|60]] **[[Takeshima_Tsutako\|Цутако Такэсима]]**  | Rina Satō                                                 |
-| **Кинтаро Арисугава**                                                            | Junko Minagawa                                            |
-| **Сидзука Канина**                                                               | rino                                                      |
-| **Кикуё Аянокодзи**                                                              | Yuu Kobayashi                                             |
+| ![[Arisugawa_Kintaro_cover.jpg\|60]] **[[Arisugawa_Kintaro\|Кинтаро Арисугава]]** | Junko Minagawa                                            |
+| ![[Kanina_Shizuka_cover.jpg\|60]] **[[Kanina_Shizuka\|Сидзука Канина]]**          | rino                                                      |
+| **Кикуё Аянокодзи**                                                               | Yuu Kobayashi                                             |
 
 ## Связанные тайтлы
 

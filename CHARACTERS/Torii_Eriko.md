@@ -12,10 +12,11 @@ aliases:
   - 鳥居 江利子
   - Эрико Тории
 created: 2026-05-30
-updated: 2026-06-02
+updated: 2026-06-10
 co_authored: claude-opus-4.8
 name_romaji: "Torii Eriko"
 name_native: "鳥居 江利子"
+name_cyrillic: "Эрико Тории"
 name_english: "Eriko Torii"
 featured_in:
   - Maria-sama_ga_Miteru

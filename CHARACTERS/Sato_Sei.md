@@ -16,9 +16,10 @@ aliases:
   - Satō Sei
   - Rosa Gigantea
 created: 2026-05-26
-updated: 2026-06-02
+updated: 2026-06-10
 name_romaji: Sato Sei
 name_native: 佐藤 聖
+name_cyrillic: "Сэй Сато"
 featured_in:
   - Maria-sama_ga_Miteru
   - Maria-sama_ga_Miteru_Haru

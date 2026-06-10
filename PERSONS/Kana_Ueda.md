@@ -13,9 +13,10 @@ aliases:
   - "Ueda Kana"
   - "植田 佳奈"
 created: 2026-05-26
-updated: 2026-05-31
+updated: 2026-06-10
 name_primary: "Kana Ueda"
 name_native: "植田佳奈"
+name_cyrillic: "Кана Уэда"
 roles:
   - voice-actor
 country: "Japan"

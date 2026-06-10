@@ -17,9 +17,10 @@ aliases:
   - Rosa Chinensis en bouton
   - Rosa Chinensis
 created: 2026-05-24
-updated: 2026-06-02
+updated: 2026-06-10
 name_romaji: Ogasawara Sachiko
 name_native: 小笠原祥子
+name_cyrillic: "Сатико Огасавара"
 featured_in:
   - Maria-sama_ga_Miteru
   - Maria-sama_ga_Miteru_Haru

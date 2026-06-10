@@ -7,7 +7,6 @@ quality: draft
 co_authored: minimax-m3
 note_kind: character
 tags:
-  - auto-memories-doll
   - selflessness
   - war-orphan
   - caregiver
@@ -16,26 +15,29 @@ aliases:
   - Лукулия Марльборо
   - ルクリア・モールバラ
 created: 2026-06-04
-updated: 2026-06-06
-name_romaji: "Luculia Marlborough"
-name_native: "ルクリア・モールバラ"
-name_english: "Luculia Marlborough"
+updated: 2026-06-11
+name_romaji: Luculia Marlborough
+name_native: ルクリア・モールバラ
+name_cyrillic: "Лукулия Марльборо"
+name_english: Luculia Marlborough
 featured_in:
-  - "Violet_Evergarden"
+  - Violet_Evergarden
+  - Violet_Evergarden_Kitto_Ai_wo_Shiru_Hi_ga_Kuru_no_Darou
+  - Violet_Evergarden_Eternity_and_the_Auto_Memory_Doll
 character_role: supporting
 gender: female
 status: alive
-age: "unknown"
-species: "human"
+age: unknown
+species: human
 affiliations:
-  - "Почтовая компания CH"
-  - "Школа автозапоминающих кукол (выпускница)"
-personal_score: null
+  - Почтовая компания CH
+  - Школа автозапоминающих кукол (выпускница)
+personal_score:
 voice_actors: []
-mal_url: "https://myanimelist.net/character/158540/Luculia_Marlborough"
-anilist_url: "https://anilist.co/character/124810/Luculia-Marlborough"
+mal_url: https://myanimelist.net/character/158540/Luculia_Marlborough
+anilist_url: https://anilist.co/character/124810/Luculia-Marlborough
 images:
-  cover: "attachments/Marlborough_Luculia_cover.webp"
+  cover: attachments/Marlborough_Luculia_cover.webp
 ---
 
 # Luculia Marlborough (ルクリア・モールバラ)
@@ -65,8 +67,8 @@ images:
 ## Тайтлы
 
 - ![[Violet_Evergarden_cover.png|80]] **[[Violet_Evergarden|Violet Evergarden]]** — 2018, пост-военная драма Kyoto Animation. Эпизод 3 — основная арка персонажа; краткие появления в эпизодах 6 и 9; камео в эпилоге серии.
-- **Violet Evergarden: Kitto «Ai» wo Shiru Hi ga Kuru no Darou** (OVA, 2018) — OVA-сайдстори к TV-сериалу.
-- **Violet Evergarden Gaiden: Eien to Jidou Shuki Ningyou** (2019) — полнометражный спин-офф (история Изабеллы и Тейлор).
+- ![[Violet_Evergarden_Kitto_Ai_wo_Shiru_Hi_ga_Kuru_no_Darou_cover.png|80]] **[[Violet_Evergarden_Kitto_Ai_wo_Shiru_Hi_ga_Kuru_no_Darou|Violet Evergarden: Kitto "Ai" wo Shiru Hi ga Kuru no Darou]]** (2018) — спешл-эпизод к TV-сериалу.
+- ![[Violet_Evergarden_Eternity_and_the_Auto_Memory_Doll_cover.jpg|80]] **[[Violet_Evergarden_Eternity_and_the_Auto_Memory_Doll|Violet Evergarden Gaiden: Eien to Jidou Shuki Ningyou]]** (2019) — полнометражный спин-офф (история Изабеллы и Тейлор).
 - **Violet Evergarden: Recollections** (2021) — компиляционный фильм по событиям сериала.
 
 ## Связи
@@ -76,7 +78,8 @@ images:
 - ![[Evergarden_Violet_cover.webp|60]] **[[Evergarden_Violet|Вайолет Эвергарден]]** — одноклассница и близкая подруга. Вайолет пишет для Лукулии её первое «сложное» письмо — брату Спенсеру; именно этот заказ закрепляет Вайолет в профессии и приводит её в штат CH.
 - **Спенсер Марльборо** — старший брат Лукулии, ветеран Западного фронта. После гибели родителей впал в депрессию и алкоголизм; Лукулия ухаживала за ним, пока письмо Вайолет не примирило их.
 - ![[Hodgins_Claudia_cover.jpg|60]] **[[Hodgins_Claudia|Клаудия Ходжинс]]** — владелец CH Postal Company, который принимает Вайолет в штат именно после успешного «письма Спенсеру». Упоминается в контексте профессионального взросления Лукулии и Вайолет.
-- **Эрика Браун** и **Айрис Каннари** — коллеги-куклы; Эрика упоминает, что Лукулия планирует работать и после замужества — что, по словам Айрис, нетипично для кукол.
+- **[[Erica_Brown|Эрика Браун]]** — коллега-кукла; упоминает, что Лукулия собирается работать и после замужества.
+- ![[Iris_Cannary_cover.png|60]] **[[Iris_Cannary|Айрис Каннари]]** — коллега-кукла; замечает, что желание Лукулии работать после замужества нетипично для кукол.
 - **Безымянный жених** — молодой человек, с которым Лукулия обручена в эпилоге серии (показан также в Gaiden).
 - **Родители Лукулии** — мать и отец, погибшие под прорывом Западного фронта. Именно их гибель запускает всю арку Спенсера и Лукулии. В каноне безымянны.
 

@@ -14,9 +14,10 @@ aliases:
   - Takeshima Tsutako
   - 武嶋 蔦子
 created: 2026-05-31
-updated: 2026-06-04
+updated: 2026-06-10
 name_romaji: "Takeshima Tsutako"
 name_native: "武嶋 蔦子"
+name_cyrillic: "Цутако Такэсима"
 featured_in:
   - Maria-sama_ga_Miteru
   - Maria-sama_ga_Miteru_Haru
@@ -67,7 +68,7 @@ personal_score: null
 ## Связи
 
 - ![[Fukuzawa_Yumi_cover.jpg|60]] **[[Fukuzawa_Yumi|Юми Фукудзава]]** — близкая подруга и одноклассница; Цутако — тот человек, который случайно свёл Юми с советом Ямаюрикай через свой фотографический инцидент.
-- **Канако Хосокава** — первокурсница из фотоклуба, чья арка в третьем сезоне пересекается с деятельностью Цутако.
+- ![[Hosokawa_Kanako_cover.jpg|60]] **[[Hosokawa_Kanako|Канако Хосокава]]** — первокурсница из фотоклуба, чья арка в третьем сезоне пересекается с деятельностью Цутако.
 
 ## Сэйю
 

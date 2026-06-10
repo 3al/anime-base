@@ -34,6 +34,7 @@ model: sonnet
 1. **`SYSTEM/Linking_guidelines.md`** — правила линковки
 2. **`.claude/vault-manifest.yaml` → `reciprocity_pairs`** — только для под-режима `asymmetric`: список kind-пар `[sourceKind, targetKind]`, реципрокность которых держится на конвенции (а не на frontmatter-FK). Поле опциональное, дефолт `[]` (opt-in). Пусто или отсутствует → под-режим `asymmetric` пропускается.
 3. **`.claude/vault-manifest.yaml` → `link_cap`** — для под-режима `lint`: потолок исходящих WikiLinks для проверки `too-many-links`. Поле опциональное: отсутствует → дефолт 15; число → переопределить порог; `null` → отключить проверку (для формализованных волтов, где карточки by design материализуют десятки структурных gallery/cast-ссылок). Прокидывается в `vault_lint` параметром `linkCap`.
+3a. **`.claude/vault-manifest.yaml` → `orphan_exempt`** — для под-режима `orphans`: список имён заметок (basename без `.md`) — индекс/хаб-страницы, которые by design не имеют входящих ссылок. Поле опциональное, дефолт `[]`. Прокидывается в `vault_orphans` параметром `exempt`. Отсутствует → исключений по имени нет (префиксы `SYSTEM/`, `ARTIFACTS/` исключены движком всегда).
 4. **`.claude/vault-manifest.yaml` → lint-backstop ключи** — для под-режима `lint`, опциональные, прокидываются в `vault_lint` (все следуют контракту `reciprocity_pairs`: отсутствует → правило молчит):
    - `cover_field` (default `images.cover`; `null` отключает) + `cover_embed_suffix` (default `_cover`) → `coverField`/`coverEmbedSuffix` для `cover-ref-mismatch` (structural).
    - `name_surface_pairs` (список `{kind, basenameField}`) → `nameSurfacePairs` для `name-surface-mismatch` (structural, opt-in).
@@ -50,7 +51,7 @@ model: sonnet
 | `vault_broken_links` | `{ folder? }` | `{ broken: [{ file, line, target }], count }` |
 | `vault_duplicate_links` | `{ folder? }` | `{ duplicates: [{ file, target, count }], count }` |
 | `vault_duplicate_basenames` | `{ folder? }` | `{ duplicates: [{ basename, files: [...] }], count }` |
-| `vault_orphans` | `{ folder? }` | `{ orphans: [{ file, type, domain }], count }` |
+| `vault_orphans` | `{ folder?, exempt? }` | `{ orphans: [{ file, type, domain }], count }` |
 | `vault_asymmetric_links` | `{ sourceKind, targetKind, folder? }` | `{ pairs: [{ source, sourcePath, line, target, targetPath, missingReverse }], count }` |
 | `vault_lint` | `{ target?, showAll?, reciprocityPairs?, asymmetricSeverity?, linkCap?, coverField?, coverEmbedSuffix?, nameSurfacePairs?, requiredTagsByKind?, userOnlySections?, userOnlyStubWhitelist?, proseScript? }` | `{ files: [...], summary }` (summary несёт `structural`/`heuristic` разбивку + `structural_green`) |
 
@@ -66,7 +67,7 @@ model: sonnet
 
 Если в манифесте задан `link_cap` — передать его как `linkCap` (число → порог; `null` → отключить `too-many-links`). Поле отсутствует → параметр не передавать, движок применит дефолт 15.
 
-Прокинуть и lint-backstop ключи манифеста (см. «Источники правил» #4), если заданы: `cover_field`/`cover_embed_suffix`, `name_surface_pairs`, `required_tags_by_kind`, `user_only_sections`/`user_only_stub_whitelist`, `prose_script` → одноимённые camelCase-параметры `vault_lint`. Отсутствующие — не передавать. В выводе различать классы: `summary.structural_green` (нет structural-ERROR) — главный сигнал; `heuristic`-поток (`user-only-fabricated`, `mixed-script-prose`) — нечёткие WARN, показывать отдельно, не смешивать со structural.
+Прокинуть и lint-backstop ключи манифеста (см. «Источники правил» #4), если заданы: `cover_field`/`cover_embed_suffix`, `name_surface_pairs`, `required_tags_by_kind`, `user_only_sections`/`user_only_stub_whitelist`, `prose_script` → одноимённые camelCase-параметры `vault_lint`. Отсутствующие — не передавать. В выводе различать классы: `summary.structural_green` (нет structural-ERROR) — главный сигнал; `heuristic`-поток (`user-only-fabricated`, `mixed-script-prose`) — нечёткие WARN, показывать отдельно, не смешивать со structural. Начиная с vault-index 0.8.2 (§30) `vault_lint` сам несёт `broken-link`/`duplicate-link` как structural-ERROR (always-on, без конфига) — поэтому под-режим `lint` теперь покрывает целость внутренних ссылок наравне с под-режимами `broken`/`duplicate` (standalone-tools оставлены для точечных vault-wide прогонов); `structural_green=true` означает в т.ч. «нет битых/дублирующихся внутренних ссылок».
 
 Если все tools вернули пустые массивы (count: 0) — сообщить «Проблем не найдено» и завершить.
 
@@ -103,7 +104,7 @@ model: sonnet
 
 ### 4. Перенаправление на orphans
 
-Если аргумент `orphans` или `all` — сообщить пользователю количество сирот из `vault_orphans` и предложить запустить `/link-orphans` для детального анализа и интеграции.
+Если аргумент `orphans` или `all` — вызвать `vault_orphans({ folder?, exempt })`, передав `exempt` из `vault-manifest.yaml::orphan_exempt`, если поле задано (иначе не передавать). Сообщить пользователю количество сирот и предложить запустить `/link-orphans` для детального анализа и интеграции.
 
 ### 4.5. Исправление асимметричных связей
 

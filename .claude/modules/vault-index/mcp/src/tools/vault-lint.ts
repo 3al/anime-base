@@ -28,7 +28,7 @@ interface LintFileResult {
 export function registerLintTool(server: McpServer, index: VaultIndex): void {
   server.tool(
     'vault_lint',
-    'Validate frontmatter, tags, links, tables, and cover refs. Replaces lint-vault.sh. Issues are tagged structural (deterministic, ~0 FP — the green-by-structure signal) or heuristic (fuzzy, opt-in). All theme-specific policy (kind-pairs, link cap, cover field, name-surface pairs, required tags, USER-ONLY sections, prose script, tooling vocabulary) is passed in from vault-manifest.yaml, never hardcoded. Heuristic content rules (user-only-fabricated, mixed-script-prose, tooling-vocab-in-prose) read each file on-demand and run ONLY when their config is supplied.',
+    'Validate frontmatter, tags, links (including broken-link and duplicate-link, folded in so structural_green is honest about internal-link integrity), tables, and cover refs. Replaces lint-vault.sh. Issues are tagged structural (deterministic, ~0 FP — the green-by-structure signal) or heuristic (fuzzy, opt-in). All theme-specific policy (kind-pairs, link cap, cover field, name-surface pairs, required tags, USER-ONLY sections, prose script, tooling vocabulary) is passed in from vault-manifest.yaml, never hardcoded. Heuristic content rules (user-only-fabricated, mixed-script-prose, tooling-vocab-in-prose) read each file on-demand and run ONLY when their config is supplied.',
     {
       target: z.string().optional().describe('File name, relative path, or folder. Omit for entire vault.'),
       showAll: z.boolean().optional().describe('Return all files (true) or only files with issues (false, default).'),
@@ -60,6 +60,10 @@ export function registerLintTool(server: McpServer, index: VaultIndex): void {
         .array(z.object({ kind: z.string(), tags: z.array(z.string()) }))
         .optional()
         .describe('Opt-in required-tags-by-kind (vault-manifest::required_tags_by_kind): notes of `kind` must carry every listed tag. Replaces the former hardcoded kind rules.'),
+      maxTags: z
+        .number()
+        .optional()
+        .describe('Tag-count ceiling for too-many-tags (vault-manifest::max_tags). Default 10 (matches Tag_taxonomy rule 5).'),
       userOnlySections: z
         .array(z.string())
         .optional()
@@ -108,6 +112,7 @@ export function registerLintTool(server: McpServer, index: VaultIndex): void {
         coverEmbedSuffix: params.coverEmbedSuffix,
         nameSurfacePairs: params.nameSurfacePairs,
         requiredTagsByKind: params.requiredTagsByKind,
+        maxTags: params.maxTags,
         userOnlySections: params.userOnlySections,
         userOnlyStubWhitelist: params.userOnlyStubWhitelist,
         proseScript: params.proseScript,

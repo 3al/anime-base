@@ -12,9 +12,10 @@ aliases:
   - "Хаяо Миядзаки"
   - "Miyazaki Hayao"
 created: 2026-05-23
-updated: 2026-05-26
+updated: 2026-06-10
 name_primary: "Hayao Miyazaki"
 name_native: "宮崎駿"
+name_cyrillic: "Хаяо Миядзаки"
 roles:
   - director
   - screenwriter

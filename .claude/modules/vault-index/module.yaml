@@ -1,8 +1,69 @@
 name: vault-index
-version: 0.8.0
+version: 0.9.1
 description: |
   Структурный MCP-сервер волта: индекс frontmatter, граф ссылок, таблицы,
   инвентарь вложений, lint, query. Подробности — SYSTEM/MCP_Server_Design.md.
+
+  v0.9.1 (заказ Anime_Base §32 — under_tag_discord → порог большинства):
+  первый прогон vault_tag_health дал 91 кандидата (≈весь шум, present_on:1/
+  missing_on:8+) — фасет-со-членство (общий featured_in/affiliations) ≠
+  тематическая близость, а тематические теги по природе РАЗЛИЧАЮЩИЕ → «тег у
+  соседа ⇒ нужен и мне» инвертированный приор. Реврейминг under_tag_discord из
+  «любой gap» в «детектор полноты почти-универсальных тегов»: новые опции
+  `underTagMode` (majority|any|off, дефолт **majority**) / `underTagPresentFraction`
+  (0.6) / `underTagMaxMissing` (2) — majority флагает только тег с долей ≥fraction
+  И пропуском ≤maxMissing; `any` = прежнее поведение; `off` = пропуск. Кандидаты
+  обогащены `group_size`/`present_fraction`/`confidence`, ранжируются по confidence
+  (`present_fraction × tightness`, tightness=min(1,2/size) — тугой фасет важнее
+  широкого), затем truncate до `underTagLimit` (раньше резал в произвольном порядке
+  обхода). Ручки — caller-параметры из манифеста (`under_tag_mode` и т.д.), как
+  `max_tags`. Тема-нейтрально. node:test 61→66 (+5: majority-cut, maxMissing-gate,
+  fraction-boundary, any-legacy, off, ранжирование+truncate). Tool-count без
+  изменений (17).
+
+  v0.9.0 (заказ Anime_Base §29 — дисциплина тегирования, Phase 1/движок):
+  - Машиночитаемый канон тегов: канон читается из `SYSTEM/tag_taxonomy.yaml`
+    (yaml = SSOT, схема {name, group, description, applies_to_kinds?, adult_gated?}),
+    с fallback на legacy `Tag_taxonomy.md`-таблицу на период раскатки. src/taxonomy.ts
+    → `loadCanon()` возвращает {tags, meta, source}; index несёт `canonSource`
+    ('yaml'|'markdown'|'none') — канон-зависимые ERROR-правила безопасны только над
+    стабильным yaml (markdown ломкий → детектор на песке).
+  - +tool `vault_tag_health` (vault-wide, src/tag-health.ts): детерминированные
+    `ghost` (канон-тег с 0 использований) и `noncanon_summary` (used ∖ canon);
+    эвристические кандидаты `singletons` (count==1) и `under_tag_discord` (карточки,
+    делящие фасет-значение `tag_facet_fields`, расходящиеся по тематическому тегу;
+    многозначные поля — пересечение непусто). Ничего не гейтит structural_green;
+    ghost/noncanon advisory при canon_unreliable (нет yaml-SSOT).
+  - `too-many-tags`: захардкоженный потолок 8 → caller-параметр `maxTags`
+    (vault-manifest::max_tags), дефолт 10 — выровнен с governance-правилом 5
+    (был framework-internal рассинхрон 8↔10).
+  - `non-canonical-tag` остаётся WARN (фазовая раскатка Q6: WARN один цикл →
+    ERROR-gating позже отдельным датированным коммитом, только при canonSource='yaml').
+  Тема-нейтрально: facet-поля и max_tags — caller-параметры из манифеста.
+  node:test 47→61 (+14: tag_health ghost/noncanon/singleton/under-tag, canon-loader
+  yaml-wins/md-fallback/none/empty, maxTags 8→10 фикс + override). 16→17 tools.
+
+  v0.8.2 (заказ Anime_Base §30): broken-link / duplicate-link свёрнуты в
+  vault_lint как structural-ERROR правила (always-on, ~0 FP) — теперь
+  summary.structural_green ЧЕСТЕН про целость внутренних ссылок: «зелёный lint
+  ⇒ нет битых/дублирующихся внутренних ссылок» by construction. Зеркалят
+  standalone-tools ТОЧНО: broken исключает медиа-эмбеды (isMediaTarget),
+  duplicate исключает эмбеды (isEmbed — одно фото в таблице+галерее намеренно).
+  Внешние URL — markdown/bare-ссылки, не WikiLinks → вне области (контраст §25:
+  link-liveness флапает, не гейтит green). Standalone vault_broken_links /
+  vault_duplicate_links СОХРАНЕНЫ для точечных vault-wide прогонов. Тема-нейтрально,
+  новых manifest-параметров нет. node:test 38→47 (+9: broken/duplicate pos/neg,
+  медиа-исключение, external-out-of-scope, 2 интеграции на реальном parseNote).
+
+  v0.8.1 (theme-neutrality cleanup, §30-adjacent): выпилены последние два
+  доменных хардкода из движка (leak'и из старого Knowledge_Base-волта).
+  - `vault_orphans`: захардкоженный exempt-список имён (`LLM_Comparison`,
+    `LLM_Benchmarks`, `Coding_Assistants_Comparison`) заменён на caller-параметр
+    `exempt` ← `vault-manifest::orphan_exempt` (контракт reciprocity_pairs:
+    отсутствует → исключений по имени нет; префиксы SYSTEM/, ARTIFACTS/ — всегда).
+  - `index.ts`: убран fallback `VAULT_ROOT || 'D:\\Knowledge_Base'` — теперь
+    fail-loud, если env не задан (footgun: молчаливое индексирование чужого волта).
+  Обратно совместимо: новый ключ опционален, движок theme-neutral by construction.
 
   v0.8.0 (заказ Anime_Base §26 + §24-backstop): два lint-правила.
   - `tooling-vocab-in-prose` (HEURISTIC, opt-in, on-demand тело, src/content-lint.ts):

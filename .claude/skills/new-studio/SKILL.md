@@ -113,7 +113,7 @@ images:
 1. КАТЕГОРИЯ — если уместно (`legendary-studio`, `independent`).
 2. ТЕМЫ — стиль/специализация (`hand-drawn-animation`, `cgi-heavy`, `seinen-specialist`, `shoujo-specialist`).
 3. **НЕГАТИВНАЯ ПРОВЕРКА** — убрать теги, дублирующие `status`/`country`/`note_kind`. Имя студии НЕ ставится тегом.
-4. **ПРОБЕЛЫ в таксономии** — обязательно добавить новые теги в `SYSTEM/Tag_taxonomy.md`.
+4. **Канон-дисциплина (критерий D + правила: `.claude/skills/audit-by-creator/references/tag-discipline.md`).** Выбирать теги **из** канона `SYSTEM/tag_taxonomy.yaml`. Новый тег — **только** по критерию D (переиспользуемая ось по природе, не сущность/франшизо-узкий ярлык, ортогонален enum-полям); прошёл → **структурной записью** в `SYSTEM/tag_taxonomy.yaml` (не в `Tag_taxonomy.md` — генерируется, затем `tag_taxonomy_render.mjs`); проставить на **все facet-сиблинги**, не точечно.
 
 Studio без тегов — норма (kind не требует обязательных).
 
@@ -228,6 +228,8 @@ Studio без тегов — норма (kind не требует обязате
 
 ### 7.5. Reverse-check / cross-update
 
+> **Reverse-leg правило (кросс-kind).** Записи, которые этот скилл пишет о студии в **чужие** карточки (`ANIME/* ## Студия и команда`) — reverse-leg-артефакты по `SYSTEM/Linking_guidelines.md` → «Reverse-leg: владение и cover-sync (кросс-kind)». Markup-миниатюра (логотип) привязана к `images.cover` студии: при позднем добавлении логотипа её синкают во **весь веер** входящих (`/add-images` + аудит студии); владение описанием — по тому, кто его написал (пути i/ii, git-blame).
+
 Этот kind требует **двусторонней** сверки:
 
 **A. ANIME/* которые ссылаются на эту студию через `anime.studio` (foreign-key):**
@@ -286,7 +288,7 @@ Studio без тегов — норма (kind не требует обязате
 - **Ставить `co_authored: <model-id>`** при создании. Формат `claude-opus-4.7` / `claude-sonnet-4.6` / `claude-haiku-4.5` (источник — системный промпт, последний дефис → точка). `/verify` это поле не трогает.
 - Web research — обязательная часть фазы 2. Не выдумывать факты, особенно `founded_year` и `parent_company` (структуры собственности японских анимационных компаний нетривиальны).
 - **Логотип скачивать всегда, когда возможно.** Без него студия — невидимая запись в галереях тайтлов; смысл cross-update'а в `## Студия и команда` теряется.
-- При обнаружении новых тегов, которых нет в `SYSTEM/Tag_taxonomy.md` — автоматически добавить их туда.
+- **Теги — канон-дисциплина** (`tag-discipline.md`): выбирать из канона `SYSTEM/tag_taxonomy.yaml`; расширять только по критерию D (переиспользуемая ось, не сущность-узкое); новый тег — структурной записью в yaml (не в md, он генерируется), проставлять на все facet-сиблинги.
 - `status: defunct` без заполненного `successor` — допустимо (не все закрытые студии имели прямого преемника). Но если есть очевидный преемник (Topcraft → Studio Ghibli) — заполнить.
 - `parent_company` ≠ `successor`. Parent — нынешний холдинг; successor — кто фактически продолжил традицию после ликвидации. Для активной студии `successor: ""`.
 - Карточка студии без `vault_backlinks` (ни одного аниме в волте с этой студией) — допустимый временный случай. Секция `## Ключевые работы` пустая до появления первого тайтла; `/new-anime` cross-update её заполнит.
@@ -296,6 +298,10 @@ Studio без тегов — норма (kind не требует обязате
 kind: studio
 requirements:
   - requirement: cover_ext_matches_content
+    kind_of: format
+  - requirement: reverse_leg_subject_artifact
+    kind_of: format
+  - requirement: tag_canon_discipline
     kind_of: format
 ```
 <!-- END: spec-requirements -->

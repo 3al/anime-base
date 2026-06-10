@@ -131,6 +131,14 @@ tooling_vocab:
   state_phrases: ['карточк[а-яё]* .{0,12}нет', 'в волте', 'plain-text', 'зафиксирован[а-яё]* только']
   flag_skill_commands: true
 
+# Tag-discipline (§29). Канон тегов — SYSTEM/tag_taxonomy.yaml (yaml=SSOT, Tag_taxonomy.md
+# генерируется). Правила/критерий — framework: audit-by-creator/references/tag-discipline.md.
+# tag_facet_fields — поля-фасеты для under_tag_discord (vault_tag_health): карточки, делящие
+# значение, — кандидаты на общий тематический тег. Многозначные поля → пересечение множеств.
+# max_tags — дефолт 10 (правило 5), переопределять не нужно. required_tags_by_kind — пусто
+# (ни один kind не требует обязательных тегов: всё закрывается enum-полями).
+tag_facet_fields: [featured_in, affiliations]
+
 # Per-module configuration overrides (advanced).
 config:
   vault-semantic:

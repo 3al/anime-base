@@ -14,9 +14,10 @@ aliases:
   - 今野緒雪
   - Оюки Конно
 created: 2026-05-30
-updated: 2026-06-02
+updated: 2026-06-10
 name_primary: "Oyuki Konno"
 name_native: "今野緒雪"
+name_cyrillic: "Оюки Конно"
 roles:
   - novelist
 country: "Japan"

@@ -15,6 +15,7 @@ import { join, dirname } from 'node:path';
 import { ensureManagedBlock } from '../lib/managed_block.mjs';
 import { readStdin } from '../lib/read_input.mjs';
 import { writeVisionProbe } from '../lib/vision_probe.mjs';
+import { renderTagTaxonomy } from '../lib/tag_taxonomy_render.mjs';
 
 
 function emit(result) {
@@ -102,8 +103,15 @@ function main() {
       mkdirSync(targetSystemDir, { recursive: true });
       actions.push({ type: 'directory_created', target: 'SYSTEM/' });
     }
+    // .md governance docs + .yaml machine-readable governance data (enums.yaml,
+    // tag_taxonomy.yaml). Both are skip-if-exists vault-owned content once seeded.
+    // tag_taxonomy.yaml is handled separately (step 4.55) — it must NOT be
+    // blindly seeded empty over a vault that still carries a populated legacy
+    // Tag_taxonomy.md (would flip canonSource to an empty yaml → every tag goes
+    // non-canonical). Excluded here, seeded conditionally below.
     const templates = readdirSync(templatesSystemDir).filter((name) =>
-      name.endsWith('.md') && statSync(join(templatesSystemDir, name)).isFile(),
+      name !== 'tag_taxonomy.yaml' &&
+      (name.endsWith('.md') || name.endsWith('.yaml')) && statSync(join(templatesSystemDir, name)).isFile(),
     );
     let seeded = 0;
     let kept = 0;
@@ -123,6 +131,45 @@ function main() {
           `Чтобы получить актуальную версию шаблона из core — удалите файл и перезапустите /init-vault.`,
       );
     }
+  }
+
+  // 4.55. Seed SYSTEM/tag_taxonomy.yaml (machine canon, yaml = SSOT) — but never
+  //       clobber a populated legacy Tag_taxonomy.md. If the vault still has tags
+  //       in the human table and no yaml, leave it on the markdown fallback
+  //       (canonSource='markdown' keeps detectors honest against the real canon)
+  //       and emit a migration next_step — the md→yaml lift is a deliberate
+  //       /init-vault --update step, not a silent overwrite.
+  {
+    const yamlTarget = join(vault_root, 'SYSTEM', 'tag_taxonomy.yaml');
+    const yamlTemplate = join(module_dir, 'templates', 'SYSTEM', 'tag_taxonomy.yaml');
+    const mdTarget = join(vault_root, 'SYSTEM', 'Tag_taxonomy.md');
+    if (existsSync(yamlTarget)) {
+      // already migrated/owned — nothing to seed
+    } else {
+      const legacyHasTags = existsSync(mdTarget) &&
+        /^\|\s*`[^`]+`/m.test(readFileSync(mdTarget, 'utf-8'));
+      if (legacyHasTags) {
+        next_steps.push(
+          'SYSTEM/Tag_taxonomy.md содержит legacy-теги, но SYSTEM/tag_taxonomy.yaml ещё нет. ' +
+          'Канон работает на markdown-fallback. Для перехода на yaml-SSOT (нужен для будущего ' +
+          'noncanon-ERROR-гейта) — мигрируй теги в tag_taxonomy.yaml через /init-vault --update.',
+        );
+      } else if (existsSync(yamlTemplate)) {
+        copyFileSync(yamlTemplate, yamlTarget);
+        actions.push({ type: 'template_seeded', target: 'SYSTEM/tag_taxonomy.yaml' });
+      }
+    }
+  }
+
+  // 4.6. Regenerate SYSTEM/Tag_taxonomy.md from the machine canon (yaml = SSOT).
+  //      Guarded: renderTagTaxonomy only rewrites the md when it carries the
+  //      generated-tag-taxonomy markers — a legacy hand-written Tag_taxonomy.md
+  //      (no markers) is left UNTOUCHED, so a freshly-seeded empty yaml never
+  //      clobbers existing tags. Migrating a legacy md's tags INTO the yaml is a
+  //      deliberate /init-vault --update step (in-vault flow), not silent install.
+  const tagRender = renderTagTaxonomy(vault_root);
+  if (tagRender.changed) {
+    actions.push({ type: 'tag_taxonomy_rendered', target: 'SYSTEM/Tag_taxonomy.md' });
   }
 
   // 4.5. Vision-gate probe asset. Image-handling skills Read this tiny PNG as a

@@ -139,15 +139,25 @@ const nS = Object.values(latest).filter(e => e.audit_type === "structural").leng
 const nC = Object.values(latest).filter(e => e.audit_type === "content").length;
 dv.paragraph(`**Покрытие:** ${audited}/${total} карточек с ≥1 аудитом · structural ${nS} · content ${nC} · всего записей ${rows.length}. Легенда: \`✓\` pristine, \`⚠\` non-pristine.`);
 
-dv.header(3, "История леджера (новые сверху)");
-dv.table(
-  ["ts (UTC)", "карточка", "ось", "score", "судья", "pristine", "причины"],
-  rows.slice().sort((a, b) => b.ts.localeCompare(a.ts)).map(r => [
+// История леджера — под сворачиваемый <details> (collapsed by default): простыня
+// прячется, разворачивается по клику. Markdown-callout тут не годится (это хвост того же
+// dataviewjs-блока, не отдельная секция). Удалить целиком — просто убрать этот блок.
+const hist = rows.slice().sort((a, b) => b.ts.localeCompare(a.ts));
+const det = dv.container.createEl("details");
+det.createEl("summary", { text: `История леджера (новые сверху) — ${hist.length} записей · нажми, чтобы развернуть` });
+const tbl = det.createEl("table", { cls: "dataview table-view-table" });
+const htr = tbl.createEl("thead").createEl("tr");
+["ts (UTC)", "карточка", "ось", "score", "судья", "pristine", "причины"]
+  .forEach(h => htr.createEl("th", { text: h }));
+const tb = tbl.createEl("tbody");
+for (const r of hist) {
+  const tr = tb.createEl("tr");
+  [
     r.ts.slice(0, 16).replace("T", " "),
     r.note.split("/").pop().replace(".md", ""),
     r.audit_type, `${r.score}/10`, r.judge_model,
     r.pristine ? "✓" : "⚠",
     (r.reasons && r.reasons.length) ? r.reasons.join("; ") : "—"
-  ])
-);
+  ].forEach(v => tr.createEl("td", { text: String(v) }));
+}
 ```

@@ -1,7 +1,7 @@
 import { readFile, writeFile, stat, readdir, mkdir } from 'node:fs/promises';
 import { join, relative, extname, basename, dirname } from 'node:path';
 import { parseNote } from './parser.js';
-import { getCanonicalTags } from './taxonomy.js';
+import { loadCanon, type TagMeta } from './taxonomy.js';
 import type { NoteRecord, IndexData, AttachmentInventory } from './types.js';
 
 // v4: NoteRecord gained `tableBlocks` and IndexData gained the attachment
@@ -40,7 +40,8 @@ function buildInventory(paths: string[]): AttachmentInventory {
 export class VaultIndex {
   readonly vaultRoot: string;
   readonly indexPath: string;
-  readonly taxonomyPath: string;
+  readonly taxonomyPath: string;       // legacy human view (Tag_taxonomy.md)
+  readonly tagTaxonomyPath: string;    // machine SSOT (tag_taxonomy.yaml)
 
   // PRIMARY store: relative path → NoteRecord (source of truth)
   notesByPath = new Map<string, NoteRecord>();
@@ -54,8 +55,12 @@ export class VaultIndex {
   // Alias → canonical note name
   aliasToName = new Map<string, string>();
 
-  // Canonical tags from Tag_taxonomy.md
+  // Canonical tags + per-tag metadata, loaded from tag_taxonomy.yaml (SSOT) or
+  // the legacy Tag_taxonomy.md table. `canonSource` records which one was used —
+  // gates canon-dependent ERROR rules (only safe over the stable yaml store).
   canonicalTags = new Set<string>();
+  canonMeta = new Map<string, TagMeta>();
+  canonSource: 'yaml' | 'markdown' | 'none' = 'none';
 
   // Attachment inventory: every media file in the vault (cover-ref-mismatch).
   attachments: AttachmentInventory = EMPTY_INVENTORY;
@@ -71,6 +76,15 @@ export class VaultIndex {
     // also mkdir's the parent so legacy-layout vaults (no canonical dir) still cache.
     this.indexPath = join(vaultRoot, '.claude', 'modules', 'vault-index', 'mcp', 'index.json');
     this.taxonomyPath = join(vaultRoot, 'SYSTEM', 'Tag_taxonomy.md');
+    this.tagTaxonomyPath = join(vaultRoot, 'SYSTEM', 'tag_taxonomy.yaml');
+  }
+
+  /** Load the tag canon (yaml SSOT, md fallback) into the index fields. */
+  private async loadCanonInto(): Promise<void> {
+    const canon = await loadCanon(this.tagTaxonomyPath, this.taxonomyPath);
+    this.canonicalTags = canon.tags;
+    this.canonMeta = canon.meta;
+    this.canonSource = canon.source;
   }
 
   /**
@@ -110,7 +124,7 @@ export class VaultIndex {
     this.attachments = buildInventory(media);
 
     this.rebuildDerivedMaps();
-    this.canonicalTags = await getCanonicalTags(this.taxonomyPath);
+    await this.loadCanonInto();
     await this.persist();
 
     const timeMs = Date.now() - start;
@@ -219,7 +233,7 @@ export class VaultIndex {
       }
       this.attachments = data.attachments ?? EMPTY_INVENTORY;
       this.rebuildDerivedMaps();
-      this.canonicalTags = await getCanonicalTags(this.taxonomyPath);
+      await this.loadCanonInto();
       return true;
     } catch {
       return false;
@@ -290,7 +304,7 @@ export class VaultIndex {
       await this.persist();
     }
 
-    this.canonicalTags = await getCanonicalTags(this.taxonomyPath);
+    await this.loadCanonInto();
   }
 
   private addRecord(record: NoteRecord): void {

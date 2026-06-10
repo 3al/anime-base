@@ -14,12 +14,15 @@ aliases:
   - Вайолет Эвергарден
   - ヴァイオレット・エヴァーガーデン
 created: 2026-06-01
-updated: 2026-06-06
+updated: 2026-06-11
 name_romaji: Violet Evergarden
 name_english: Violet Evergarden
 name_native: ヴァイオレット・エヴァーガーデン
+name_cyrillic: "Вайолет Эвергарден"
 featured_in:
   - Violet_Evergarden
+  - Violet_Evergarden_Kitto_Ai_wo_Shiru_Hi_ga_Kuru_no_Darou
+  - Violet_Evergarden_Eternity_and_the_Auto_Memory_Doll
 character_role: protagonist
 gender: female
 status: alive
@@ -70,6 +73,8 @@ personal_score: null
 ## Тайтлы
 
 - ![[Violet_Evergarden_cover.png|80]] **[[Violet_Evergarden|Violet Evergarden]]** — 2018, пост-военная драма Kyoto Animation по лайт-новеллам Каны Акацуки.
+- ![[Violet_Evergarden_Kitto_Ai_wo_Shiru_Hi_ga_Kuru_no_Darou_cover.png|80]] **[[Violet_Evergarden_Kitto_Ai_wo_Shiru_Hi_ga_Kuru_no_Darou|Violet Evergarden: Kitto "Ai" wo Shiru Hi ga Kuru no Darou]]** — 2018, спешл-эпизод между 4-й и 5-й сериями: Вайолет берётся написать любовное письмо для оперной певицы Ирмы Феличе и впервые всерьёз сталкивается с понятием любви.
+- ![[Violet_Evergarden_Eternity_and_the_Auto_Memory_Doll_cover.jpg|80]] **[[Violet_Evergarden_Eternity_and_the_Auto_Memory_Doll|Violet Evergarden Gaiden: Eien to Jidou Shuki Ningyou]]** (2019) — сайд-фильм франшизы; Вайолет служит компаньонкой и наставницей Изабеллы Йорк в академии и пишет письмо, связывающее сестёр.
 
 ## Связи
 
@@ -79,11 +84,13 @@ personal_score: null
 - ![[Dietfried_Bougainvillea_cover.jpg|60]] **[[Dietfried_Bougainvillea|Дитфрид Бугенвиллея]]** — старший брат Гилберта, нашедший Вайолет; винит её в гибели брата.
 - ![[Hodgins_Claudia_cover.jpg|60]] **[[Hodgins_Claudia|Клаудия Ходжинс]]** — бывший сослуживец Гилберта и владелец Почтовой компании CH; после войны берёт Вайолет под опеку.
 - ![[Cattleya_Baudelaire_cover.jpg|60]] **[[Cattleya_Baudelaire|Каттлея Бодлер]]** — старшая коллега-кукла в Почтовой компании CH, наставляющая Вайолет в житейских и социальных вопросах.
-- **[[Benedict_Blue|Бенедикт Блю]]** — почтальон компании CH; поначалу не принимает Вайолет.
-- **Эрика Браун** — коллега-кукла в Почтовой компании CH, первой подружившаяся с Вайолет.
-- **Айрис Каннари** — младшая коллега-кукла; их отношения проходят путь от соперничества к дружбе.
+- ![[Benedict_Blue_cover.jpg|60]] **[[Benedict_Blue|Бенедикт Блю]]** — почтальон компании CH; поначалу не принимает Вайолет.
+- **[[Erica_Brown|Эрика Браун]]** — коллега-кукла в Почтовой компании CH, первой подружившаяся с Вайолет.
+- ![[Iris_Cannary_cover.png|60]] **[[Iris_Cannary|Айрис Каннари]]** — младшая коллега-кукла; их отношения проходят путь от соперничества к дружбе.
 - ![[Marlborough_Luculia_cover.webp\|60]] **[[Marlborough_Luculia|Лукулия Марльборо]]** — одноклассница по Школе автозапоминающих кукол (3-я серия); помогая ей написать письмо брату-ветерану, Вайолет впервые радуется за другого человека.
 - ![[Oscar_Webster_cover.webp\|60]] **[[Oscar_Webster|Оскар Вебстер]]** — спившийся драматург-отшельник, заказавший у Вайолет пьесу в память о погибшей дочери (7-я серия); после их совместной работы возвращается к профессии.
+- **[[Charlotte_Abelfreyja_Drossel|Шарлотта Абельфрейя Дроссель]]** — юная принцесса королевства Дроссель (5-я серия); Вайолет помогала ей писать любовные письма принцу [[Damian_Baldur_Flugel|Дамиану]] и научила её верить в настоящие чувства.
+- **[[Leon_Stephanotis|Леон Стефанотис]]** — юный астроном из обсерватории Шахер (6-я серия); Вайолет была его напарницей по переписке книг и помогла ему преодолеть недоверие к людям.
 - ![[Magnolia_Ann_cover.webp\|60]] **[[Magnolia_Ann|Анна Магнолия]]** — семилетняя дочь безнадёжно больной аристократки (10-я серия); Вайолет пишет для неё серию писем на каждый день рождения на следующие пятьдесят лет.
 - ![[Magnolia_Clara_cover.webp\|60]] **[[Magnolia_Clara|Клара Магнолия]]** — безнадёжно больная аристократка, нанявшая Вайолет на неделю (10-я серия); заказ Клары — пятьдесят писем на день рождения дочери на следующие полстолетия.
 

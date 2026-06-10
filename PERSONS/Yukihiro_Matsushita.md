@@ -13,9 +13,10 @@ aliases:
   - "Matsushita Yukihiro"
   - "松下ユキヒロ"
 created: 2026-05-30
-updated: 2026-05-30
+updated: 2026-06-10
 name_primary: "Yukihiro Matsushita"
 name_native: "松下ユキヒロ"
+name_cyrillic: "Юкихиро Мацусита"
 roles:
   - director
   - key-animator

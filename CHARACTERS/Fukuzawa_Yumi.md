@@ -13,9 +13,10 @@ aliases:
   - Юми Фукудзава
   - Yumi Fukuzawa
 created: 2026-05-24
-updated: 2026-06-02
+updated: 2026-06-10
 name_romaji: Fukuzawa Yumi
 name_native: 福沢祐巳
+name_cyrillic: "Юми Фукудзава"
 featured_in:
   - Maria-sama_ga_Miteru
   - Maria-sama_ga_Miteru_Haru

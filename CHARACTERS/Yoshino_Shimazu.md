@@ -13,9 +13,10 @@ aliases:
   - Ёсино Симадзу
   - Yoshino Shimazu
 created: 2026-05-31
-updated: 2026-06-02
+updated: 2026-06-10
 name_romaji: "Shimazu Yoshino"
 name_native: "島津 由乃"
+name_cyrillic: "Ёсино Симадзу"
 name_english: "Yoshino Shimazu"
 featured_in:
   - Maria-sama_ga_Miteru

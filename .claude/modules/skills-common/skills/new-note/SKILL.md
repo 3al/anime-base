@@ -30,7 +30,7 @@ model: opus
 
 1. **`.claude/vault-manifest.yaml`** — секция `folders` (источник routing-таблицы)
 2. **`SYSTEM/Metadata_schema.md`** — обязательные поля frontmatter
-3. **`SYSTEM/Tag_taxonomy.md`** — структура и правила тегов
+3. **`SYSTEM/tag_taxonomy.yaml`** — канон тегов (SSOT); правила + критерий приёма — `.claude/skills/audit-by-creator/references/tag-discipline.md`
 4. **`SYSTEM/Linking_guidelines.md`** — правила WikiLinks
 5. **`SYSTEM/Naming_conventions.md`** — формат имён файлов
 6. **`SYSTEM/Vault_architecture.md`** — описание структуры волта (для пользователя; манифест — для машин)
@@ -154,7 +154,7 @@ stability: <stable|evolving|experimental>
 priority: <high|medium|low>
 quality: draft
 tags:
-  - <каноничные теги, max 8>
+  - <каноничные теги из SYSTEM/tag_taxonomy.yaml, max 10>
 aliases:
   - <если имя файла ≠ естественное название>
 created: <сегодня>
@@ -170,12 +170,10 @@ updated: <сегодня>
 3. ТЕМЫ содержания
 4. ОБЯЗАТЕЛЬНЫЕ по `note_kind`
 5. НЕГАТИВНАЯ ПРОВЕРКА — убрать тег, совпадающий с именем заметки; убрать дубли с type/domain
-6. **ПРОБЕЛЫ — ОБЯЗАТЕЛЬНО.** Для **каждого** нового тега, которого нет в `SYSTEM/Tag_taxonomy.md`:
-   - Открыть `SYSTEM/Tag_taxonomy.md` через Read.
-   - Определить целевую группу (категорийная / тематическая / по `note_kind`).
-   - Добавить строку в таблицу группы через Edit. Формат: `\| tag-name \| <Краткое описание области применения> \|`.
-   - Если таблица группы пуста (`\| \| \|` placeholder) — заменить placeholder на нормальную строку с тегом.
-   - **Никаких «рекомендуется пользователю добавить»** в отчёте — таксономия должна быть синхронной с состоянием тегов, это инвариант фреймворка. Governance documents — автоуправляемый журнал, не статичный справочник.
+6. **РАСШИРЕНИЕ КАНОНА — через гейт (критерий D).** Для **каждого** нового тега, которого нет в `SYSTEM/tag_taxonomy.yaml`:
+   - Применить критерий приёма D (`.claude/skills/audit-by-creator/references/tag-discipline.md`): переиспользуемая ось по природе ∧ ортогональна enum-полям ∧ описывает содержание. Не прошёл → тег не заводить.
+   - Прошёл → добавить **структурную запись** в `SYSTEM/tag_taxonomy.yaml` (Edit): `- name: <tag>` + `group:` + `description:`. **Не** править таблицы `Tag_taxonomy.md` (генерируются). Затем перегенерировать md (`core/lib/tag_taxonomy_render.mjs` / `/init-vault --update`).
+   - **Никаких «рекомендуется пользователю добавить»** в отчёте — канон и теги синхронны по контракту. Скилл нашёл нужду → скилл сам и записал в yaml.
 
 Если после шагов 1–3 получилось <3 тегов — пересмотреть, скорее всего пропущена категория.
 

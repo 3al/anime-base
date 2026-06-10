@@ -80,6 +80,9 @@ created: <сегодня>
 updated: <сегодня>
 name_primary: "<Основное имя (ромадзи для японцев / латиница как есть для западных)>"
 name_native: "<Имя в родной письменности>"
+name_cyrillic: "<Имя кириллицей: устоявшийся русский вариант (Хаяо Миядзаки) ИЛИ практическая транскрипция>"
+# name_cyrillic — ОБЯЗАТЕЛЬНОЕ. Заполнять молча (без вопроса): устоявшийся русский вариант
+# приоритетнее транслитерации. Кириллизация имени однозначна. См. Metadata_schema.md → name_cyrillic.
 roles:
   - <значение из enums.yaml::note_kinds.person.role>
 country: "<Страна>"
@@ -109,7 +112,7 @@ works: []
 1. КАТЕГОРИЯ верхнего уровня
 2. ТЕМЫ — стиль, эпоха (если применимо: `golden-age-anime`, `studio-ghibli-era`)
 3. **НЕГАТИВНАЯ ПРОВЕРКА** — убрать теги, дублирующие `roles`/`country`/`note_kind`. Имя человека НЕ ставится тегом (правило 7 из Tag_taxonomy).
-4. **ПРОБЕЛЫ в таксономии** — обязательно добавить новые теги в `SYSTEM/Tag_taxonomy.md`.
+4. **Канон-дисциплина (критерий D + правила: `.claude/skills/audit-by-creator/references/tag-discipline.md`).** Выбирать теги **из** канона `SYSTEM/tag_taxonomy.yaml`. Новый тег — **только** по критерию D (переиспользуемая ось по природе, не сущность/франшизо-узкий ярлык, ортогонален enum-полям); прошёл → **структурной записью** в `SYSTEM/tag_taxonomy.yaml` (не в `Tag_taxonomy.md` — генерируется, затем `tag_taxonomy_render.mjs`); проставить на **все facet-сиблинги**, не точечно.
 
 Person без обязательных тегов — норма (kind не требует, в отличие от `anime`).
 
@@ -190,6 +193,8 @@ Person без обязательных тегов — норма (kind не тр
 Записать в `PERSONS/<имя_файла>.md`.
 
 ### 7.5. Обновить связанные карточки (production-роли)
+
+> **Reverse-leg правило (кросс-kind).** Записи, которые этот скилл пишет о персоне в **чужие** карточки (`ANIME/* ## Студия и команда`, `## Ключевые работы` и т.п.) — reverse-leg-артефакты по `SYSTEM/Linking_guidelines.md` → «Reverse-leg: владение и cover-sync (кросс-kind)». Markup-миниатюра привязана к `images.cover` персоны: при позднем добавлении портрета её синкают во **весь веер** входящих (`/add-images` + аудит персоны); владение описанием — по тому, кто его написал (пути i/ii, git-blame).
 
 Разбить записи `works[]` на две группы по `roles`:
 - **Production-роли** (всё кроме `voice-actor`) → шаг 7.5a, апдейт `ANIME/<title>.md`.
@@ -272,6 +277,7 @@ Person без обязательных тегов — норма (kind не тр
 - `quality: draft` всегда — пользователь подтвердит через `/verify`.
 - **Ставить `co_authored: <model-id>`** при создании. Формат `claude-opus-4.7` / `claude-sonnet-4.6` / `claude-haiku-4.5` (источник — системный промпт, последний дефис → точка). `/verify` это поле не трогает.
 - Web research — обязателен. Не выдумывать факты, особенно даты.
+- **`name_cyrillic` — обязательное кириллическое имя.** Устоявшийся русский вариант (если есть), иначе практическая транскрипция. Модель заполняет **молча** — кириллизация имени однозначна, вопрос пользователю не нужен (в отличие от тайтлов `anime`/`manga`). Аудит штрафует пустое поле (для карточек старше ввода — `SCHEMA_DRIFT`).
 - Имя файла — латиница, без диакритики (`Hayao_Miyazaki`, не `Hayao_Miyazakı` или `宮崎駿`). Кириллица — в `name_native`/`aliases`.
 - При добавлении тайтлов в `works[]` — сразу запускать cross-update (шаг 7.5), чтобы граф не съезжал.
 - **Сэйю и production-роли смешивать в одной записи `works[]` нельзя.** Если человек — и режиссёр, и VA одного тайтла, это две отдельные записи: одна `roles: [director]` без `character`, другая `roles: [voice-actor], character: X`. Запись с `roles: [voice-actor]` без `character` — невалидна.
@@ -283,5 +289,11 @@ kind: person
 requirements:
   - requirement: cover_ext_matches_content
     kind_of: format
+  - requirement: reverse_leg_subject_artifact
+    kind_of: format
+  - requirement: tag_canon_discipline
+    kind_of: format
+  - requirement: name_cyrillic
+    kind_of: field
 ```
 <!-- END: spec-requirements -->

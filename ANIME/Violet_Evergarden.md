@@ -12,9 +12,10 @@ aliases:
   - Вайолет Эвергарден
   - Violet Evergarden
 created: 2026-05-26
-updated: 2026-06-06
+updated: 2026-06-11
 title_romaji: Violet Evergarden
 title_original: ヴァイオレット・エヴァーガーデン
+title_cyrillic: "Вайолет Эвергарден"
 format: tv
 status: finished
 episodes: 13
@@ -43,7 +44,9 @@ watched_with:
   - brother
 mal_score: 8.69
 shikimori_score: 8.69
-related_titles: []
+related_titles:
+  - Violet_Evergarden_Kitto_Ai_wo_Shiru_Hi_ga_Kuru_no_Darou
+  - Violet_Evergarden_Eternity_and_the_Auto_Memory_Doll
 staff:
   - person: Taichi_Ishidate
     role: director
@@ -84,26 +87,32 @@ images:
 
 ## Персонажи
 
-| Персонаж                                                                                        | Сэйю             |
-| ----------------------------------------------------------------------------------------------- | ---------------- |
-| ![[Evergarden_Violet_cover.webp\|60]] **[[Evergarden_Violet\|Вайолет Эвергарден]]**             | Yui Ishikawa     |
-| ![[Gilbert_Bougainvillea_cover.jpg\|60]] **[[Gilbert_Bougainvillea\|Гилберт Бугенвиллея]]**     | Daisuke Namikawa |
-| ![[Hodgins_Claudia_cover.jpg\|60]] **[[Hodgins_Claudia\|Клаудия Ходжинс]]**                     | Takehito Koyasu  |
-| ![[Dietfried_Bougainvillea_cover.jpg\|60]] **[[Dietfried_Bougainvillea\|Дитфрид Бугенвиллея]]** | Hidenobu Kiuchi  |
-| ![[Cattleya_Baudelaire_cover.jpg\|60]] **[[Cattleya_Baudelaire\|Каттлея Бодлер]]**              | Aya Endou        |
-| **[[Benedict_Blue\|Бенедикт Блю]]**                                                                           | Kouki Uchiyama   |
-| **Эрика Браун**                                                                                 | Minori Chihara   |
-| ![[Iris_Cannary_cover.jpg\|60]] **[[Iris_Cannary\|Айрис Каннари]]**                             | Haruka Tomatsu   |
-| ![[Marlborough_Luculia_cover.webp\|60]] **[[Marlborough_Luculia\|Лукулия Марльборо]]**          | Azusa Tadokoro   |
-| **Леон Стефанотис**                                                                             | Yuuto Uemura     |
-| ![[Magnolia_Ann_cover.webp\|60]] **[[Magnolia_Ann\|Анна Магнолия]]**                            | Sumire Morohoshi |
-| ![[Magnolia_Clara_cover.webp\|60]] **[[Magnolia_Clara\|Клара Магнолия]]**                       | Ayako Kawasumi   |
-| **Шарлотта Абельфрейя Дроссель**                                                                | Megumi Nakajima  |
-| **Дамиан Балдур Флюгель**                                                                       | Kenjirou Tsuda   |
-| ![[Oscar_Webster_cover.webp\|60]] **[[Oscar_Webster\|Оскар Вебстер]]**                          | Satoshi Taki     |
-| **Оливия Вебстер**                                                                              | Sayaka Senbongi  |
-| **Расселл Бейли**                                                                               | Kengo Tsujii     |
-| **Альберта**                                                                                    | Mami Koyama      |
+| Персонаж                                                                                        | Сэйю                          |                           |                |
+| ----------------------------------------------------------------------------------------------- | ----------------------------- | ------------------------- | -------------- |
+| ![[Evergarden_Violet_cover.webp\|60]] **[[Evergarden_Violet\|Вайолет Эвергарден]]**             | Yui Ishikawa                  |                           |                |
+| ![[Gilbert_Bougainvillea_cover.jpg\|60]] **[[Gilbert_Bougainvillea\|Гилберт Бугенвиллея]]**     | Daisuke Namikawa              |                           |                |
+| ![[Hodgins_Claudia_cover.jpg\|60]] **[[Hodgins_Claudia\|Клаудия Ходжинс]]**                     | Takehito Koyasu               |                           |                |
+| ![[Dietfried_Bougainvillea_cover.jpg\|60]] **[[Dietfried_Bougainvillea\|Дитфрид Бугенвиллея]]** | Hidenobu Kiuchi               |                           |                |
+| ![[Cattleya_Baudelaire_cover.jpg\|60]] **[[Cattleya_Baudelaire\|Каттлея Бодлер]]**              | Aya Endou                     |                           |                |
+| ![[Benedict_Blue_cover.jpg\|60]] **[[Benedict_Blue\|Бенедикт Блю]]**                            | Kouki Uchiyama                |                           |                |
+| **[[Erica_Brown\|Эрика Браун]]**                                                                | Minori Chihara                |                           |                |
+| ![[Iris_Cannary_cover.png\|60]] **[[Iris_Cannary\|Айрис Каннари]]**                             | Haruka Tomatsu                |                           |                |
+| ![[Marlborough_Luculia_cover.webp\|60]] **[[Marlborough_Luculia\|Лукулия Марльборо]]**          | Azusa Tadokoro                |                           |                |
+| **[[Leon_Stephanotis\|Леон Стефанотис]]**                                                       | Yuuto Uemura                  |                           |                |
+| ![[Magnolia_Ann_cover.webp\|60]] **[[Magnolia_Ann\|Анна Магнолия]]**                            | Sumire Morohoshi              |                           |                |
+| ![[Magnolia_Clara_cover.webp\|60]] **[[Magnolia_Clara\|Клара Магнолия]]**                       | Ayako Kawasumi                |                           |                |
+| **[[Charlotte_Abelfreyja_Drossel\|Шарлотта Абельфрейя Дроссель]]**                              | Megumi Nakajima               |                           |                |
+| ![[Damian_Baldur_Flugel_cover.jpg                                                               | 60]] **[[Damian_Baldur_Flugel | Дамиан Балдур Флюгель]]** | Kenjirou Tsuda |
+| ![[Oscar_Webster_cover.webp\|60]] **[[Oscar_Webster\|Оскар Вебстер]]**                          | Satoshi Taki                  |                           |                |
+| **[[Olivia_Webster\|Оливия Вебстер]]**                                                          | Sayaka Senbongi               |                           |                |
+| **[[Russell_Bailey\|Расселл Бейли]]**                                                           | Kengo Tsujii                  |                           |                |
+| ![[Alberta_cover.png\|60]] **[[Alberta\|Альберта]]**                                                                        | Mami Koyama                   |                           |                |
+|                                                                                                 |                               |                           |                |
+
+## Связанные тайтлы
+
+- ![[Violet_Evergarden_Kitto_Ai_wo_Shiru_Hi_ga_Kuru_no_Darou_cover.png|80]] **[[Violet_Evergarden_Kitto_Ai_wo_Shiru_Hi_ga_Kuru_no_Darou|Violet Evergarden: Kitto "Ai" wo Shiru Hi ga Kuru no Darou]]** (2018) — спешл-эпизод (Extra Episode), хронологически расположенный между 4-й и 5-й сериями.
+- ![[Violet_Evergarden_Eternity_and_the_Auto_Memory_Doll_cover.jpg|80]] **[[Violet_Evergarden_Eternity_and_the_Auto_Memory_Doll|Violet Evergarden: Eternity and the Auto Memory Doll]]** (2019) — побочный полнометражный фильм (Gaiden), история Изабеллы Йорк и Тейлор Бартлетт.
 
 ## Студия и команда
 

@@ -1,0 +1,25 @@
+# SYSTEM/tag_taxonomy.yaml — машиночитаемый канон тегов (yaml = SSOT).
+#
+# Контент (набор тегов) — vault-side; СХЕМУ задаёт фреймворк (как enums.yaml /
+# spec_changelog.yaml). Человекочитаемый вид `SYSTEM/Tag_taxonomy.md` ГЕНЕРИРУЕТСЯ
+# отсюда (core/lib/tag_taxonomy_render.mjs) — править руками только этот yaml.
+#
+# Правила тегирования (1–9) и критерий приёма в канон живут в framework-governance
+# (.claude/skills/audit-by-creator/references/tag-discipline.md), НЕ здесь — этот
+# файл только канон тематических/категорийных/формат-тегов.
+#
+# Зачем yaml, а не markdown-таблица: детерминированные детекторы (ghost / noncanon)
+# нуждаются в стабильном машинном входе. Markdown-таблицы create-скиллы под слабыми
+# моделями ломают (broken-table-row) → канон-парс отдаёт мусор → детектор ложно
+# срабатывает. Структурная запись этого не допускает.
+#
+# Схема записи:
+#   tags:
+#     - name: <kebab-case>            # сам тег (правило 1: только [a-z-])
+#       group: category|theme|format  # классификация (информативно)
+#       description: <когда ставить>  # человекочитаемое пояснение → колонка в .md
+#       applies_to_kinds: [<kind>]    # опц. — тег осмыслен только для этих note_kind
+#       adult_gated: false            # опц. — тег под adult-гейтом волта
+
+v: 1
+tags: []

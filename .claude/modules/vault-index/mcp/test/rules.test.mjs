@@ -23,9 +23,11 @@ function makeRecord(over = {}) {
   };
 }
 
-/** Fake VaultIndex carrying only what lintNote touches. */
-function makeIndex(attachments = { paths: [], byBasename: {}, byStem: {} }) {
-  return { canonicalTags: new Set(), attachments };
+/** Fake VaultIndex carrying only what lintNote touches. `targetExists` defaults
+ * to always-true so existing tests see no broken links; broken-link tests pass a
+ * predicate over the set of notes that resolve. */
+function makeIndex(attachments = { paths: [], byBasename: {}, byStem: {} }, targetExists = () => true) {
+  return { canonicalTags: new Set(), attachments, targetExists };
 }
 
 const codes = (issues) => issues.map((i) => i.code);
@@ -348,6 +350,76 @@ test('empty-tags: WARN does not break structural_green semantics (not an ERROR)'
   const rec = makeRecord({ tags: [] });
   const errs = lintNote(rec, makeIndex()).filter((i) => i.class === 'structural' && i.severity === 'ERROR' && i.code === 'empty-tags');
   assert.equal(errs.length, 0);
+});
+
+// --- broken-link / duplicate-link (structural, always-on, §30) ------------
+
+const olink = (target, line = 1, isEmbed = false) => ({ target, line, isEmbed });
+
+test('broken-link: WikiLink to a non-existent note → ERROR structural', () => {
+  const rec = makeRecord({ outgoingLinks: [olink('Ghost_Card')] });
+  const idx = makeIndex(undefined, (t) => t === 'Real_Card');
+  const hit = byCode(lintNote(rec, idx), 'broken-link');
+  assert.equal(hit.length, 1);
+  assert.equal(hit[0].class, 'structural');
+  assert.equal(hit[0].severity, 'ERROR');
+});
+
+test('broken-link: resolving WikiLink is clean (green)', () => {
+  const rec = makeRecord({ outgoingLinks: [olink('Real_Card')] });
+  const idx = makeIndex(undefined, (t) => t === 'Real_Card');
+  assert.equal(byCode(lintNote(rec, idx), 'broken-link').length, 0);
+});
+
+test('broken-link: missing media embed is NOT flagged (attachment, not a note)', () => {
+  const rec = makeRecord({ outgoingLinks: [olink('attachments/Gone.jpg', 1, true)] });
+  const idx = makeIndex(undefined, () => false); // nothing resolves
+  assert.equal(byCode(lintNote(rec, idx), 'broken-link').length, 0);
+});
+
+test('broken-link: external URLs out of scope — only resolving WikiLinks → no structural ERROR (§25 contrast)', () => {
+  // outgoingLinks holds WikiLinks only; markdown/bare URLs never reach here, so
+  // a flapping/anti-bot-403 external link can never flip structural_green.
+  const rec = makeRecord({ outgoingLinks: [olink('Real_Card')] });
+  const idx = makeIndex(undefined, (t) => t === 'Real_Card');
+  const structErr = lintNote(rec, idx).filter((i) => i.class === 'structural' && i.severity === 'ERROR');
+  assert.equal(structErr.length, 0);
+});
+
+test('duplicate-link: same note target linked twice → ERROR structural', () => {
+  const rec = makeRecord({ outgoingLinks: [olink('Dup_Card'), olink('Dup_Card', 5)] });
+  const hit = byCode(lintNote(rec, makeIndex()), 'duplicate-link');
+  assert.equal(hit.length, 1);
+  assert.equal(hit[0].class, 'structural');
+  assert.equal(hit[0].severity, 'ERROR');
+});
+
+test('duplicate-link: the same media embed twice is NOT flagged (table + gallery is intentional)', () => {
+  const rec = makeRecord({ outgoingLinks: [olink('attachments/P.jpg', 1, true), olink('attachments/P.jpg', 9, true)] });
+  assert.equal(byCode(lintNote(rec, makeIndex()), 'duplicate-link').length, 0);
+});
+
+test('duplicate-link: distinct targets are clean', () => {
+  const rec = makeRecord({ outgoingLinks: [olink('A'), olink('B')] });
+  assert.equal(byCode(lintNote(rec, makeIndex()), 'duplicate-link').length, 0);
+});
+
+test('§30 integration: real parsed markdown — duplicate WikiLink flows through lint', async () => {
+  const body = 'See [[Alpha]] and again [[Alpha]].\n\nAlso [[Beta]].';
+  await withTempNote(body, (rec) => {
+    const issues = lintNote(rec, makeIndex(undefined, () => true)); // all resolve
+    assert.equal(byCode(issues, 'duplicate-link').length, 1); // Alpha twice
+    assert.equal(byCode(issues, 'broken-link').length, 0);
+  });
+});
+
+test('§30 integration: real parsed markdown — unresolved WikiLinks flagged broken per occurrence', async () => {
+  const body = 'See [[Alpha]] and again [[Alpha]].\n\nAlso [[Beta]].';
+  await withTempNote(body, (rec) => {
+    const issues = lintNote(rec, makeIndex(undefined, () => false)); // none resolve
+    assert.equal(byCode(issues, 'broken-link').length, 3); // Alpha×2 + Beta
+    assert.equal(byCode(issues, 'duplicate-link').length, 1); // Alpha still duped
+  });
 });
 
 // --- class tagging invariant ----------------------------------------------

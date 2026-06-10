@@ -35,7 +35,7 @@ model: opus
 
 1. **`SYSTEM/Metadata_schema.md`** — текущий список `note_kind` и формат секций для специфичных полей.
 2. **`SYSTEM/Linking_guidelines.md`** — формат секций `### note_kind: <kind>`.
-3. **`SYSTEM/Tag_taxonomy.md`** — таблица «Обязательные теги по `note_kind`».
+3. **`SYSTEM/tag_taxonomy.yaml`** — канон тегов (SSOT). Обязательные теги по `note_kind` → `vault-manifest::required_tags_by_kind`. Правила/критерий — `.claude/skills/audit-by-creator/references/tag-discipline.md`.
 4. **`SYSTEM/Vault_architecture.md`** — таблица структуры папок и список `note_kind`.
 5. **`SYSTEM/Naming_conventions.md`** — формат имени папки и slug.
 6. **`.claude/vault-manifest.yaml`** — секция `folders`.
@@ -186,9 +186,9 @@ Grep по `SYSTEM/Metadata_schema.md` для каждого предложенн
 **4.2. Patch `SYSTEM/Linking_guidelines.md`:**
 - Добавить секцию `### note_kind: <slug>` после последней такой секции. Содержание — правила WikiLinks из фазы 3.1 (что обязательно, что опционально, на какие kind ссылаться).
 
-**4.3. Patch `SYSTEM/Tag_taxonomy.md`** (только если на фазе 3.3 определены обязательные теги):
-- В таблицу «Обязательные теги по `note_kind`» добавить строку: `\| <slug> \| <теги через запятую> \|`.
-- Каждый новый тег которого ещё нет в таксономии — добавить в соответствующую группу (по тому же алгоритму что `/new-note` шаг 6).
+**4.3. Канон тегов + обязательные теги** (только если на фазе 3.3 определены теги):
+- **Обязательные теги по `note_kind`** → в `.claude/vault-manifest.yaml::required_tags_by_kind` строкой `- { kind: <slug>, tags: [<теги>] }` (НЕ таблица в md — это manifest-ручка, бэкстоп `missing-required-tag`).
+- **Каждый новый тег, которого ещё нет в каноне** — через гейт критерия D, добавить **структурной записью** в `SYSTEM/tag_taxonomy.yaml` (`- name:` + `group:` + `description:`), затем перегенерировать `Tag_taxonomy.md` (`core/lib/tag_taxonomy_render.mjs`). Алгоритм — `/new-note` шаг 6 / `Audit_checklist.md §3.2`. **Не** править таблицы md руками (генерируются).
 
 **4.4. Patch `SYSTEM/Vault_architecture.md`:**
 - В таблицу структуры папок добавить строку с путём, описанием и привязкой к `note_kind: <slug>`.
@@ -314,7 +314,7 @@ Wrapper — derived artifact, регенерация при изменении f
 Файлы изменены:
 - SYSTEM/Metadata_schema.md (+ секция полей)
 - SYSTEM/Linking_guidelines.md (+ note_kind секция)
-- SYSTEM/Tag_taxonomy.md (если обязательные теги)
+- SYSTEM/tag_taxonomy.yaml (+ новые теги) / Tag_taxonomy.md (регенерирован); vault-manifest::required_tags_by_kind (обязательные теги)
 - SYSTEM/Vault_architecture.md (+ строка в таблице)
 - SYSTEM/spec_changelog.yaml (+ записи требований kind на сегодня — epoch-conformance)
 - CLAUDE.md (+ строка в таблице)

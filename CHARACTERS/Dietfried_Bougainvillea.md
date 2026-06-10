@@ -14,7 +14,7 @@ aliases:
   - Дитфрид Бугенвиллия
   - ディートフリート・ブーゲンビリア
 created: 2026-06-06
-updated: 2026-06-06
+updated: 2026-06-10
 name_romaji: Dietfried Bougainvillea
 name_english: Dietfried Bougainvillea
 name_native: ディートフリート・ブーゲンビリア
@@ -90,7 +90,7 @@ personal_score: null
 
 ## Личный отзыв
 
-_Заполните личный отзыв в Obsidian: чем персонаж зацепил или почему не зашёл. Полировка — `/audit-review`._
+_Заполните личный отзыв: чем персонаж зацепил или почему не зашёл._
 
 ## Ссылки
 

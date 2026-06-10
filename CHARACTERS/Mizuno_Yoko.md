@@ -15,9 +15,10 @@ aliases:
   - Mizuno Yōko
   - Rosa Chinensis
 created: 2026-05-30
-updated: 2026-06-02
+updated: 2026-06-10
 name_romaji: Mizuno Yoko
 name_native: 水野蓉子
+name_cyrillic: "Ёко Мидзуно"
 featured_in:
   - Maria-sama_ga_Miteru
   - Maria-sama_ga_Miteru_Haru

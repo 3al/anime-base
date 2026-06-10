@@ -3,6 +3,7 @@ import type { NoteRecord, LintIssue, AttachmentInventory } from './types.js';
 import type { VaultIndex } from './vault-index.js';
 import type { AsymmetricPair } from './asymmetric.js';
 import { lintContent, type ContentRuleConfig } from './content-lint.js';
+import { isMediaTarget } from './links.js';
 
 // Directories excluded from lint (same as lint-vault.sh)
 const LINT_SKIP_PREFIXES = ['SYSTEM/', 'ARTIFACTS/'];
@@ -29,6 +30,7 @@ export interface LintRuleConfig {
   coverEmbedSuffix?: string;       // basename-stem suffix marking cover embeds; default '_cover'
   nameSurfacePairs?: Array<{ kind: string; basenameField: string }>; // opt-in
   requiredTagsByKind?: Array<{ kind: string; tags: string[] }>;      // opt-in (replaces former hardcode)
+  maxTags?: number;                // tag-count ceiling (vault-manifest::max_tags); default 10
   // heuristic (fuzzy, opt-in) — served on-demand via the body, see LintOptions.body
   userOnlySections?: string[];
   userOnlyStubWhitelist?: string[];
@@ -142,16 +144,25 @@ export function lintNote(
       message: 'Frontmatter has no tags',
     });
   }
-  if (record.tags.length > 8) {
+  // Tag-count ceiling. Caller-supplied (vault-manifest::max_tags); default 10 to
+  // match the governance rule (Tag_taxonomy rule 5). The former hardcoded 8
+  // disagreed with governance — a framework-internal drift, now aligned.
+  const maxTags = rules.maxTags ?? 10;
+  if (record.tags.length > maxTags) {
     issues.push({
       severity: 'ERROR',
       class: 'structural',
       code: 'too-many-tags',
-      message: `Has ${record.tags.length} tags (max 8)`,
+      message: `Has ${record.tags.length} tags (max ${maxTags})`,
     });
   }
 
-  // Non-canonical tags
+  // Non-canonical tags — a card carries a tag absent from the canon (minting
+  // around the admission gate, or a typo). Deterministic, ~0 FP over a stable
+  // canon. Phased rollout (TZ Q6): stays WARN for one cycle to confirm ~0 FP on
+  // real vaults (casing, adult-gated, conditional-by-kind edge cases), THEN flips
+  // to ERROR-gating in a later dated commit — but ONLY when index.canonSource ===
+  // 'yaml' (the markdown fallback is too fragile to gate on). Do not flip here yet.
   for (const tag of record.tags) {
     if (!index.canonicalTags.has(tag)) {
       issues.push({
@@ -185,6 +196,45 @@ export function lintNote(
   }
   if (linkCap !== null && linkCount > linkCap) {
     issues.push({ severity: 'WARN', class: 'structural', code: 'too-many-links', message: `Has ${linkCount} outgoing WikiLinks (max ${linkCap})` });
+  }
+
+  // --- broken-link / duplicate-link (structural, always-on) ---
+  // Folded in from vault_broken_links / vault_duplicate_links (§30) so
+  // structural_green is honest about internal-link integrity: "green lint" now
+  // means "no broken/duplicate internal links" by construction. Both are
+  // deterministic with ~0 FP — exactly the structural profile. Mirrors those
+  // tools EXACTLY so the aggregated signal equals the per-note tool result:
+  //   • broken: a WikiLink whose note target does not resolve. Media embeds
+  //     (`![[Cover.jpg]]`) point at attachments, not notes → excluded
+  //     (isMediaTarget), same as vault_broken_links.
+  //   • duplicate: the same note target linked more than once. Media embeds
+  //     excluded (isEmbed) — the same photo in a table row and the gallery is
+  //     intentional per card templates, same as vault_duplicate_links.
+  // External URLs are markdown/bare links, never WikiLinks; outgoingLinks holds
+  // only WikiLinks, so link-liveness of external URLs is out of scope here (§25).
+  const dupCounts = new Map<string, number>();
+  for (const link of record.outgoingLinks) {
+    if (!isMediaTarget(link.target) && !index.targetExists(link.target)) {
+      issues.push({
+        severity: 'ERROR',
+        class: 'structural',
+        code: 'broken-link',
+        message: `WikiLink target '${link.target}' (line ${link.line}) resolves to no note`,
+      });
+    }
+    if (!link.isEmbed) {
+      dupCounts.set(link.target, (dupCounts.get(link.target) ?? 0) + 1);
+    }
+  }
+  for (const [target, count] of dupCounts) {
+    if (count > 1) {
+      issues.push({
+        severity: 'ERROR',
+        class: 'structural',
+        code: 'duplicate-link',
+        message: `WikiLink to '${target}' appears ${count} times in this note (duplicate)`,
+      });
+    }
   }
 
   // --- broken-table-row (structural, always-on) ---

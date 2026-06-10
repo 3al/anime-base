@@ -20,7 +20,7 @@
 ## Запланировано (Phase 2+)
 
 - Создание `SYSTEM/` директории.
-- Mandatory governance-templates: `Metadata_schema.md`, `Tag_taxonomy.md`, `Naming_conventions.md`, `Vault_architecture.md`.
+- Mandatory governance-templates: `Metadata_schema.md`, `Tag_taxonomy.md` (генерируется из машинного канона `tag_taxonomy.yaml`), `Naming_conventions.md`, `Vault_architecture.md`.
 - `update.mjs` (после первой реальной миграции).
 - `remove.mjs` (Phase 7).
 - `Note_Body_Structure.md` template (Phase 3, после дизайна RAG).

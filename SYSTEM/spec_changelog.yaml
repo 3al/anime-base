@@ -15,6 +15,12 @@
 v: 1
 kinds:
   anime:
+    # 2026-06-10: title_cyrillic — обязательное кириллическое название тайтла (устоявшаяся
+    # русская локализация ИЛИ предложенный пользователю перевод). Введён ПОЗЖЕ всех существующих
+    # карточек → для них SCHEMA_DRIFT (vault-долг на бэкафилл, не вина автора).
+    - requirement: title_cyrillic
+      introduced: 2026-06-10
+      kind_of: field
     # §8 + план C: USER-ONLY и оценочные always-present поля, добавленные после первых 6 карточек.
     - requirement: online_url
       introduced: 2026-06-02
@@ -37,7 +43,27 @@ kinds:
     - requirement: cover_ext_matches_content
       introduced: 2026-06-01
       kind_of: format
+    # §28 (2026-06-07): reverse-leg-субъект-артефакт обобщён на все carded-kinds (был только
+    # character 2026-06-06). Markup reverse-leg (миниатюра+WikiLink субъекта в чужих картах) —
+    # субъект-артефакт с cover-sync во ВСЕ входящие при позднем постере; владение описанием по
+    # git-blame (пути i/ii). Источник правила — Linking_guidelines «Reverse-leg…». Пре-06-07 → SCHEMA_DRIFT.
+    - requirement: reverse_leg_subject_artifact
+      introduced: 2026-06-07
+      kind_of: format
+    # 2026-06-07 (§29): tags выбираются ИЗ канона Tag_taxonomy; новый тег в канон — только по
+    # критерию приёма (правило 8: переиспользуемая ось, не франшизо/сущность-узкий ярлык,
+    # ортогонален enum); заводя тег — проставить на все facet-сиблинги (правило 9), не точечно.
+    # Раньше create-скиллы лили любой придуманный тег в канон на одну карточку (46% синглтонов +
+    # тег-призрак auto-memories-doll). Пре-06-07 карточки → SCHEMA_DRIFT (vault-долг, не вина автора).
+    - requirement: tag_canon_discipline
+      introduced: 2026-06-07
+      kind_of: format
   character:
+    # 2026-06-10: name_cyrillic — обязательное кириллическое имя (устоявшийся русский вариант
+    # ИЛИ транскрипция). Введён ПОЗЖЕ всех существующих карточек → для них SCHEMA_DRIFT.
+    - requirement: name_cyrillic
+      introduced: 2026-06-10
+      kind_of: field
     # План C, п.4: character.personal_score промоут в always-present + бэкафилл 17 карточек.
     - requirement: personal_score
       introduced: 2026-06-02
@@ -74,14 +100,56 @@ kinds:
     - requirement: titles_noncarded_entries
       introduced: 2026-06-06
       kind_of: format
+    # 2026-06-06: reverse-leg-буллет/ячейка субъекта в ЧУЖОЙ карточке (каст-таблица тайтла,
+    # ## Связи соседа) — markup И описание — артефакт автора субъекта, не хозяина. Инварианты:
+    # cover-sync (миниатюра субъекта во ВСЕХ входящих при наличии у него cover), описание с
+    # т.з. цели + верное, scoping владения по дате создания. Формализация this session (раньше
+    # §7.5d молчал про cover-sync постфактум и про владение описанием → веер входящих миниатюр
+    # рассинхронивался при позднем добавлении постера, поймал пользователь). Пре-06-06 → SCHEMA_DRIFT.
+    - requirement: reverse_leg_subject_artifact
+      introduced: 2026-06-06
+      kind_of: format
+    - requirement: tag_canon_discipline   # 2026-06-07 (§29), см. anime
+      introduced: 2026-06-07
+      kind_of: format
   person:
+    # 2026-06-10: name_cyrillic — обязательное кириллическое имя (устоявшийся русский вариант
+    # ИЛИ транскрипция). Введён ПОЗЖЕ всех существующих карточек → для них SCHEMA_DRIFT.
+    - requirement: name_cyrillic
+      introduced: 2026-06-10
+      kind_of: field
     # B-012 (2026-06-01): кросс-kind attachment ext-правило (см. anime::cover_ext_matches_content).
     - requirement: cover_ext_matches_content
       introduced: 2026-06-01
+      kind_of: format
+    - requirement: reverse_leg_subject_artifact   # §28 (2026-06-07), см. anime
+      introduced: 2026-06-07
+      kind_of: format
+    - requirement: tag_canon_discipline   # 2026-06-07 (§29), см. anime
+      introduced: 2026-06-07
       kind_of: format
   studio:
     - requirement: cover_ext_matches_content   # B-012 (2026-06-01)
       introduced: 2026-06-01
       kind_of: format
-  # manga: записей нет. Manga-kind и все его поля введены 2026-06-02; единственная manga-карточка
-  # создана после → ни одна manga-карточка не предшествует своим требованиям → дрейфа нет.
+    - requirement: reverse_leg_subject_artifact   # §28 (2026-06-07), см. anime
+      introduced: 2026-06-07
+      kind_of: format
+    - requirement: tag_canon_discipline   # 2026-06-07 (§29), см. anime
+      introduced: 2026-06-07
+      kind_of: format
+  manga:
+    # 2026-06-10: title_cyrillic — обязательное кириллическое название (устоявшаяся локализация
+    # ИЛИ предложенный пользователю перевод). Введён ПОЗЖЕ единственной manga-карточки → SCHEMA_DRIFT.
+    - requirement: title_cyrillic
+      introduced: 2026-06-10
+      kind_of: field
+    # Базовые manga-поля введены 2026-06-02 (предшествуют единственной manga-карточке → дрейфа нет).
+    # §28 (2026-06-07): reverse-leg-субъект-артефакт обобщён на manga — введён ПОЗЖЕ карточки
+    # Maria-sama_ga_Miteru_(manga) (06-02) → для неё SCHEMA_DRIFT (vault-долг, не вина автора).
+    - requirement: reverse_leg_subject_artifact
+      introduced: 2026-06-07
+      kind_of: format
+    - requirement: tag_canon_discipline   # 2026-06-07 (§29), см. anime
+      introduced: 2026-06-07
+      kind_of: format

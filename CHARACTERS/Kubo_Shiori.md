@@ -14,9 +14,10 @@ aliases:
   - Шиори Кубо
   - 久保 栞
 created: 2026-05-31
-updated: 2026-06-01
+updated: 2026-06-10
 name_romaji: Kubo Shiori
 name_native: 久保 栞
+name_cyrillic: "Шиори Кубо"
 name_english: Shiori Kubo
 featured_in:
   - Maria-sama_ga_Miteru

@@ -14,12 +14,15 @@ aliases:
   - Клаудия Ходжинс
   - クラウディア・ホッジンズ
 created: 2026-06-04
-updated: 2026-06-06
+updated: 2026-06-11
 name_romaji: "Claudia Hodgins"
 name_native: "クラウディア・ホッジンズ"
+name_cyrillic: "Клаудия Ходжинс"
 name_english: "Claudia Hodgins"
 featured_in:
   - "Violet_Evergarden"
+  - "Violet_Evergarden_Kitto_Ai_wo_Shiru_Hi_ga_Kuru_no_Darou"
+  - "Violet_Evergarden_Eternity_and_the_Auto_Memory_Doll"
 character_role: supporting
 gender: male
 status: alive
@@ -67,8 +70,8 @@ Violet Evergarden — лайт-новелла Каны Акацуки (2014). К
 ## Тайтлы
 
 - ![[Violet_Evergarden_cover.png|80]] **[[Violet_Evergarden|Violet Evergarden]]** — 2018, пост-военная драма Kyoto Animation. Персонаж появляется во всех 13 эпизодах TV-сериала как президент CH и опекун Вайолет.
-- **Violet Evergarden: Kitto «Ai» wo Shiru Hi ga Kuru no Darou** (OVA, 2018) — OVA-сайдстори к TV-сериалу.
-- **Violet Evergarden Gaiden: Eien to Jidou Shuki Ningyou** (2019) — полнометражный спин-офф (история Изабеллы и Тейлор).
+- ![[Violet_Evergarden_Kitto_Ai_wo_Shiru_Hi_ga_Kuru_no_Darou_cover.png|80]] **[[Violet_Evergarden_Kitto_Ai_wo_Shiru_Hi_ga_Kuru_no_Darou|Violet Evergarden: Kitto "Ai" wo Shiru Hi ga Kuru no Darou]]** (2018) — спешл-эпизод к TV-сериалу; Ходжинс — глава CH Postal Company.
+- ![[Violet_Evergarden_Eternity_and_the_Auto_Memory_Doll_cover.jpg|80]] **[[Violet_Evergarden_Eternity_and_the_Auto_Memory_Doll|Violet Evergarden Gaiden: Eien to Jidou Shuki Ningyou]]** (2019) — полнометражный спин-офф (история Изабеллы и Тейлор).
 - **Violet Evergarden: Recollections** (2021) — компиляционный фильм по событиям сериала.
 - **Violet Evergarden: The Movie** (2020) — финальный полнометражный фильм франшизы (поиск Гилберта).
 - **Violet Evergarden** (лайт-новелла Каны Акацуки, 2014) — первоисточник франшизы.
@@ -81,9 +84,9 @@ Violet Evergarden — лайт-новелла Каны Акацуки (2014). К
 - ![[Evergarden_Violet_cover.webp|60]] **[[Evergarden_Violet|Вайолет Эвергарден]]** — подопечная и сотрудница. Клаудия взял её под опеку по просьбе Гилберта, устроил в CH, поддерживал на пути становления куклой; по отношению к ней проявляет заботу, близкую к отцовской.
 - ![[Cattleya_Baudelaire_cover.jpg|60]] **[[Cattleya_Baudelaire|Каттлея Бодлер]]** — старая знакомая, близкий друг вне работы.
 - ![[Dietfried_Bougainvillea_cover.jpg|60]] **[[Dietfried_Bougainvillea|Дитфрид Бугенвиллея]]** — старший брат Гилберта, с которым Клаудия познакомился через тот же военный круг.
-- **Эрика Браун** — сотрудница-кукла в CH, подчинённая Клаудии.
-- **Айрис Каннари** — младшая сотрудница-кукла в CH.
-- **[[Benedict_Blue|Бенедикт Блю]]** — почтальон CH, подчинённый Клаудии.
+- **[[Erica_Brown|Эрика Браун]]** — сотрудница-кукла в CH, подчинённая Клаудии.
+- ![[Iris_Cannary_cover.png|60]] **[[Iris_Cannary|Айрис Каннари]]** — младшая сотрудница-кукла в CH.
+- ![[Benedict_Blue_cover.jpg|60]] **[[Benedict_Blue|Бенедикт Блю]]** — почтальон CH, подчинённый Клаудии.
 - **Люкс Сибил** — его самая доверенная секретарша в CH.
 - ![[Marlborough_Luculia_cover.webp|60]] **[[Marlborough_Luculia|Лукулия Марльборо]]** — одноклассница Вайолет по Школе автозапоминающих кукол; её успешный заказ (письмо брату Спенсеру) убедил Клаудию взять Вайолет в штат CH.
 

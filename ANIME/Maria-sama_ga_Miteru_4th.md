@@ -94,7 +94,7 @@ images:
 | ![[Toudou_Shimako_cover.jpg\|60]] **[[Toudou_Shimako\|Симако Тодо]]**              | Mamiko Noto                                               |
 | ![[Touko_Matsudaira_cover.jpg\|60]] **[[Touko_Matsudaira\|Тоуко Мацудайра]]**              | Rie Kugimiya                                              |
 | **Норико Нидзё**                                                                 | Kaori Shimizu                                             |
-| **Канако Хосокава**                                                              | Ami Koshimizu                                             |
+| ![[Hosokawa_Kanako_cover.jpg\|60]] **[[Hosokawa_Kanako\|Канако Хосокава]]**       | Ami Koshimizu                                             |
 | ![[Sato_Sei_cover.jpg\|60]] **[[Sato_Sei\|Сэй Сато]]**                           | Megumi Toyoguchi                                          |
 | ![[Mizuno_Yoko_cover.jpg\|60]] **[[Mizuno_Yoko\|Ёко Мидзуно]]**                  | Emi Shinohara                                             |
 | ![[Torii_Eriko_cover.jpg\|60]] **[[Torii_Eriko\|Эрико Тории]]**                  | Hitomi Nabatame                                           |
