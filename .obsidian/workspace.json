@@ -21,14 +21,10 @@
             "id": "670e34c1f0988066",
             "type": "leaf",
             "state": {
-              "type": "split-diff-view",
-              "state": {
-                "aFile": ".claude/skills/harness-agnostic-audit/.managed",
-                "bFile": ".claude/skills/harness-agnostic-audit/.managed",
-                "aRef": ""
-              },
-              "icon": "diff",
-              "title": "Diff: .managed  (Working Tree)"
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Граф"
             }
           }
         ],
@@ -188,7 +184,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 454.5
+    "width": 278.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -204,23 +200,27 @@
   },
   "active": "670e34c1f0988066",
   "lastOpenFiles": [
+    "ANIME/Haitokuzuma.md",
+    "CHARACTERS/Omoi_Natsumi.md",
+    "CLAUDE.md.tmp.1308.c5515d94e7e1",
+    "CHARACTERS/Omoi_Natsumi.md.tmp.1308.321e5e005914",
+    "attachments/Omoi_Natsumi_cover.jpg",
+    "attachments/Haitokuzuma_cover.jpg",
+    "SYSTEM/Vault_Roadmap.md.tmp.1308.71d6ad9f8a1b",
+    "ANIME/Haitokuzuma.md.tmp.1308.110249a206f6",
+    "SYSTEM/tag_taxonomy.yaml.tmp.1308.fa326b724f59",
+    "ANIME/Haitokuzuma.md.tmp.1308.db14b03cdc21",
+    "SYSTEM/tag_taxonomy.yaml.tmp.1308.791673c68156",
     "SYSTEM/Vault_Roadmap.md",
     "SYSTEM/Vault_Roadmap.md.tmp.1308.fda374ac64d2",
     "SYSTEM/Vault_Roadmap.md.tmp.1308.ffd1da1c21b8",
     "SYSTEM/Vault_Roadmap_Archive.md.tmp.1308.0d81b4865e9b",
     "SYSTEM/Vault_Health.md",
-    "SYSTEM/Vault_Roadmap.md.tmp.1308.34143beffdb3",
     "SYSTEM/Vault_Roadmap_Archive.md",
     "CHARACTERS/Cattleya_Baudelaire.md",
-    "SYSTEM/Vault_Roadmap_Archive.md.tmp.1308.bba604ee5a13",
     "ANIME/Violet_Evergarden_Eternity_and_the_Auto_Memory_Doll.md",
     "PERSONS/Kana_Akatsuki.md",
     "CHARACTERS/Erica_Brown.md",
-    "CHARACTERS/Cattleya_Baudelaire.md.tmp.19168.7b37b628e9b4",
-    "ANIME/Violet_Evergarden_Eternity_and_the_Auto_Memory_Doll.md.tmp.19168.4c0c70c4d4e5",
-    "ANIME/Violet_Evergarden_Kitto_Ai_wo_Shiru_Hi_ga_Kuru_no_Darou.md.tmp.19168.9172ccf20ef3",
-    "ANIME/Violet_Evergarden_Kitto_Ai_wo_Shiru_Hi_ga_Kuru_no_Darou.md.tmp.19168.7a64e9320267",
-    "ANIME/Violet_Evergarden.md.tmp.19168.91d774aef650",
     "attachments/Violet_Evergarden_Eternity_and_the_Auto_Memory_Doll_cover.jpg",
     "CHARACTERS/Sato_Sei.md",
     "CHARACTERS/Kanina_Shizuka.md",
@@ -241,14 +241,10 @@
     "PERSONS/Kana_Ueda.md",
     "ANIME/Violet_Evergarden_Kitto_Ai_wo_Shiru_Hi_ga_Kuru_no_Darou.md",
     "PERSONS/Oyuki_Konno.md",
-    "CHARACTERS/Benedict_Blue.md",
-    "CHARACTERS/Evergarden_Violet.md",
     "attachments/Violet_Evergarden_Kitto_Ai_wo_Shiru_Hi_ga_Kuru_no_Darou_cover.png",
     "attachments/Alberta_cover.png",
     "attachments/Alberta_cover.jpg",
     "CHARACTERS/attachments/King_Jihl_cover.jpeg",
-    "attachments/Nijou_Noriko_cover.jpg",
-    "attachments/Kurotowa_cover.jpg",
     "Без названия.canvas"
   ]
 }

@@ -96,6 +96,53 @@ tags:
   - name: found-family
     group: theme
     description: "Связь персонажей как обретённой (не кровной) семьи: опека, наставничество-как-родительство, дом-вне-дома"
+  - name: infidelity
+    group: theme
+    description: "Центральная тема — супружеская/романтическая измена, адюльтер: нарушение верности и его эмоциональные последствия как двигатель сюжета"
+  - name: netorare
+    group: theme
+    adult_gated: true
+    description: "NTR-троп: партнёр героя вступает в связь с другим; измена как источник драмы (adult-дескриптор; маппит AniList «Netorare»)"
+  - name: netorase
+    group: theme
+    adult_gated: true
+    description: "Вариант NTR, где партнёр сознательно допускает/поощряет связь на стороне (adult-дескриптор; маппит AniList «Netorase»)"
+  - name: milf
+    group: theme
+    adult_gated: true
+    description: "Демографический контент-дескриптор: зрелая женщина-персонаж как фокус (adult; маппит AniList «MILF»)"
+  - name: sexual-violence
+    group: theme
+    adult_gated: true
+    description: "Контент-предупреждение: присутствует сексуальное насилие/принуждение (adult; маппит AniList «Rape»)"
+  - name: large-breasts
+    group: theme
+    adult_gated: true
+    description: "Физический контент-дескриптор персонажа (adult; маппит AniList «Large Breasts»)"
+  - name: bisexual
+    group: theme
+    adult_gated: true
+    description: "Бисексуальность персонажа/сцен как контент-дескриптор (adult; маппит AniList «Bisexual»)"
+  - name: fellatio
+    group: theme
+    adult_gated: true
+    description: "Act-level adult контент-дескриптор (маппит AniList «Fellatio»)"
+  - name: anal-sex
+    group: theme
+    adult_gated: true
+    description: "Act-level adult контент-дескриптор (маппит AniList «Anal Sex»)"
+  - name: nakadashi
+    group: theme
+    adult_gated: true
+    description: "Act-level adult контент-дескриптор (маппит AniList «Nakadashi»)"
+  - name: handjob
+    group: theme
+    adult_gated: true
+    description: "Act-level adult контент-дескриптор (маппит AniList «Handjob»)"
+  - name: facial
+    group: theme
+    adult_gated: true
+    description: "Act-level adult контент-дескриптор (маппит AniList «Facial»)"
   - name: yonkoma
     group: format
     description: "4-кома манга — четырёхпанельные вертикальные гаг-стрипы. Применять при соответствующем формате"

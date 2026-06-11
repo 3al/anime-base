@@ -135,8 +135,13 @@ tooling_vocab:
 # генерируется). Правила/критерий — framework: audit-by-creator/references/tag-discipline.md.
 # tag_facet_fields — поля-фасеты для under_tag_discord (vault_tag_health): карточки, делящие
 # значение, — кандидаты на общий тематический тег. Многозначные поля → пересечение множеств.
-# max_tags — дефолт 10 (правило 5), переопределять не нужно. required_tags_by_kind — пусто
-# (ни один kind не требует обязательных тегов: всё закрывается enum-полями).
+# max_tags — дефолт 10 (правило 5). ИНТЕРИМ 20: adult/explicit-карточки легитимно несут
+# много content-дескрипторов (adult_gated теги: netorare/milf/act-level/...), 10 их режет
+# (too-many-tags structural-ERROR ломал бы structural_green). Это БЛАНТ-обход — глобальный,
+# а нужен nsfw-scoped. Истинное исключение = движок: adult_gated теги НЕ считаются в
+# too-many-tags (per-card, по content_rating). Запрос мейнтейнеру — Vault_Roadmap §34.
+# Когда приедет — вернуть 10 (убрать эту строку). required_tags_by_kind — пусто.
+max_tags: 20
 tag_facet_fields: [featured_in, affiliations]
 
 # Per-module configuration overrides (advanced).

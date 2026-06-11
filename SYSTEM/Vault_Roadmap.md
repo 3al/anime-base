@@ -303,3 +303,17 @@ tags:
 **Как.** Не отдельным «tag-sweep» по списку (отвергнуто — per-row human review, см. feedback_consistency_must_self_heal_no_manual_review): теги доводятся внутри `/audit-card` / `/audit-by-creator` по мере прохода по волту. После того как аудиты покрыли бо́льшую часть карточек — повторный `vault_tag_health` покажет, остались ли дыры; остаток разрулить адресно.
 
 **Адресат:** vault (контент). Список дыр перепроверять свежим прогоном `vault_tag_health` перед заходом — он живой, цифры сдвинутся по мере аудитов. Связано с §32 (инструмент), §29 (канон), feedback_consistency_must_self_heal_no_manual_review (self-heal через скиллы, не ручной ревью).
+
+## 34. Предложение мейнтейнеру: nsfw-scoped исключение tag-cap (adult_gated теги не считаются в `too-many-tags`)
+
+**Контекст (2026-06-11, вскрыто на первом adult-тайтле `Haitokuzuma`).** explicit/nsfw-карточки легитимно несут много **content-дескрипторов** (`netorare`/`milf`/`sexual-violence`/act-level `fellatio`/`anal-sex`/…). У Haitokuzuma их 11 (+`infidelity`) = 12 тегов. Правило 5 tag-discipline (`max_tags` дефолт 10) → `too-many-tags` (structural-ERROR) ломает `structural_green`. То есть adult-каталогизация принципиально упирается в tag-cap, заточенный под SFW-карточки.
+
+**Почему vault-side рычага мало.** Единственная per-vault ручка — **глобальный** `max_tags`. Поднять её (сделано интерим: `max_tags: 20`) — блант: ослабляет анти-junk-страж для **всех** SFW-карточек, тогда как нужно исключение, **scoped по nsfw**. Природа задачи — per-card, по `content_rating`, а не глобальный потолок.
+
+**Предложение (движок `vault_lint`, `too-many-tags`).** Считать в `too-many-tags` **только не-`adult_gated`** теги (канон уже несёт флаг `adult_gated` в схеме `tag_taxonomy.yaml`). Тогда explicit-карточка может нести свои ≤`max_tags` нарративных тегов **плюс** любое число adult-дескрипторов, а SFW-страж остаётся жёстким. Опц. сузить: исключение активно только при `content_rating ∈ {nsfw, explicit}`. Тема-нейтрально — флаг `adult_gated` generic, gating по нему конфигурируем.
+
+**Под-предложение (рендер, опц.).** §3.6 закладывал «adult-теги — **отдельная категория** `Tag_taxonomy`», но `tag_taxonomy_render.mjs::GROUPS` знает только `category/theme/format` → adult-теги сейчас рендерятся в «Тематические» (через `group: theme` + `adult_gated: true`), отдельной md-секции нет. Добавить adult-секцию-заголовок (по `adult_gated`) — чтобы канон визуально разделял.
+
+**Vault-side сделано (эта сессия):** 11 `adult_gated`-тегов в каноне (первый adult-тайтл материализовал adult-категорию); интерим `max_tags: 20` в манифесте с пометкой-возвратом. **Когда движковое исключение приедет — вернуть `max_tags: 10`** (убрать интерим-строку).
+
+**Адресат:** мейнтейнер (движок `vault_lint` `too-many-tags`-счёт + опц. `render GROUPS`). Контент канона + интерим-ручка — vault. Связано с §29 (tag-discipline, родитель), §3 (manga adult-путь), feedback_prototype_in_vault_then_promote_to_framework (прототип в волте → промоут во framework).

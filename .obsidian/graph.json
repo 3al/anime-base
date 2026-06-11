@@ -8,10 +8,10 @@
   "collapse-color-groups": false,
   "colorGroups": [
     {
-      "query": "[\"note_kind\":\"anime\"",
+      "query": "[\"content_rating\":explicit]",
       "color": {
         "a": 1,
-        "rgb": 1734414
+        "rgb": 16711880
       }
     },
     {
@@ -41,6 +41,13 @@
         "a": 1,
         "rgb": 6868784
       }
+    },
+    {
+      "query": "[\"note_kind\":\"anime\"",
+      "color": {
+        "a": 1,
+        "rgb": 36625
+      }
     }
   ],
   "collapse-display": false,
@@ -53,6 +60,6 @@
   "repelStrength": 10,
   "linkStrength": 1,
   "linkDistance": 250,
-  "scale": 1.4019828977760527,
+  "scale": 0.7132754626224156,
   "close": true
 }
