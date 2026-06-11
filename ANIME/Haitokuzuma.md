@@ -26,9 +26,9 @@ aliases:
   - Порочная жена
 created: 2026-06-11
 updated: 2026-06-11
-title_romaji: "Haitokuzuma"
-title_original: "背徳妻"
-title_cyrillic: "Порочная жена"
+title_romaji: Haitokuzuma
+title_original: 背徳妻
+title_cyrillic: Порочная жена
 format: ova
 status: finished
 episodes: 2
@@ -36,29 +36,29 @@ year: 2005
 genres:
   - hentai
 personal_status: plan-to-watch
-title_english: "Insatiable"
-season: null
-studio: "Sunny_Side_Up"
+title_english: Insatiable
+season:
+studio: Sunny_Side_Up
 source: manga
 episode_duration_minutes: 28
-personal_score: null
-opening_score: null
-ending_score: null
-art_score: null
-story_score: null
-originality_score: null
+personal_score:
+opening_score:
+ending_score:
+art_score:
+story_score:
+originality_score:
 content_rating: explicit
-times_watched: null
-last_episode_watched: null
+times_watched:
+last_episode_watched:
 watched_with: []
-online_url:
+online_url: https://hentaimama.io/episodes/immoral-wife-episode-1/
 mal_score: 6.06
-shikimori_score: null
+shikimori_score:
 related_titles: []
 staff: []
-mal_url: "https://myanimelist.net/anime/2137/Haitokuzuma"
+mal_url: https://myanimelist.net/anime/2137/Haitokuzuma
 images:
-  cover: "attachments/Haitokuzuma_cover.jpg"
+  cover: attachments/Haitokuzuma_cover.jpg
 ---
 
 
@@ -94,6 +94,12 @@ images:
 ## Личный отзыв
 
 _Раздел для личных впечатлений — заполняется после просмотра._
+
+## Галерея
+
+|                                     |                                     |
+| ----------------------------------- | ----------------------------------- |
+| ![[Haitokuzuma_gallery_1.png\|150]] | ![[Haitokuzuma_gallery_2.png\|150]] |
 
 ## Ссылки
 
